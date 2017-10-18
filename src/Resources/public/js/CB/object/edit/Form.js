@@ -301,7 +301,7 @@ Ext.define('CB.object.edit.Form', {
 
             if(this.startEditAfterObjectsStoreLoadIfNewObject && isNaN(this.data.id)) {
 				  var fieldType = this.grid.store.getAt(0).get('type');
-				  if (fieldType == 'H' || fieldType == 'date')
+				  if (fieldType == 'H' || fieldType == 'date' || fieldType == 'datetime')
 				  {
       					this.grid.getSelectionModel().select({row: 1, column: colIdx});
 		             		this.grid.getNavigationModel().setPosition(1, colIdx);					  
