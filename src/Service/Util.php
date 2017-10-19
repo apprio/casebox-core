@@ -480,7 +480,7 @@ function formatMysqlTime($date, $format = false)
         $format = getOption('short_date_format', 'Y-m-d').' '.getOption('time_format', 'H:i');
     }
 
-    return date(str_replace('%', '', $format), $date);
+    return date(str_replace('%', '', $format), (!is_numeric($date))?strtotime($date):$date);
 }
 
 /**
