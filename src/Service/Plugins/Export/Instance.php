@@ -138,7 +138,14 @@ class Instance
         foreach ($records as &$r) {
             	$record = [];
             	foreach ($res['colOrder'] as $t) {
-                	$t = strip_tags($r[$t]);
+			if (isset($r[$t]))
+			{
+				$t = strip_tags($r[$t]);
+			}
+			else
+			{
+				$t = '';
+			}
 
                 	if (!empty($t) && !is_numeric($t)) {
                     $t = str_replace(
@@ -231,7 +238,14 @@ class Instance
         	foreach ($records as &$r) {
             	$record = [];
             	foreach ($res['colOrder'] as $t) {
-                	$t = strip_tags($r[$t]);
+                	if (isset($r[$t]))
+			{
+				$t = strip_tags($r[$t]);
+			}
+			else
+			{
+				$t = '';
+			}
 
                 	if (!empty($t) && !is_numeric($t)) {
                     $t = str_replace(
@@ -324,7 +338,14 @@ class Instance
         	foreach ($records as &$r) {
             	$record = [];
             	foreach ($res['colOrder'] as $t) {
-                	$t = strip_tags($r[$t]);
+                	if (isset($r[$t]))
+			{
+				$t = strip_tags($r[$t]);
+			}
+			else
+			{
+				$t = '';
+			}
 
                 	if (!empty($t) && !is_numeric($t)) {
                     $t = str_replace(
