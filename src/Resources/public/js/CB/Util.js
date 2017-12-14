@@ -374,7 +374,7 @@ function updateMenu(menuButton, menuConfig, handler, scope){
                         var data = {
                                 template_id: tr.get('id')
                                 // ,type: tr.get('type')
-                                ,title: title
+                                ,title: Ext.valueFrom(L[title],title)
                         };
 
                         if(!Ext.isEmpty(tr.get('cfg').data)) {

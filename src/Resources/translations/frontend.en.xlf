@@ -3612,7 +3612,15 @@
  	    	<trans-unit id="3262">
                 <source>Ethnicity</source>
                 <target>Ethnicity</target>
-            </trans-unit>			
+            </trans-unit>		
+ 	    	<trans-unit id="3263">
+                <source>Client</source>
+                <target>Cliente</target>
+            </trans-unit>		
+ 	    	<trans-unit id="3264">
+                <source>Resource</source>
+                <target>Recurso</target>
+            </trans-unit>				
 		</body>
     </file>
 </xliff>

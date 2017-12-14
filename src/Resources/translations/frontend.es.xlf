@@ -3613,6 +3613,14 @@
                 <source>Ethnicity</source>
                 <target>Grupo etnico</target>
             </trans-unit>				
+ 	    	<trans-unit id="3263">
+                <source>Client</source>
+                <target>Client</target>
+            </trans-unit>		
+ 	    	<trans-unit id="3264">
+                <source>Resource</source>
+                <target>Resource</target>
+            </trans-unit>				
 		</body>
     </file>
 </xliff>
