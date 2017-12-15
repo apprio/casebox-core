@@ -428,7 +428,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			SUM(IF (sys_data like \'%Client does not know insurance status%\',1,0) ) home_doesntknow_insurance,
 			SUM(IF (sys_data like \'%Client was insured but does not have insurance policy information%\',1,0) ) home_doesnthave_insurance,
 			SUM(IF (sys_data like \'%Client was uninsured%\',1,0) ) home_uninsured,
-			TRUNCATE(AVG(IF (sys_data like \'%financialmonthlyincome_i%\',substring(sys_data, LOCATE(\'financialmonthlyincome_i\',sys_data)+30,LOCATE(\',\', substring(sys_data, LOCATE(\'financialmonthlyincome_i\',sys_data)+31))),0)),2) financial_income_level,
+			TRUNCATE(AVG(IF (sys_data like \'%financialmonthlyincome_i%\',substring(sys_data, LOCATE(\'financialmonthlyincome_i\',sys_data)+26,LOCATE(\',\', substring(sys_data, LOCATE(\'financialmonthlyincome_i\',sys_data)+27))),0)),2) financial_income_level,
 			TRUNCATE(AVG(IF (sys_data like \'%financialpercentageoffederalpoverylevel_f%\',substring(sys_data, LOCATE(\'financialpercentageoffederalpoverylevel_f\',sys_data)+43,LOCATE(\',\', substring(sys_data, LOCATE(\'financialpercentageoffederalpoverylevel_f\',sys_data)+44))),0)),2) financial_federal_poverty_level,
 			SUM(IF (sys_data like \'%"employmentreferralneeded_s":"Yes"%\',1,0) ) employment_referral_needed,
 			SUM(IF (sys_data like \'%"healthinsurancelostdisaster_s":"Yes"%\',1,0) ) insurance_lost_to_disaster,
