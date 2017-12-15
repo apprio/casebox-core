@@ -1407,7 +1407,12 @@ function initApp() {
         if(Ext.isEmpty(msg) && e.result) {
             msg = L.ErrorOccured;
         }
-
+	
+		if (msg.indexOf('WARNING NOTICE!') > 1) {
+			App.confirmLeave = false;
+			return window.location.reload();
+		} 
+	    
         if(!App.errorMsgDiv) {
             App.errorMsgDiv = App.getNotificationDiv();
         }
