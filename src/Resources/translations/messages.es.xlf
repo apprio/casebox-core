@@ -939,11 +939,11 @@
             </trans-unit>   
            <trans-unit id="3167">
                 <source>Clients</source>
-                <target>Clientela</target>
+                <target>Sobreviviente</target>
             </trans-unit>       
            <trans-unit id="3168">
                 <source>MyClients</source>
-                <target>Mis clientes</target>
+                <target>Mis sobrevivientes</target>
             </trans-unit>       
            <trans-unit id="3169">
                 <source>Unassigned</source>
@@ -975,7 +975,7 @@
             </trans-unit>              
            <trans-unit id="3177">
                 <source>ClientIntake</source>
-                <target>Ingreso de clientes</target>
+                <target>Ingreso de sobrevivientes</target>
             </trans-unit>     
            <trans-unit id="3178">
                 <source>FamilyMembers</source>
@@ -1031,7 +1031,7 @@
             </trans-unit>     
            <trans-unit id="3191">
                 <source>AssignClientToMe</source>
-                <target>Asignar cliente a mí</target>
+                <target>Asignar sobreviviente a mí</target>
             </trans-unit>       
            <trans-unit id="3192">
                 <source>LastAction</source>
