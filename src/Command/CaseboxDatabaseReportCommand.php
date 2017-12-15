@@ -530,7 +530,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 					];
 				$objService = new Objects();
 				$newReferral =$objService->save(['data'=>$data]);
-				
+			}
 				//OHSEPR Location Report
 				$res = $dbs->query(
 					str_replace("LOCATION_STUFF",$locations,$ohseprsql)
@@ -562,7 +562,6 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 						];
 					$objService = new Objects();
 					$newReferral =$objService->save(['data'=>$data]);
-				}			
-			}			
+				}					
 	}
 }
