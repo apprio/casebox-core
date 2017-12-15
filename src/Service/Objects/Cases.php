@@ -422,16 +422,49 @@ class Cases extends Object
 			$sd['full_address'] = null;
 		}
 		
-        if ($this->getFieldValue('_fulladdress', 0)['value'] != $sd['full_address']) {
-			unset($sd['lat_lon']);
-			unset($sd['county_s']);
-			unset($sd['street_s']);
-			unset($sd['city_s']);
-			unset($sd['state_s']);
-			unset($sd['zipcode_s']);		
-			unset($sd['full_address']);
-			$sd['full_address'] = $this->getFieldValue('_fulladdress', 0)['value'];
-        }			
+		if (isset($this->getFieldValue('_city', 0)['value']) || isset($this->getFieldValue('_state', 0)['value']) 
+			|| isset($this->getFieldValue('_zip', 0)['value'])|| isset($this->getFieldValue('_addressone', 0)['value']))
+		{
+					$d['_fulladdress'] = (isset($this->getFieldValue('_addressone', 0)['value'])?
+					$this->getFieldValue('_addressone', 0)['value'].' ':'') .
+					(isset($this->getFieldValue('_addresstwo', 0)['value'])?
+					$this->getFieldValue('_addresstwo', 0)['value'].' ':'') .
+					(isset($this->getFieldValue('_city', 0)['value'])?
+					$this->getFieldValue('_city', 0)['value'].' ':'') .
+					(isset($this->getFieldValue('_state', 0)['value'])?
+					$this->getFieldValue('_state', 0)['value'].' ':'') .
+					(isset($this->getFieldValue('_zip', 0)['value'])?
+					$this->getFieldValue('_zip', 0)['value'].' ':'');
+					
+					/*Cache::get('symfony.container')->get('logger')->error(
+							$sd['full_address'],
+							$sd
+							);
+					*/
+					if (($d['_fulladdress'] != $sd['full_address']) || $sd['full_address'] == null) {
+						unset($sd['lat_lon']);
+						unset($sd['county_s']);
+						unset($sd['street_s']);
+						unset($sd['city_s']);
+						unset($sd['state_s']);
+						unset($sd['zipcode_s']);
+						unset($sd['full_address']);
+						$sd['full_address'] = $d['_fulladdress'];
+					}
+		}
+		else
+		{
+	        if ($this->getFieldValue('_fulladdress', 0)['value'] != $sd['full_address']) {
+				unset($sd['lat_lon']);
+				unset($sd['county_s']);
+				unset($sd['street_s']);
+				unset($sd['city_s']);
+				unset($sd['state_s']);
+				unset($sd['zipcode_s']);		
+				unset($sd['full_address']);
+				$sd['full_address'] = $this->getFieldValue('_fulladdress', 0)['value'];
+			}
+		}
 		
 		if (!empty($sd['full_address']) && empty($sd['lat_lon']))
 		{

@@ -3615,11 +3615,11 @@
             </trans-unit>		
  	    	<trans-unit id="3263">
                 <source>Client</source>
-                <target>Cliente</target>
+                <target>Client</target>
             </trans-unit>		
  	    	<trans-unit id="3264">
                 <source>Resource</source>
-                <target>Recurso</target>
+                <target>Resource</target>
             </trans-unit>				
 		</body>
     </file>

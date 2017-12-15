@@ -148,6 +148,23 @@ class CaseAssessment extends Object
 				}				
 			}
 
+			
+			if (isset($p['data']['_city']) || isset($p['data']['_state'])
+					|| isset($p['data']['_zip'])|| isset($p['data']['_addressone']))
+			{
+				$p['data']['_fulladdress'] = (isset($p['data']['_addressone'])?
+						$p['data']['_addressone'].' ':'') .
+						(isset($p['data']['_addresstwo'])?
+								$p['data']['_addresstwo'].' ':'') .
+								(isset($p['data']['_city'])?
+										$p['data']['_city'].' ':'') .
+										(isset($p['data']['_state'])?
+												$p['data']['_state'].' ':'') .
+					(isset($p['data']['_zip'])?
+					$p['data']['_zip'].' ':'');
+											
+			}
+			
 			if (!empty($p['data']['_fulladdress']))
 			{
 				$results = $this->lookup($p['data']['_fulladdress']);
