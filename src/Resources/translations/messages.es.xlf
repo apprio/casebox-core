@@ -1011,7 +1011,7 @@
             </trans-unit>  
            <trans-unit id="3186">
                 <source>PrintRecoveryPlan</source>
-                <target>Plan de recuperación de impresión</target>
+                <target>Imprimir plan de recuperación</target>
             </trans-unit>    
            <trans-unit id="3187">
                 <source>GenderNotCollected</source>
