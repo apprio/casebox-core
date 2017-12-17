@@ -1023,7 +1023,7 @@ class Cases extends Object
 		}				
 		
 		if (!empty($sd['solr']['clientage_i'])) {
-			$demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " " . $this->trans('yrs') ." yrs old - ";
+			$demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " " . $this->trans('yrs') ." - ";
 		}
 		
 		if (!empty($sd['solr']['language'])) {
