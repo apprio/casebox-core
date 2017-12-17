@@ -798,7 +798,7 @@
             </trans-unit>
             <trans-unit id="3008">
                 <source>ftSex</source>
-                <target>Sexo</target>
+                <target>Género</target>
                     <note> object field type </note>
             </trans-unit>
             <trans-unit id="3009">
@@ -939,11 +939,11 @@
             </trans-unit>   
            <trans-unit id="3167">
                 <source>Clients</source>
-                <target>Sobrevivientes</target>
+                <target>Solicitantes</target>
             </trans-unit>       
            <trans-unit id="3168">
                 <source>MyClients</source>
-                <target>Mis sobrevivientes</target>
+                <target>Mis solicitantes</target>
             </trans-unit>       
            <trans-unit id="3169">
                 <source>Unassigned</source>
@@ -963,7 +963,7 @@
             </trans-unit>       
            <trans-unit id="3174">
                 <source>IntakeRepresentative</source>
-                <target>Representante de ingreso</target>
+                <target>Representante de entrada</target>
             </trans-unit>    
            <trans-unit id="3175">
                 <source>MyTasks</source>
@@ -975,7 +975,7 @@
             </trans-unit>              
            <trans-unit id="3177">
                 <source>ClientIntake</source>
-                <target>Ingreso de sobrevivientes</target>
+                <target>Ingreso de solicitantes</target>
             </trans-unit>     
            <trans-unit id="3178">
                 <source>FamilyMembers</source>
@@ -1031,7 +1031,7 @@
             </trans-unit>     
            <trans-unit id="3191">
                 <source>AssignClientToMe</source>
-                <target>Asignar sobreviviente a mí</target>
+                <target>Asignar solicitante a mí</target>
             </trans-unit>       
            <trans-unit id="3192">
                 <source>LastAction</source>
@@ -1047,7 +1047,7 @@
             </trans-unit>            
            <trans-unit id="3195">
                 <source>HeadOfHousehold</source>
-                <target>Jefe de hogar</target>
+                <target>Jefe de Familia</target>
             </trans-unit>      
            <trans-unit id="3196">
                 <source>Not</source>
@@ -1080,7 +1080,15 @@
             <trans-unit id="3203">
                 <source>Resources</source>
                 <target>Recursos</target>
-            </trans-unit>				
+            </trans-unit>	
+            <trans-unit id="3204">
+                <source>yrs</source>
+                <target>años</target>
+            </trans-unit>	    
+            <trans-unit id="3205">
+                <source>RegisteredCounty</source>
+                <target>Municipio</target>
+            </trans-unit>	                     			
         </body>
     </file>
 </xliff>

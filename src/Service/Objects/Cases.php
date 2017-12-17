@@ -1023,7 +1023,7 @@ class Cases extends Object
 		}				
 		
 		if (!empty($sd['solr']['clientage_i'])) {
-			$demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " yrs old - ";
+			$demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " " . $this->trans('yrs') ." yrs old - ";
 		}
 		
 		if (!empty($sd['solr']['language'])) {
@@ -1057,7 +1057,7 @@ class Cases extends Object
 			$addressLine = $addressLine . $sd['solr']['county_s']. " - ";
 		}
 		elseif (!empty($sd['solr']['county'])) {
-			$addressLine = $addressLine . ' Registered County:'.$sd['solr']['county']. " - ";
+			$addressLine = $addressLine . ' ' . $this->trans('RegisteredCounty').':'.$sd['solr']['county']. " - ";
 		}
 
 			$filePlugin = new Files();

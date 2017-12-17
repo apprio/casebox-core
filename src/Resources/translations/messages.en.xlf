@@ -1076,7 +1076,15 @@
             <trans-unit id="3203">
                 <source>Resources</source>
                 <target>Resources</target>
-            </trans-unit>						
+            </trans-unit>
+            <trans-unit id="3204">
+                <source>yrs</source>
+                <target>yrs old</target>
+            </trans-unit>
+            <trans-unit id="3205">
+                <source>RegisteredCounty</source>
+                <target>Registered County</target>
+            </trans-unit>	            
 		</body>
     </file>
 </xliff>

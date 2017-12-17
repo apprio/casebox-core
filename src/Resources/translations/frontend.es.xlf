@@ -52,11 +52,11 @@
             </trans-unit>
             <trans-unit id="35">
                 <source>Property</source>
-                <target>Propiedad</target>
+                <target>Campo</target>
             </trans-unit>
             <trans-unit id="36">
                 <source>Value</source>
-                <target>Valor</target>
+                <target>Respuesta</target>
             </trans-unit>
             <trans-unit id="37">
                 <source>Additionally</source>
@@ -1110,7 +1110,7 @@
             </trans-unit>
             <trans-unit id="987">
                 <source>Open</source>
-                <target>Abierto</target>
+                <target>Abrir</target>
             </trans-unit>
             <trans-unit id="988">
                 <source>OpenCalendar</source>
@@ -1334,7 +1334,7 @@
             </trans-unit>
             <trans-unit id="1051">
                 <source>Save</source>
-                <target>Ahorrar</target>
+                <target>Guardar</target>
             </trans-unit>
             <trans-unit id="1052">
                 <source>SaveChangesConfirmationMessage</source>
@@ -1422,7 +1422,7 @@
             </trans-unit>
             <trans-unit id="1074">
                 <source>Sex</source>
-                <target>Sexo</target>
+                <target>Género</target>
             </trans-unit>
             <trans-unit id="1075">
                 <source>ShowMainFile</source>
@@ -2606,7 +2606,7 @@
             </trans-unit>
             <trans-unit id="2958">
                 <source>Saving</source>
-                <target>Ahorrar</target>
+                <target>Guardar</target>
             </trans-unit>
             <trans-unit id="2961">
                 <source>Contents</source>
@@ -2858,11 +2858,11 @@
             </trans-unit>
             <trans-unit id="3059">
                 <source>GridDDMgs</source>
-                <target><![CDATA[Navegue por los sobrevivientes / recursos usando el árbol a la izquierda<br />o busque un sobreviviente en el cuadro de búsqueda de arriba]]></target>
+                <target><![CDATA[Navegue por los solicitantes / recursos usando el árbol a la izquierda<br />o busque un solicitante en el cuadro de búsqueda de arriba]]></target>
             </trans-unit>
             <trans-unit id="3060">
                 <source>GridEmptyText</source>
-                <target><![CDATA[<h3>Navegue por los sobrevivientes / recursos usando el árbol a la izquierda </ h3> o busque un sobreviviente en el cuadro de búsqueda de arriba]]></target>
+                <target><![CDATA[<h3>Navegue por los solicitantes / recursos usando el árbol a la izquierda </ h3> o busque un solicitante en el cuadro de búsqueda de arriba]]></target>
             </trans-unit>
             <trans-unit id="3061">
                 <source>NoResultsFound</source>
@@ -3171,11 +3171,11 @@
             </trans-unit>
             <trans-unit id="3152">
                 <source>Cancel</source>
-                <target>Cancel</target>
+                <target>Cancelar</target>
             </trans-unit>
             <trans-unit id="3153">
                 <source>ReloadTemplates</source>
-                <target>Reload templates</target>
+                <target>Recargar Plantillas</target>
             </trans-unit>
             <trans-unit id="3154">
                 <source>SpecifyComment</source>
@@ -3251,7 +3251,7 @@
             </trans-unit>        
             <trans-unit id="3172">
                 <source>ClientID</source>
-                <target>Número de sobreviviente</target>
+                <target>Número de solicitante</target>
             </trans-unit>    
             <trans-unit id="3173">
                 <source>AssignedCM</source>
@@ -3275,7 +3275,7 @@
             </trans-unit> 
             <trans-unit id="3178">
                 <source>PrintRecoveryPlan</source>
-                <target>Plan de recuperación de impresión</target>
+                <target>Imprimir plan de recuperación</target>
             </trans-unit> 
             <trans-unit id="3179">
                 <source>SetAssignee</source>
@@ -3291,7 +3291,7 @@
             </trans-unit>   
             <trans-unit id="3182">
                 <source>Referrals</source>
-                <target>Referencias</target>
+                <target>Referimientos/Recuperación</target>
             </trans-unit> 
             <trans-unit id="3183">
                 <source>Recovery</source>
@@ -3311,11 +3311,11 @@
             </trans-unit>        
             <trans-unit id="3187">
                 <source>ClientAssessmentsNeeded</source>
-                <target>Evaluaciones de Sobrevivientes a ser completadas</target>
+                <target>Evaluaciones de Solicitantes a ser completadas</target>
             </trans-unit>       
             <trans-unit id="3188">
                 <source>ClientAssessmentsCompleted</source>
-                <target>Evaluaciones de sobrevivientes completadas</target>
+                <target>Evaluaciones de solicitantes completadas</target>
             </trans-unit>       
             <trans-unit id="3189">
                 <source>ToBeCreated</source>
@@ -3323,19 +3323,19 @@
             </trans-unit>       
             <trans-unit id="3190">
                 <source>ClientRecoveryNeeded</source>
-                <target>La recuperación del sobreviviente se completará</target>
+                <target>La recuperación del solicitante se completará</target>
             </trans-unit>       
             <trans-unit id="3191">
                 <source>ClientReferrals</source>
-                <target>Referencias de sobrevivientes</target>
+                <target>Referimientos/Recuperación de solicitantes</target>
             </trans-unit>                                                                   
             <trans-unit id="3192">
                 <source>ReferralsMade</source>
-                <target>Referencias hechas</target>
+                <target>Referimientos/Recuperación hechas</target>
             </trans-unit>       
             <trans-unit id="3193">
                 <source>CompletedReferrals</source>
-                <target>Referencias completadas</target>
+                <target>Referimientos/Recuperación completadas</target>
             </trans-unit>  
             <trans-unit id="3194">
                 <source>RecoveryNotes</source>
@@ -3343,7 +3343,7 @@
             </trans-unit> 
             <trans-unit id="3195">
                 <source>ClientTasks</source>
-                <target>Tareas del sobreviviente</target>
+                <target>Tareas del solicitante</target>
             </trans-unit>  
             <trans-unit id="3196">
                 <source>TotalRecords</source>
@@ -3423,7 +3423,7 @@
             </trans-unit>    
  			<trans-unit id="3215">
                 <source>County</source>
-                <target>Condado</target>
+                <target>Municipio</target>
             </trans-unit>    
  			<trans-unit id="3216">
                 <source>SessionAboutToExpire</source>
@@ -3487,7 +3487,7 @@
             </trans-unit>       
  	    	<trans-unit id="3231">
                 <source>ClientID</source>
-                <target>Identificación del sobreviviente</target>
+                <target>Identificación del solicitante</target>
             </trans-unit>   
  	    	<trans-unit id="3232">
                 <source>CMTelephoneNumber</source>
@@ -3495,7 +3495,7 @@
             </trans-unit>   
  	    	<trans-unit id="3233">
                 <source>ClientPlanCreationDate</source>
-                <target>Fecha de creación del plan de sobreviviente</target>
+                <target>Fecha de creación del plan de solicitante</target>
             </trans-unit>       
  	    	<trans-unit id="3234">
                 <source>IDCMSiteAddress</source>
@@ -3543,7 +3543,7 @@
             </trans-unit>     
  	    	<trans-unit id="3245">
                 <source>ClientSignature</source>
-                <target>Firma del sobreviviente</target>
+                <target>Firma del solicitante</target>
             </trans-unit>  
  	    	<trans-unit id="3246">
                 <source>DateTime</source>
@@ -3559,11 +3559,11 @@
             </trans-unit>
  	    	<trans-unit id="3249">
                 <source>County</source>
-                <target>Condado</target>
+                <target>Municipio</target>
             </trans-unit>	
 			<trans-unit id="3250">
                 <source>Gender</source>
-                <target>Sexo</target>
+                <target>Género</target>
             </trans-unit>	
  	    	<trans-unit id="3251">
                 <source>AtRiskPopulation</source>
@@ -3575,7 +3575,7 @@
             </trans-unit>	
  	    	<trans-unit id="3253">
                 <source>AssessmentsNeeded</source>
-                <target>Evaluaciones necesitadas</target>
+                <target>Evaluaciones Por Completar</target>
             </trans-unit>	
  	    	<trans-unit id="3254">
                 <source>AssessmentsComplete</source>
@@ -3587,7 +3587,7 @@
             </trans-unit>	
  	    	<trans-unit id="3256">
                 <source>ReferralsNeeded</source>
-                <target>Referimientos necesitados</target>
+                <target>Referidos necesitados</target>
             </trans-unit>	
  	    	<trans-unit id="3257">
                 <source>Language</source>
@@ -3595,11 +3595,11 @@
             </trans-unit>	
  	    	<trans-unit id="3258">
                 <source>MaritalStatus</source>
-                <target>Estado marital</target>
+                <target>Estado Civil</target>
             </trans-unit>	
  	    	<trans-unit id="3259">
                 <source>HeadOfHousehold</source>
-                <target>Cabeza de familia</target>
+                <target>Jefe de Familia</target>
             </trans-unit>	
  	    	<trans-unit id="3260">
                 <source>Creator</source>
@@ -3607,7 +3607,7 @@
             </trans-unit>	
  	    	<trans-unit id="3261">
                 <source>ClientRace</source>
-                <target>Raza del sobreviviente</target>
+                <target>Raza del solicitante</target>
             </trans-unit>		
  	    	<trans-unit id="3262">
                 <source>Ethnicity</source>
@@ -3615,7 +3615,7 @@
             </trans-unit>				
  	    	<trans-unit id="3263">
                 <source>Client</source>
-                <target>Sobreviviente</target>
+                <target>Solicitante</target>
             </trans-unit>		
  	    	<trans-unit id="3264">
                 <source>Resource</source>
