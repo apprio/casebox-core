@@ -3415,7 +3415,7 @@
             </trans-unit>     
 			<trans-unit id="3213">
                 <source>FacilityName</source>
-                <target>Nombre de la instalación</target>
+                <target>Nombre de Local</target>
             </trans-unit>    
 			<trans-unit id="3214">
                 <source>FacilityType</source>
