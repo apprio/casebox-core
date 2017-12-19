@@ -2,6 +2,7 @@
 
 namespace Casebox\CoreBundle\Service\Objects;
 
+use Casebox\CoreBundle\Service\Objects;
 use Casebox\CoreBundle\Service\Cache;
 use Casebox\CoreBundle\Service\Security;
 use Casebox\CoreBundle\Service\Tasks;
@@ -201,6 +202,14 @@ class Task extends Object
 
         $sd = &$p['sys_data'];
 
+        $caseId = $p['pid'];
+        $case = Objects::getCachedObject($caseId);
+        $objService = new Objects();
+        if (!empty($caseId) && !empty($case))
+        {
+        	$p['data']['_clientname'] = $case->getHtmlSafeName();
+        }        
+        
         $sd['task_due_date'] = $this->getFieldValue('due_date', 0)['value'];
         $sd['task_due_time'] = $this->getFieldValue('due_time', 0)['value'];
 		

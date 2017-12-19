@@ -100,7 +100,7 @@ class Tasks extends Base
         $p['fq'] = $this->fq;
         $p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2)';
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         $p['rows'] = 0;
 
         $s = new Search();
@@ -139,7 +139,7 @@ class Tasks extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         $p['fq'] = $this->fq;
         $p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2)';
@@ -190,7 +190,7 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         if ($this->lastNode->id == 2) {
             $p['fq'][] = 'task_u_ongoing:'.$userId;
         } else {
@@ -267,7 +267,7 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         $parent = $this->lastNode->parent;
 
         if ($parent->id == 2) {
