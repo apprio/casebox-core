@@ -1725,7 +1725,7 @@ Ext.define('CB.browser.ViewContainer', {
                     //,'-'
                     ,this.actions.contextReload
                     ,this.actions.contextDelete
-                    ,this.actions.contextRename
+                    //,this.actions.contextRename // DUMBING DOWN APPRIOs
                     ,this.actions.star
                     ,this.actions.unstar
                     ,this.actions.webdavlink
