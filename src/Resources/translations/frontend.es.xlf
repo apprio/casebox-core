@@ -3291,7 +3291,7 @@
             </trans-unit>   
             <trans-unit id="3182">
                 <source>Referrals</source>
-                <target>Referimientos</target>
+                <target>Referidos</target>
             </trans-unit> 
             <trans-unit id="3183">
                 <source>Recovery</source>
@@ -3327,15 +3327,15 @@
             </trans-unit>       
             <trans-unit id="3191">
                 <source>ClientReferrals</source>
-                <target>Referimientos de solicitantes</target>
+                <target>Referidos de solicitantes</target>
             </trans-unit>                                                                   
             <trans-unit id="3192">
                 <source>ReferralsMade</source>
-                <target>Referimientos hechas</target>
+                <target>Referidos hechas</target>
             </trans-unit>       
             <trans-unit id="3193">
                 <source>CompletedReferrals</source>
-                <target>Referimientos completadas</target>
+                <target>Referidos completadas</target>
             </trans-unit>  
             <trans-unit id="3194">
                 <source>RecoveryNotes</source>
