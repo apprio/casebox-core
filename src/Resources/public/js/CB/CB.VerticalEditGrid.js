@@ -542,7 +542,7 @@ Ext.define('CB.VerticalEditGrid', {
                         id: attr.id
                         ,title: r.get('title')
                         ,readonly: ((r.get('type') === 'H') || (r.get('cfg').readOnly == 1))
-                        ,value: Ext.isNumeric(attr.value.value)
+                        ,value: (Ext.isNumeric(attr.value.value) && (r.get('type') !== 'varchar'))
                             ? parseFloat(attr.value.value, 10)
                             : attr.value.value
                         ,info: attr.value.info
