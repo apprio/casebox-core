@@ -287,7 +287,10 @@ class CaseAssessment extends Object
 				}
 				else
 				{
-					$caseSd['referrals_needed'] = array_diff($caseSd['referrals_needed'], [$templateId]);
+					if (is_array($caseSd['referrals_needed']))
+					{
+						$caseSd['referrals_needed'] = array_diff($caseSd['referrals_needed'], [$templateId]);
+					}
 				}
 			}
 			
