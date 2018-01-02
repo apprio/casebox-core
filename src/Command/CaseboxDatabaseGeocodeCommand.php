@@ -53,7 +53,7 @@ class CaseboxDatabaseGeocodeCommand extends ContainerAwareCommand
         );*/
 		
 		$res = $dbs->query(
-            'select * from objects where id = 40267'
+            'select * from objects where id = 3274'
         );
         /*
                 $res = $dbs->query(
@@ -67,10 +67,11 @@ class CaseboxDatabaseGeocodeCommand extends ContainerAwareCommand
 	
         while ($r = $res->fetch()) {
 			$objectId = $r['id'];
-			echo ($objectId.',');
 			$case = Objects::getCachedObject($objectId);  
 			
-			$case->geocode();
+			echo ($case.',');
+			
+			//$case->geocode();
 			$solr = new Client();
 			$solr->updateTree(['id' => $objectId]);
 
