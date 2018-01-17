@@ -1084,7 +1084,35 @@
             <trans-unit id="3205">
                 <source>RegisteredCounty</source>
                 <target>Registered County</target>
-            </trans-unit>	            
+            </trans-unit>	      
+            <trans-unit id="3206">
+                <source>DailyReport</source>
+                <target>Daily Report</target>
+            </trans-unit>
+            <trans-unit id="3207">
+                <source>at</source>
+                <target>at</target>
+            </trans-unit>	      
+            <trans-unit id="3208">
+                <source>ago</source>
+                <target>ago</target>
+            </trans-unit>	 
+            <trans-unit id="3209">
+                <source>minutes</source>
+                <target>minutes</target>
+            </trans-unit>	  
+            <trans-unit id="3210">
+                <source>hours</source>
+                <target>hours</target>
+            </trans-unit>
+            <trans-unit id="3211">
+                <source>minute</source>
+                <target>minute</target>
+            </trans-unit>	  
+            <trans-unit id="3212">
+                <source>hour</source>
+                <target>hour</target>
+            </trans-unit>	                                                 	                    
 		</body>
     </file>
 </xliff>

@@ -1087,8 +1087,36 @@
             </trans-unit>	    
             <trans-unit id="3205">
                 <source>RegisteredCounty</source>
-                <target>Municipio</target>
-            </trans-unit>	                     			
+                <target>Division</target>
+            </trans-unit>	     
+            <trans-unit id="3206">
+                <source>DailyReport</source>
+                <target>Informes diario</target>
+            </trans-unit>	      
+            <trans-unit id="3207">
+                <source>at</source>
+                <target>a</target>
+            </trans-unit>	      
+            <trans-unit id="3208">
+                <source>ago</source>
+                <target>hace</target>
+            </trans-unit>	
+            <trans-unit id="3209">
+                <source>minutes</source>
+                <target>minutos</target>
+            </trans-unit>	  
+            <trans-unit id="3210">
+                <source>hours</source>
+                <target>horas</target>
+            </trans-unit>
+            <trans-unit id="3211">
+                <source>minute</source>
+                <target>minuto</target>
+            </trans-unit>	  
+            <trans-unit id="3212">
+                <source>hour</source>
+                <target>hora</target>
+            </trans-unit>	               	                                                 			
         </body>
     </file>
 </xliff>
