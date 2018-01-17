@@ -11,6 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Casebox\CoreBundle\Service\Cache;
+use Casebox\CoreBundle\Service\Solr\Client;
+use Symfony\Component\HttpFoundation\Request;
 
 class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
 {
@@ -48,9 +50,12 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
             'data' => 1,
         ];
         $session->set('user', $user);
+		$request = new Request();
+		$request->setLocale('es');
+		Cache::set('symfony.request', $request);		
 		
         $res = $dbs->query(
-            'select * from tree where template_id in(440)'
+            'select * from tree where template_id in(141) and id < 166593'
         );
         /*
                 $res = $dbs->query(
@@ -69,6 +74,8 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
 
 			$obj = $objService->load($r);
 			$obj = $objService->save($obj);
+						$solr = new Client();
+			$solr->updateTree(['id' => $objectId]);
 
 			//break;
 		}

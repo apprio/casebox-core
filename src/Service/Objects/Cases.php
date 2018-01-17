@@ -234,6 +234,7 @@ class Cases extends Object
 			'task_u_done',
 			'task_u_ongoing',
 			'lat_lon',
+			'addresstypeprimary_s',
 			'county',
 			'county_s',
 			'street_s',
@@ -241,6 +242,7 @@ class Cases extends Object
 			'zipcode_s',		
 			'state_s',
 			'location_type',
+			'location_type_s',			
             'at_risk_population_ss',
             'identified_unmet_needs_ss'
         ];
@@ -266,6 +268,7 @@ class Cases extends Object
 		{
 		$location = $objService->load(['id' => $this->getFieldValue('_location_type', 0)['value']]);		
 		$solrData['county'] = empty($location)?'N/A': $location['data']['data']['_locationcounty'];
+		$solrData['location_type_s'] = empty($location)?'N/A': $location['data']['data']['_locationtype'];
 		}		
 		/* End safe delete */
 		
@@ -334,10 +337,10 @@ class Cases extends Object
 			'latitude' => $geometry['location']['lat'],
 			'street_number' => isset($location['street_number'])?$location['street_number']:'',
 			'street' => isset($location['street'])?$location['street']:'',
-			'city' => $location['locality'],	
-			'state' => $location['admin_1'],				
+			'city' => isset($location['locality'])?$location['locality']:'',	
+			'state' => isset($location['admin_1'])?$location['admin_1']:'',				
 			'full_address' => $response['results'][0]['formatted_address'],
-			'county' => $location['admin_2'],
+			'county' => isset($location['admin_2'])?$location['admin_2']:'',
 			'postal_code' => isset($location['postal_code'])?$location['postal_code']:''			
 		);
 	 
@@ -370,7 +373,8 @@ class Cases extends Object
 			'age',
 			'fematier',
             'headofhousehold',
-	     'location_type'
+			'addresstype',
+			'location_type'
         ];
         foreach ($properties as $property) {
 			unset($sd[$property]);
@@ -382,6 +386,10 @@ class Cases extends Object
 					$first = $arr[0];
 					$sd[$property] = $first;
 				}
+				elseif ($property == 'addresstype')
+				{
+					$sd[$property.'primary_s'] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+				}				
 				elseif ($property == 'location_type')
 				{
 				    if (!empty($obj))
@@ -389,6 +397,7 @@ class Cases extends Object
 						$objService = new Objects();
 						$location = $objService->load(['id' => $this->getFieldValue('_' . $property, 0)['value']]);		
 						$sd['county'] = empty($location)?'N/A': $location['data']['data']['_locationcounty'];
+						$sd['location_type_s'] = empty($location)?'N/A': $location['data']['data']['_locationtype'];
 					}	
 					$sd[$property] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
 				}								
