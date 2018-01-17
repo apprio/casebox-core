@@ -365,7 +365,9 @@ class UsersGroups
         }
 
         Security::calculateUpdatedSecuritySets();
-
+        
+        $this->logAction('user_create', array('userId' => $user_id,'userName' => $p['name'], 'text'=>($p['first_name'] . ' ' . $p['last_name'].'\'s account has been created')));
+        
         Solr\Client::runBackgroundCron();
 
         return $rez;
@@ -930,6 +932,7 @@ class UsersGroups
         $encoderFactory = $container->get('security.encoder_factory');
 		
 		$username = User::getUsername($userId);
+		$fullName = User::getDisplayName($userId);
         $user = $em->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername($username);
 
         if (!$user instanceof UsersGroupsEntity) {
@@ -938,6 +941,7 @@ class UsersGroups
 		$user->setLoginSuccessful(0);
 		$user->setEnabled(intval($enabled));
 		
+		$this->logAction('status_change', array('userId' => $userId,'userName' => $username, 'status' => intval($enabled), 'text'=>($fullName.'\'s account has been set to '). (($enabled)? 'enabled':'disabled')));
         $em->flush();
 
         return ['success' => true, 'enabled' => $enabled];
@@ -1036,4 +1040,30 @@ class UsersGroups
         
         return;
     }
+    
+    /**
+     * add action to log
+     *
+     * @param string $type
+     * @param array $data
+     *
+     * @return void
+     */
+    protected function logAction($type, $data)
+    {
+    	if (!Cache::get('disable_logs', false)) {
+    		$uid = User::getId();
+    		$params = [
+    				'object_id' => 10,
+    				'object_pid' => 10,
+    				'user_id' => $uid,
+    				'action_type' => $type,
+    				'data' => Util\jsonEncode($data),
+    				//'data' => Util\jsonEncode(array('ip' => $user->getLoginFromIp(), 'failedlogins' => $user->getLoginSuccessful())),
+    				'activity_data_db' => Util\jsonEncode($user),
+    		];
+    
+    		$p['action_id'] = DM\Log::create($params);
+    	}
+    }    
 }
