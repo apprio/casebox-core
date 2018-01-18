@@ -74,7 +74,7 @@ class Documents extends Base
             case 2:
                 return $this->trans('AssignedToMe');
             case 3:
-                return $this->trans('CreatedByMe');
+                return $this->trans('No Consent Form');
             case 4:
                 return lcfirst($this->trans('Overdue'));
             case 5:
@@ -199,10 +199,10 @@ class Documents extends Base
             }
 			unset($rez['data']);
 			$rez['total'] = count($records);
-																Cache::get('symfony.container')->get('logger')->error(
+							/*									Cache::get('symfony.container')->get('logger')->error(
 							'hi'.$output,
 							[]
-							);	
+							);	*/
 		$rez['data'] = $records;		
         return $rez;
     }
