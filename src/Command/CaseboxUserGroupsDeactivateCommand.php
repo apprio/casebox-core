@@ -19,6 +19,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
             ->setName('casebox:user:deactivate')
             ->setDescription('Deactivate users based on days.')
             ->addArgument('days', InputArgument::REQUIRED, 'The days since last login required to deactivate')
+			->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'Date for action log.')
         ;
     }
 
@@ -31,6 +32,9 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
         $system->bootstrap($container);
 
         $days = intval($input->getArgument('days'));
+		
+		date_default_timezone_set('America/New_York');
+		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time());
 
 		if ($days == 0)
 		{
@@ -79,6 +83,67 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		}
 		unset($res);
 		
-        $output->success('command casebox:user:deactivate');
+		
+		$res = $dbs->query(
+			'select CONCAT(count(*), \' \', template_name, \'s\', \' \', action_type, \'d\') action_text, action_date FROM (
+				select DATE(action_log.action_time) action_date, action_log.action_time, 
+				CASE WHEN (tree.template_id = 527 AND tree.name not like \'%General%\' AND tree.name != \' \') THEN tree.name 
+				WHEN templates.name = \'Template\' THEN \'User\'
+				ELSE templates.name END template_name, tree.template_id, tree.name object_name, 
+				CASE WHEN (action_log.action_type = \'completion_on_behalf\') THEN \'Assigned\' 
+				WHEN (action_log.action_type = \'login_fail\') THEN \'logins faile\' ELSE action_type END action_type, 
+				users_groups.name username, users_groups.id user_id, (select name from users_groups ug, 
+				users_groups_association uga where ug.id = uga.group_id and users_groups.id = uga.user_id LIMIT 1) user_role,
+				CASE WHEN(tree.template_id=141) THEN tree.name ELSE parent.name END parent_name, tree.pid parent_id
+				from tree, objects, action_log, templates, tree parent, users_groups
+				where tree.id = objects.id 
+				and tree.pid = parent.id
+				and users_groups.id = action_log.user_id
+				and tree.template_id = templates.id
+				and tree.id
+				and action_type not in (\'user_create\',\'status_change\')
+				and action_log.object_id = objects.id 
+				and action_log.user_id <> 1
+				and date(action_log.action_time) = \''.$date.'\'
+				) a
+				group by template_name, action_type, action_date 
+				union
+				select distinct \'<b>User Log</b>\', \'\' from action_log where action_type = \'user_create\' 
+				or action_type=\'status_change\' and date(action_log.action_time) = \''.$date.'\'
+				union
+				select CONCAT(je(data,\'text\'), \' [\',DATE_FORMAT(action_log.action_time,\'%H:%i:%s\'),\']\'), action_log.action_time 
+				from action_log where action_type = \'user_create\' 
+				or action_type=\'status_change\' and date(action_log.action_time) = \''.$date.'\'
+	  ',
+				 $days
+        );
+
+		$list = [];
+		$list[] = '
+			<html>
+			<head>
+			  <title>Daily Action Log</title>
+			</head>
+			<body>
+			  <p>Here are the daily actions for today, '.$date.'</p>
+			  <table><tr><td><b>Daily Summary</b></td></tr>';
+		while ($r = $res->fetch()) {
+			$list[] = ' <tr><td>'.$r['action_text'] . '</td></tr>';
+		}
+		unset($res);
+
+		$list[] = '
+		  </table>
+		</body>
+		</html>';
+
+		// To send HTML mail, the Content-type header must be set
+		$headers[] = 'MIME-Version: 1.0';
+		$headers[] = 'Content-type: text/html; charset=iso-8859-1';
+
+		@System::sendMail('dstoudt@apprioinc.com', 'Daily Log', implode("\r\n", $list), implode("\r\n", $headers));
+		
+		echo(implode($list));	
+        $output->success('command casebox:user:deactivate for ' . $date);
     }
 }
