@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ACF ECMRS - Electronic Case Record Management System</title>
+    <link rel="stylesheet" type="text/css" href="/css/bs/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bs/css/bootstrap-responsive.min.css"/>
+    <link type='text/css' rel="stylesheet" href="/css/login.css"/>
+	<style id="antiClickjack">body{display:none !important;}</style>
+
+	<script type="text/javascript">
+	   if (self === top) {
+		   var antiClickjack = document.getElementById("antiClickjack");
+		   antiClickjack.parentNode.removeChild(antiClickjack);
+	   } else {
+		   top.location = self.location;
+	   }
+	</script>	
+</head>
+
+<body onload="javascript: e = document.getElementById('u'); if (!e) {e = document.getElementById('c'); } e.focus(); editChanged();">
+
+<div class="main">
+    <div class="form_login tac">
+        <a href="/" class="dib"><img alt="ACF ECMRS Logo" src="/css/i/CaseBox-Logo-medium.png" style="width: 300px"></a>
+        <br>
+
+        {% for label, flashes in app.session.flashbag.all %}
+            {% for flash in flashes %}
+                <div class="alert alert-{{ label }}" id="error">
+                    {{ flash }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+            
+<form action="/c/{{ coreName }}/bulkupload/" method="post" enctype="multipart/form-data">
+<div class="form-group">
+    <label for="templateId" style="font-weight:bold">Template</label>
+
+  {% for template in templates %}
+        {% set selected = false %}
+            {% if template.id == templateId %}
+                {% set selected = true %}
+            {% endif %}
+<div class="radio">
+  <label>
+    <input type="radio" name="templateId" id="templateId" value="{{ template.id }}" {% if selected %}checked{% endif %}>
+    {{ template.name }}
+  </label>
+</div>            
+            
+         {% endfor %}
+  
+  
+  
+    <label for="file" style="font-weight:bold">CSV Import File</label>
+    <input type="file" id="file" name="file">
+    <p class="help-block">File should be CSV with header names to match that of the object uploading.</p>
+  </div>
+<input type="submit" value="Upload File" name="submit" class="btn btn-primary">
+
+</form>		
+    	
+       {% block form %}{% endblock %}
+    </div>
+</div>
+
+<div class="footer" style="right: 0;">
+    ECMRS V1.5
+    <span style="color: #AAA; padding-left: 2px; padding-right: 5px">&bull;</span>
+    <a href="mailto:ECMRSHelpdesk@apprioinc.com">Contact ECMRS Helpdesk</a>
+</div>
+</body>
+</html>
+

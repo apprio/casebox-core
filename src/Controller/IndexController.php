@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Casebox\CoreBundle\Service\Util;
+use Casebox\CoreBundle\Service\Templates\SingletonCollection;
 
 /**
  * Class IndexController
@@ -158,6 +159,158 @@ class IndexController extends Controller
         return new Response($result, 200, ['Content-Type' => 'application/json', 'charset' => 'UTF-8']);
     }
 
+	/**
+	 * @Route("/c/{coreName}/bulkupload", name="app_core_bulk_upload")
+	 * @Route("/c/{coreName}/bulkupload/", name="app_core_bulk_upload_slash")
+	 * 
+	 * @param Request $request        	
+	 * @param string $coreName        	
+	 * @param string $id        	
+	 * @method ({"GET", "POST"})
+	 *        
+	 * @return Response
+	 * @throws \Exception
+	 */
+	public function bulkupload(Request $request, $coreName) {
+		$configService = $this->get ( 'casebox_core.service.config' );
+		$auth = $this->container->get ( 'casebox_core.service_auth.authentication' );
+		if (! $auth->isLogged ( false )) {
+			return $this->redirectToRoute ( 'app_core_login', [ 
+					'coreName' => $coreName 
+			] );
+		}
+		
+		$this->get('translator')->setLocale($vars['locale']);
+		
+		$vars = [
+				'templateId' => $request->get('templateId'),
+				'projectName' => $configService->getProjectName(),
+				'templates' => json_decode($configService->get('bulkupload'),true),
+				'coreName' => $request->attributes->get('coreName'),
+				'message' => $message,
+				'rtl' => $configService->get('rtl') ? '-rtl' : '',
+				'styles' => $this->container->get('casebox_core.service.styles_service')->getRendered(),
+				'locale' => $request->getLocale(),
+		];
+		$vars['javascript'] = $this->container->get('casebox_core.service.javascript_service')->getRendered($vars);
+		$message = '';
+		if ($request->isMethod ( Request::METHOD_POST )) {
+			
+		if (empty($request->get('templateId'))) {
+			$this->addFlash('notice', 'Please select a template ID');
+		
+			return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+		}	
+		
+			
+			// validate whether uploaded file is a csv file
+			$csvMimes = array (
+					'text/x-comma-separated-values',
+					'text/comma-separated-values',
+					'application/octet-stream',
+					'application/vnd.ms-excel',
+					'application/x-csv',
+					'text/x-csv',
+					'text/csv',
+					'application/csv',
+					'application/excel',
+					'application/vnd.msexcel',
+					'text/plain' 
+			);
+			if (! empty ( $_FILES ['file'] ['name'] ) && in_array ( $_FILES ['file'] ['type'], $csvMimes )) {
+				if (is_uploaded_file ( $_FILES ['file'] ['tmp_name'] )) {
+					
+					// open uploaded csv file with read only mode
+					$csvFile = fopen ( $_FILES ['file'] ['tmp_name'], 'r' );
+					
+					// get titles
+					$titles = fgetcsv ( $csvFile );
+					$objService = new Objects ();
+					Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'suptestssss', (array) $titles);
+					$templates = json_decode($configService->get('bulkupload'),true);
+					$template = $templates[$request->get('templateId')];
+					
+					$template = SingletonCollection::getInstance()->getTemplate($request->get('templateId'));
+					
+					// Check if there is defaultPid specified in template config
+					if (!empty($template)) {
+						$templateData = $template->getData();
+					
+						if (!empty($templateData['cfg']['defaultPid'])) {
+							$pid = $templateData['cfg']['defaultPid'];
+						}
+						
+						foreach($titles as $fieldName)
+						if (!$template->getField($fieldName) && $fieldName !== "id")
+						{
+							//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'doenstmatch'.$obj.'and'.$pid, ( array ) $templateData );	
+							$this->addFlash('notice', 'Template Field '.$fieldName.' doesnt match any fields in template ' . $templateData['name']);
+							
+							return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+						}
+						
+					}
+					//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'herenow'.$obj.'and'.$pid, ( array ) $templateData );
+					
+					
+					// parse data from csv file line by line
+					while ( ($line = fgetcsv ( $csvFile )) !== FALSE ) {
+						$id = null;
+						foreach ( $line as $k => $value ) {
+							if ($titles[$k] === "id") {
+								$obj = Objects::getTemplateId($value);
+								if ($templateData['id'] === $obj)
+								{
+									$id = $value;
+									if (!is_null($id))
+									{
+										$obj = $objService->load(['id' => $id]);
+										$results = array_merge($obj['data']['data'], $results);
+										//print_r($r);
+									}
+								}
+							} else {
+								$results [$titles [$k]] = $value;
+							}
+						}
+						$data = [
+								'id' => !is_null($id)?$id:null,
+								'pid' => $pid,
+								'title' => 'New Location',
+								'template_id' => $templateData['id'],
+								'path' => '/Test Event/Locations',
+								'view' => 'edit',
+								'name' => 'New Location',
+								'data' => $results 
+						];
+						$newReferral = $objService->save ( [ 
+								'data' => $data 
+						] );
+
+						//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'sup' . $id, $data );
+					}
+					// close opened csv file
+					fclose ( $csvFile );
+					$vars['templateId'] = null;
+					$message = 'Success';
+				} else {
+					$message = 'Error uploading';
+				}
+			} else {
+						$this->addFlash('notice', 'Invalid File');
+					
+						return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+			}
+		}
+		
+    	if ($message)
+    	{
+    		$this->addFlash('notice', $message);
+    	}
+    
+    	return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+    }	
+	
     /**
      * @Route("/c/{coreName}/edit/{templateId}/{id}",
      *     name="app_core_item_edit",
