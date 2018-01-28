@@ -158,24 +158,38 @@ class Notifications
 				$p['fq'] = ['report_dt:['.$p['startDate'].' TO '.$p['endDate'].']'];
 			}
 			
-			$p['id'] = '11-Admin';
-			$p['from'] = 'grid';
-			$p['rows'] = 1500;
-			$p['skipSecurity'] = true;
-			$fq = $configuration['query'];
-
-			// check if fq is set and add it to result
-			if (!empty($p['fq'])) {
-				if (!is_array($p['fq'])) {
-					$p['fq'] = [$p['fq']];
+			
+			if (!empty($configuration['sql'])){
+				$dbs = Cache::get('casebox_dbs');
+				$res = $dbs->query($configuration['sql']);
+				$mysqlrecords = [];
+				
+				while ($r = $res->fetch()) {
+					$mysqlrecords[] = $r;
 				}
-				$fq = array_merge($fq, $p['fq']);
+				$rez['data'] = $mysqlrecords;
 			}
-			$p['fq'] = $fq;
-			$p['fl'] = implode(',',$fl);
-			$s = new Search();
-			$rez = $s->query($p);		
+			else
+			{			
+			
+				$p['id'] = '11-Admin';
+				$p['from'] = 'grid';
+				$p['rows'] = 7000;
+				$p['skipSecurity'] = true;
+				$fq = $configuration['query'];
 
+				// check if fq is set and add it to result
+				if (!empty($p['fq'])) {
+					if (!is_array($p['fq'])) {
+						$p['fq'] = [$p['fq']];
+					}
+					$fq = array_merge($fq, $p['fq']);
+				}
+				$p['fq'] = $fq;
+				$p['fl'] = implode(',',$fl);
+				$s = new Search();
+				$rez = $s->query($p);		
+			}
 			$colTitles = [];
 			$colOrder = [];
 			$newcolumns = [];
@@ -219,7 +233,7 @@ class Notifications
 					$record = [];
 					$record['number'] =  $i++;		
 					$record['title'] = $t['title'];
-					$record['area_s'] = $area['area_s'];
+					$record['area_s'] = isset($area['area_s'])?$area['area_s']:$area;
 					foreach($rez['data'] as &$r)
 					{
 						if ((isset($r['area_s']) && $r['area_s'] == $area['area_s']) || $area == "All")
@@ -254,22 +268,37 @@ class Notifications
 		 }
 		 else
 		 {
-			$p['id'] = '11-Admin';
-			$p['from'] = 'grid';
-			$p['rows'] = 1500;
-			$fq = $configuration['query'];
-
-			// check if fq is set and add it to result
-			if (!empty($p['fq'])) {
-				if (!is_array($p['fq'])) {
-					$p['fq'] = [$p['fq']];
+		 
+			if (!empty($configuration['sql'])){
+				$dbs = Cache::get('casebox_dbs');
+				$res = $dbs->query($configuration['sql']);
+				$mysqlrecords = [];
+				
+				while ($r = $res->fetch()) {
+					$mysqlrecords[] = $r;
 				}
-				$fq = array_merge($fq, $p['fq']);
+				$rez['data'] = $mysqlrecords;
 			}
-			$p['fq'] = $fq;
-			$p['fl'] = implode(',',$fl);
-			$s = new Search();
-			$rez = $s->query($p);			 
+			else
+			{		 
+			 
+				$p['id'] = '11-Admin';
+				$p['from'] = 'grid';
+				$p['rows'] = 7000;
+				$fq = $configuration['query'];
+
+				// check if fq is set and add it to result
+				if (!empty($p['fq'])) {
+					if (!is_array($p['fq'])) {
+						$p['fq'] = [$p['fq']];
+					}
+					$fq = array_merge($fq, $p['fq']);
+				}
+				$p['fq'] = $fq;
+				$p['fl'] = implode(',',$fl);
+				$s = new Search();
+				$rez = $s->query($p);			 
+			}
 		 }
 
 		$colTitles = [];

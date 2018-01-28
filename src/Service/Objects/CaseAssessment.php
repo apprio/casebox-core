@@ -287,9 +287,12 @@ class CaseAssessment extends Object
 				}
 				else
 				{
-					if (is_array($caseSd['referrals_needed']))
+					if (isset($caseSd['referrals_needed']))
 					{
-						$caseSd['referrals_needed'] = array_diff($caseSd['referrals_needed'], [$templateId]);
+						if (is_array($caseSd['referrals_needed']))
+						{
+							$caseSd['referrals_needed'] = array_diff($caseSd['referrals_needed'], [$templateId]);
+						}
 					}
 				}
 			}
@@ -321,6 +324,10 @@ class CaseAssessment extends Object
 							}
 							else if (substr($f['solr_column_name'], -3) === '_ss')
 							{
+								if (!isset($caseSd[$sfn]))
+								{
+									$caseSd[$sfn] = [];
+								}							
 								if (!is_array($caseSd[$sfn]))	
 								{
 									$caseSd[$sfn] = [];
@@ -374,9 +381,14 @@ class CaseAssessment extends Object
 			$caseData = &$case->data;
 			$caseSd = &$caseData['sys_data'];
 			
-			$caseSd['referrals_completed'] = array_diff($caseSd['referrals_completed'], [$objectId]);		
-			$caseSd['referrals_started'] = array_diff($caseSd['referrals_started'], [$objectId]);
-			
+			if (isset($caseSd['referrals_completed']))
+			{
+				$caseSd['referrals_completed'] = array_diff($caseSd['referrals_completed'], [$objectId]);		
+			}
+			if (isset($caseSd['referrals_started']))
+			{
+				$caseSd['referrals_started'] = array_diff($caseSd['referrals_started'], [$objectId]);
+			}
 			/* add some values to the parent */
 			$tpl = $this->getTemplate();
 
@@ -394,13 +406,18 @@ class CaseAssessment extends Object
 					}
 				}
 			}
-			
-			if (in_array($templateId, $caseSd['assessments_reported'])) {
-                    $caseSd['assessments_needed'][] = $templateId;
+			if (isset($caseSd['assessments_reported']))
+			{
+				if (in_array($templateId, $caseSd['assessments_reported'])) {
+						$caseSd['assessments_needed'][] = $templateId;
+				}
 			}
-			if (in_array($templateId, $caseSd['referrals_needed'])) {
-                    $caseSd['referrals_needed'] = array_diff($caseSd['referrals_needed'], [$templateId]);
-			}			
+			if (isset($caseSd['referrals_needed']))
+			{
+				if (in_array($templateId, $caseSd['referrals_needed'])) {
+						$caseSd['referrals_needed'] = array_diff($caseSd['referrals_needed'], [$templateId]);
+				}			
+			}
 			$case->updateSysData();
 			$solr = new Client();
 			$solr->updateTree(['id' => $caseId]);

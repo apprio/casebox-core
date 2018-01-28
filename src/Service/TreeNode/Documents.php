@@ -141,7 +141,6 @@ class Documents extends Base
 			$p['sort'][0]['property'] = 'id';    
 			$p['sort'][0]['direction'] = 'desc';                       
 		}
-
        if (@$this->requestParams['from'] == 'tree') {
             $rez = ['data' => []];
                 $rez['data'][] = [
@@ -178,7 +177,7 @@ class Documents extends Base
 			$p = $this->requestParams;
 			$p['fq'] = [];
 			$p['fq'][] = 'template_id:6';
-			$p['rows'] = 20000;
+			$p['rows'] = 2000;
 			$p['fl'] = 'id,udate,uid,pid,name,template_id,cid,cdate,report_dt,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
 			//$p['fq'][] = '-'.$output;
 			$s = new Search();

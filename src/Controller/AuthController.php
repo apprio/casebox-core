@@ -154,7 +154,7 @@ class AuthController extends Controller
                 }
 
                 if (is_array($auth)) {
-                    $this->addFlash('notice', $auth['message']);
+                    $this->addFlash('notice', isset($auth['message'])?$auth['message']:'');
 
                     return $this->render('CaseboxCoreBundle:forms:authenticator.html.twig', $vars);
                 }

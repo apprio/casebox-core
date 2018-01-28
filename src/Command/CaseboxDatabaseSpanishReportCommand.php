@@ -36,8 +36,8 @@ class CaseboxDatabaseSpanishReportCommand extends ContainerAwareCommand
 		$countyFolder = 41490;
 		$regionFolder = 41500;
 		
-		
-		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time() - 60 * 60 * 24);
+		date_default_timezone_set('America/New_York');
+		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time());
 		//echo('test'.$date);
 		//$user = $container->get('doctrine.orm.entity_manager')->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername('root');
 		
@@ -99,7 +99,7 @@ class CaseboxDatabaseSpanishReportCommand extends ContainerAwareCommand
 		} //END REGIONS
 		
 		$this->runReport('', implode(', ',$all), $date, 1204,$dbs);
-		
+		echo($date);
         $output->success('command casebox:database:spanishreport for '. $date);
     }
 	
@@ -525,25 +525,38 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			group by tree.template_id';		
 				
 			//echo(str_replace("LOCATION_STUFF",$locations,$femasql));
+			//exit(0);
 			//echo(str_replace("LOCATION_STUFF",$locations,$ohseprsql));
 		
 			$res = $dbs->query(
 				str_replace("LOCATION_STUFF",$locations,$femasql)
 			);
-			if ($r = $res->fetch()) {
-				$id = null;
+			//if ($r = $res->fetch()) {
+				
+			//}
+			$r = $res->fetch();
+			//print_r($r);
+			$id = null;
 				$sql2= 'select * from tree where template_id = 1205 and pid = '.$pid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
 							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
-						//echo($sql2);
-						$rezz = $dbs->query(
-							$sql2
-						);
+				//echo($sql2);
+				$rezz = $dbs->query(
+					$sql2
+				);
 
-						if ($rz = $rezz->fetch()) {
-							$id = $rz['id'];
-						}
+				if ($rz = $rezz->fetch()) {
+					$id = $rz['id'];
+				}
 				$r['report_date']=$date.'T00:00:00Z';
 				$r['area'] = $areaName;
+				//print_r($r);
+				$objService = new Objects();
+				if (!is_null($id))
+				{
+					$obj = $objService->load(['id' => $id]);
+					$r = array_merge($obj['data']['data'], $r);
+					//print_r($r);
+				}
 				$data = [
 					'id' => is_null($id)?null:$id,
 					'pid' => $pid,//3286,
@@ -554,9 +567,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 					'name' => 'New FEMA Daily Report',
 					'data' => $r,
 					];
-				$objService = new Objects();
 				$newReferral =$objService->save(['data'=>$data]);
-			}
 				//OHSEPR Location Report
 				$res = $dbs->query(
 					str_replace("LOCATION_STUFF",$locations,$ohseprsql)

@@ -470,7 +470,7 @@ class Instance
     		$obj['data']['identified_unmet_needs'] = trim($obj['data']['identified_unmet_needs'],',');
     		$obj['data']['disastername'] = $configService->get('disaster_declaration_number');
     			
-    		$location = isset($obj['data']['data']['_location_type'])?$obj['data']['data']['_femanumber']:null;
+    		//$location = isset($obj['data']['data']['_location_type'])?$obj['data']['data']['_femanumber']:null;
     		if (!empty($obj['data']['data']['_fulladdress']))
     		{
     			$addresscomponents = explode(",", $obj['data']['data']['_fulladdress']);
@@ -874,9 +874,9 @@ class Instance
 			if (empty($femaNumber)) {
 				$femaNumber = 'N/A';
 			}
-			if (!empty($obj['data']['data']['_location_type']) && !empty(Objects::getCachedObject($obj['data']['data']['_location_type'])))
+			if (!empty($obj['data']['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($obj['data']['data']['_location_type']) ? $obj['data']['data']['_location_type']['value'] : $obj['data']['data']['_location_type'])))
 			{
-				$location = $objService->load(['id' => $obj['data']['data']['_location_type']]);
+				$location = $objService->load(['id' => is_array($obj['data']['data']['_location_type']) ? $obj['data']['data']['_location_type']['value'] : $obj['data']['data']['_location_type']]);
 			}
 			 foreach ($items['data'] as $item) {
 					if ($item['template_id'] == 607)
