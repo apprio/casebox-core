@@ -141,17 +141,30 @@ class Documents extends Base
 			$p['sort'][0]['property'] = 'id';    
 			$p['sort'][0]['direction'] = 'desc';                       
 		}
-       if (@$this->requestParams['from'] == 'tree') {
+		
+		if (@$this->requestParams['from'] == 'tree') {
+            $s = new \Casebox\CoreBundle\Service\Search();
+            $p['rows'] = 0;
+            $p['facet'] = true;
+            $p['facet.field'] = [
+                '{!ex=cid key=cid}cid',
+            ];
+            $sr = $s->query($p);
             $rez = ['data' => []];
-                $rez['data'][] = [
-                    'name' => $this->trans('No Consent Form'),
-                    'id' => $this->getId(3),
-                    'iconCls' => 'icon-task-user-status0',
-                    'has_childs' => false,
-                ];
+            if (!empty($sr['facets']->facet_fields->{'cid'})) {
+				foreach ($sr['facets']->facet_fields->{'cid'} as $k => $v) {
+					$r = [
+						'name' => $this->getName('au_'.str_replace('/', '&&', $k)).$this->renderCount($v),
+						'id' => $this->getId('au_'.str_replace('/', '&&', $k)),
+						'iconCls' => 'icon-users',
+					];
+					$rez['data'][] = $r;
+				}
+            }
+
             return $rez;
         }
-
+		
         // for other views
         $s = new \Casebox\CoreBundle\Service\Search();
         $rez = $s->query($p);
@@ -164,7 +177,7 @@ class Documents extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = 'template_id:141';
-		$p['rows'] = 2000;		
+		$p['rows'] = 50;		
 		$p['fl'] = 'id,udate,uid,pid,name,template_id,cid,cdate,report_dt,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
 		
             $s = new Search();
@@ -172,37 +185,7 @@ class Documents extends Base
 			//$ids = array_column($rez['data'], 'pid');
 			//$output = !empty($ids) ? '(id:'.implode(' OR id:', $ids).')' : '99999999';
 			
-			
-			$records = [];
-			$p = $this->requestParams;
-			$p['fq'] = [];
-			$p['fq'][] = 'template_id:6';
-			$p['rows'] = 2000;
-			$p['fl'] = 'id,udate,uid,pid,name,template_id,cid,cdate,report_dt,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
-			//$p['fq'][] = '-'.$output;
-			$s = new Search();
-			$documents = $s->query($p);					
-            foreach ($rez['data'] as &$n) {
-					$hasDocument = false;		
-				foreach($documents['data'] as &$r)
-				{
-					if ($r['pid'] == $n['id'])
-					{
-						$hasDocument = true;
-					}
-				}
-				if ($hasDocument !== true)
-				{
-					$records[]= $n;
-				}
-            }
-			unset($rez['data']);
-			$rez['total'] = count($records);
-							/*									Cache::get('symfony.container')->get('logger')->error(
-							'hi'.$output,
-							[]
-							);	*/
-		$rez['data'] = $records;		
+		
         return $rez;
     }
 
@@ -298,17 +281,19 @@ class Documents extends Base
     protected function getAssigneeTasks()
     {
         $p = $this->requestParams;
-        $p['fq'] = $this->fq;
+		$p['fl'] = 'id,udate,uid,pid,name,template_id,cid,cdate,report_dt,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
+		$p['fq'] = [];
+		$p['fq'][] = 'template_id:6';
+		if (!isset($p['sort'])) {
+			$p['sort'][0]['property'] = 'id';    
+			$p['sort'][0]['direction'] = 'desc';                       
+		}
+		$user_id = str_replace('au_','',$this->lastNode->id);
+		$p['fq'][] = 'cid:'.$user_id;
+        // for other views
+        $s = new \Casebox\CoreBundle\Service\Search();
+        $rez = $s->query($p);
 
-        //$p['fq'][] = 'cid:'.User::getId();
-
-        $user_id = $this->lastNode->id;
-        $p['fq'][] = 'resourcetype_s:('.str_replace('&&','/',str_replace(' ', '\ ', $user_id)).')';
-		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,qualification_s,website_s,hours_s,servicearea_s,zipcode_s';
-        $s = new Search();
-
-        $sr = $s->query($p);
-
-        return $sr;
+        return $rez;	
     }
 }
