@@ -248,7 +248,7 @@
 			{% if attribute(service, column.solr_column_name) is defined and attribute(service, column.solr_column_name) is not null %}
 				<td>{{ attribute(service, column.solr_column_name) }}&nbsp;</td>
 				{% else %}
-				<td>d</td>
+				<td></td>
 			{% endif %}	
 				
 		{% endfor %}	
