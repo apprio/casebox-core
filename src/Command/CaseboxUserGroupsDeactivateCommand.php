@@ -10,6 +10,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Casebox\CoreBundle\Service\Cache;
+use Dompdf\Dompdf;
+use Casebox\CoreBundle\Service\Notifications;
 
 class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 {
@@ -29,6 +31,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 
         $container = $this->getContainer();
         $system = new System();
+		$coreName = ucfirst($container->getParameter('kernel.environment'));
         $system->bootstrap($container);
 
         $days = intval($input->getArgument('days'));
@@ -85,7 +88,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		
 		
 		$res = $dbs->query(
-			'select CONCAT(count(*), \' \', template_name, \'s\', \' \', action_type, \'d\') action_text, action_date FROM (
+			'select CONCAT( template_name, \'s\', \' \', action_type, \'d\') action_type, COUNT(*) action_count, CONCAT(count(*), \' \', template_name, \'s\', \' \', action_type, \'d\') action_text, action_date FROM (
 				select DATE(action_log.action_time) action_date, action_log.action_time, 
 				CASE WHEN (tree.template_id = 527 AND tree.name not like \'%General%\' AND tree.name != \' \') THEN tree.name 
 				WHEN templates.name = \'Template\' THEN \'User\'
@@ -108,12 +111,13 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 				) a
 				group by template_name, action_type, action_date 
 				union
-				select distinct \'<b>User Log</b>\', \'\' from action_log where action_type = \'user_create\' 
-				or action_type=\'status_change\' and date(action_log.action_time) = \''.$date.'\'
+				select distinct \'User Log\',\'\', \'<b>User Log</b>\', \'\' from action_log where (action_type = \'user_create\' 
+				or action_type=\'status_change\') and date(action_log.action_time) = \''.$date.'\'
 				union
-				select CONCAT(je(data,\'text\'), \' [\',DATE_FORMAT(action_log.action_time,\'%H:%i:%s\'),\']\'), action_log.action_time 
-				from action_log where action_type = \'user_create\' 
-				or action_type=\'status_change\' and date(action_log.action_time) = \''.$date.'\'
+				select CASE WHEN (action_type=\'user_create\') THEN \'User Created\'
+           WHEN (action_type=\'status_change\') THEN \'Status Change\' END action_type,CONCAT(je(data,\'text\'), \' [\',DATE_FORMAT(action_log.action_time,\'%H:%i:%s\'),\']\'),CONCAT(je(data,\'text\'), \' [\',DATE_FORMAT(action_log.action_time,\'%H:%i:%s\'),\']\'), action_log.action_time 
+				from action_log where (action_type = \'user_create\' 
+				or action_type=\'status_change\') and date(action_log.action_time) = \''.$date.'\'
 	  ',
 				 $days
         );
@@ -122,13 +126,15 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		$list[] = '
 			<html>
 			<head>
-			  <title>Daily Action Log</title>
+			  <title>Daily Action Log for '.$coreName.'</title>
 			</head>
 			<body>
 			  <p>Here are the daily actions for today, '.$date.'</p>
 			  <table><tr><td><b>Daily Summary</b></td></tr>';
+			  $records = [];
 		while ($r = $res->fetch()) {
 			$list[] = ' <tr><td>'.$r['action_text'] . '</td></tr>';
+			$records[] = $r;
 		}
 		unset($res);
 
@@ -136,14 +142,37 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		  </table>
 		</body>
 		</html>';
-
-		// To send HTML mail, the Content-type header must be set
-		$headers[] = 'MIME-Version: 1.0';
-		$headers[] = 'Content-type: text/html; charset=iso-8859-1';
-
-		@System::sendMail('dstoudt@apprioinc.com', 'Daily Log', implode("\r\n", $list), implode("\r\n", $headers));
 		
-		echo(implode($list));	
+			$vars = [
+				'title' => $coreName.' TRAINING Daily ECMRS Log' ,
+				'columnTitle'=> ['actiontype'=>['title'=>'Action Type','title'=>'Action Type','solr_column_name'=>'action_type'],'test'=>['title'=>'Test','title'=>'Test','solr_column_name'=>'action_count']],
+				'services'=>$records,
+				'currentDate'=> date("m/d/Y") .  ' ' .  date("h:i:sa")
+			];
+		$container = Cache::get('symfony.container');
+    	$twig = $container->get('twig');
+		$html = $twig->render('CaseboxCoreBundle:email:reports.html.twig', $vars);	
+		$dompdf = new Dompdf();
+		$dompdf->loadHtml($html);
+		$dompdf->setPaper('A4', 'landscape');
+		$dompdf->render();
+		$pdfoutput = $dompdf->output();
+		$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
+		$zipname = $configService->get('files_dir').DIRECTORY_SEPARATOR.$date.'_'.$coreName.'_Action_Log'.'.pdf';//.DIRECTORY_SEPARATOR.'export'.DIRECTORY_SEPARATOR.time().'.pdf';
+		file_put_contents($zipname, $pdfoutput);
+		$message = (new \Swift_Message())
+		  // Give the message a subject
+		  ->setSubject($vars['title'])
+		  ->setFrom(['ecmrshelpdesk@apprioinc.com' => 'ECMRS Helpdesk'])
+		  ->setTo(['dstoudt@apprioinc.com'])
+		  ->setBody($vars['title'])
+		  ->addPart(implode("",$list), 'text/html')
+		  ->attach(\Swift_Attachment::fromPath($zipname))
+		  ;
+		$transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+		$mailer = new \Swift_Mailer($transport);
+		$result = $mailer->send($message);
+		
         $output->success('command casebox:user:deactivate for ' . $date);
     }
 }
