@@ -3,6 +3,7 @@
 namespace Casebox\CoreBundle\Command;
 
 use Casebox\CoreBundle\Service\System;
+use Casebox\CoreBundle\Service\Search;
 use Casebox\CoreBundle\Service\Objects;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -54,8 +55,32 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
 		$request->setLocale('es');
 		Cache::set('symfony.request', $request);		
 		
+		$p['fq'][] = 'template_id:607';
+		$p['fq'][] = '!resourcename_s:[* TO *]';
+		$p['fq'][] = '(!id:27591 AND !id:31324 AND !id:31329 AND !id:36304 AND !id:52657 AND !id:54160 AND !id:54177 AND !id:54185 AND !id:80090 AND !id:111730 AND !id:216259)';
+		$p['rows'] = 1000;
+		
+        $s = new Search();
+        $rez = $s->query($p);
+		foreach ($rez['data'] as $row) {
+		 $objectId = $row['id'];
+			$case = Objects::getCachedObject($objectId);  
+			
+			echo ($objectId.',');
+			
+			$case->update();
+			
+			//$case->geocode();
+			$solr = new Client();
+			$solr->updateTree(['id' => $objectId]);
+
+			//break;
+		}
+		print_r($rez);
+		exit;
+		
         $res = $dbs->query(
-            'select * from tree where template_id in(141) and id < 166593'
+            'select * from objects where id = 3405'
         );
         /*
                 $res = $dbs->query(
@@ -65,16 +90,18 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
         );
         */
 
+		
 		$objService = new Objects();
 	
         while ($r = $res->fetch()) {
 			$objectId = $r['id'];
-			$deleted = $r['dstatus'];
 			echo ($objectId.',');
-
-			$obj = $objService->load($r);
-			$obj = $objService->save($obj);
-						$solr = new Client();
+			$case = Objects::getCachedObject($objectId);  
+			
+			$case->update();
+			
+			//$case->geocode();
+			$solr = new Client();
 			$solr->updateTree(['id' => $objectId]);
 
 			//break;

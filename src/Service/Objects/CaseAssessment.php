@@ -231,7 +231,7 @@ class CaseAssessment extends Object
 						 {
 						    $resource = $objService->load(['id' => $p['data']['_provider']]);	
 						 	$p['data']['_resourcename'] = empty($resource) ? 'N/A' : $resource['data']['data']['_providername'];
-						    $p['data']['_resourcelocation'] = empty($resource) ? 'N/A' : $resource['data']['data']['_city'];
+						    $p['data']['_resourcelocation'] = empty($resource) ? 'N/A' : (isset($resource['data']['data']['_city'])?$resource['data']['data']['_city']:'');
 						    //$p['data']['_resourcecounty'] = empty($resource) ? 'N/A' : $resource['data']['data']['_city'];					    	
 						 }		
 						 else
