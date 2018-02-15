@@ -1060,7 +1060,7 @@ class UsersGroups
     				'action_type' => $type,
     				'data' => Util\jsonEncode($data),
     				//'data' => Util\jsonEncode(array('ip' => $user->getLoginFromIp(), 'failedlogins' => $user->getLoginSuccessful())),
-    				'activity_data_db' => Util\jsonEncode($user),
+    				'activity_data_db' => Util\jsonEncode($uid),
     		];
     
     		$p['action_id'] = DM\Log::create($params);
