@@ -3620,7 +3620,11 @@
  	    	<trans-unit id="3264">
                 <source>Resource</source>
                 <target>Recurso</target>
-            </trans-unit>				
+            </trans-unit>	
+ 	    	<trans-unit id="3265">
+                <source>ApplicationFeedback</source>
+                <target>Comentarios de ECMRS</target>
+            </trans-unit>		            			
 		</body>
     </file>
 </xliff>

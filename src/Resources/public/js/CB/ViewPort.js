@@ -445,6 +445,11 @@ Ext.define('CB.ViewPort', {
             //}
             //,'-'
             ,{
+                text: L.ApplicationFeedback
+                ,iconCls: 'i-settings'
+                ,handler: this.onApplicationFeedbackClick, scope: this
+            }            
+            ,{
                 text: L.Exit
                 ,iconCls: 'icon-exit'
                 ,handler: this.logout, scope: this
@@ -558,7 +563,10 @@ Ext.define('CB.ViewPort', {
             App.controller.openObjectWindowById(locateId);
         }
     }
-
+    ,onApplicationFeedbackClick: function(b, e) {
+    	window.open('https://docs.google.com/forms/d/e/1FAIpQLSeKOGxkShixaLA_9ORpMTND0RkC0HxEuAyxtcLL0y9wjUg62A/viewform?c=0');
+    }
+    
     ,onLeftRibbonButtonClick: function(b, e) {
         App.openPath(b.path);
     }
