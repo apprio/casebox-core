@@ -219,7 +219,7 @@ class IndexController extends Controller
 			);
 			if (! empty ( $_FILES ['file'] ['name'] ) && in_array ( $_FILES ['file'] ['type'], $csvMimes )) {
 				if (is_uploaded_file ( $_FILES ['file'] ['tmp_name'] )) {
-					
+					ini_set('auto_detect_line_endings', true);
 					// open uploaded csv file with read only mode
 					$csvFile = fopen ( $_FILES ['file'] ['tmp_name'], 'r' );
 					
@@ -232,6 +232,12 @@ class IndexController extends Controller
 					
 					$template = SingletonCollection::getInstance()->getTemplate($request->get('templateId'));
 					
+					foreach($titles as $title => $fieldName){
+						$bom = pack('H*','EFBBBF');
+						$titles[$title] = preg_replace("/^$bom/", '', $fieldName);
+						//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'herenow', ( array ) $titles );
+					}
+					
 					// Check if there is defaultPid specified in template config
 					if (!empty($template)) {
 						$templateData = $template->getData();
@@ -240,7 +246,8 @@ class IndexController extends Controller
 							$pid = $templateData['cfg']['defaultPid'];
 						}
 						
-						foreach($titles as $fieldName)
+					foreach($titles as $fieldName)
+					{
 						if (!$template->getField($fieldName) && $fieldName !== "id")
 						{
 							//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'doenstmatch'.$obj.'and'.$pid, ( array ) $templateData );	
@@ -249,9 +256,7 @@ class IndexController extends Controller
 							return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
 						}
 						
-					}
-					//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'herenow'.$obj.'and'.$pid, ( array ) $templateData );
-					
+					}					
 					
 					// parse data from csv file line by line
 					while ( ($line = fgetcsv ( $csvFile )) !== FALSE ) {
@@ -286,8 +291,11 @@ class IndexController extends Controller
 						$newReferral = $objService->save ( [ 
 								'data' => $data 
 						] );
-
-						//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'sup' . $id, $data );
+						if ($id < 211431)
+						{
+							Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'heywhathtehell' . $id, $results );
+							}
+					}
 					}
 					// close opened csv file
 					fclose ( $csvFile );
