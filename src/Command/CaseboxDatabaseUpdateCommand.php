@@ -52,23 +52,23 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
         ];
         $session->set('user', $user);
 		$request = new Request();
-		$request->setLocale('es');
+		//$request->setLocale('es');
 		Cache::set('symfony.request', $request);		
 		
-		$p['fq'][] = 'template_id:607';
-		$p['fq'][] = '!resourcename_s:[* TO *]';
-		$p['fq'][] = '(!id:27591 AND !id:31324 AND !id:31329 AND !id:36304 AND !id:52657 AND !id:54160 AND !id:54177 AND !id:54185 AND !id:80090 AND !id:111730 AND !id:216259)';
-		$p['rows'] = 1000;
-		
+		/*//$p['fq'][] = 'template_id:607';
+		//$p['fq'][] = '!resourcename_s:[* TO *]';
+		$p['fq'][] = 'template_id:141';
+		$p['fq'][] = '!pid:150';
+		$p['rows'] = 1;
         $s = new Search();
         $rez = $s->query($p);
+		//print_r($rez);
 		foreach ($rez['data'] as $row) {
 		 $objectId = $row['id'];
 			$case = Objects::getCachedObject($objectId);  
-			
+		
 			echo ($objectId.',');
-			
-			$case->update();
+			$case->moveTo($objectId,150);
 			
 			//$case->geocode();
 			$solr = new Client();
@@ -77,10 +77,12 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
 			//break;
 		}
 		print_r($rez);
-		exit;
+		*/
 		
         $res = $dbs->query(
-            'select * from objects where id = 3405'
+            'select object_id id from action_log where user_id = 1 and date(action_time) = \'2018-02-13\'
+			limit 100000
+			'
         );
         /*
                 $res = $dbs->query(
@@ -90,15 +92,14 @@ class CaseboxDatabaseUpdateCommand extends ContainerAwareCommand
         );
         */
 
-		
 		$objService = new Objects();
 	
         while ($r = $res->fetch()) {
 			$objectId = $r['id'];
-			echo ($objectId.',');
 			$case = Objects::getCachedObject($objectId);  
 			
 			$case->update();
+			echo ($objectId.',');
 			
 			//$case->geocode();
 			$solr = new Client();

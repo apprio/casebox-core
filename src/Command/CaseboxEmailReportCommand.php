@@ -35,12 +35,12 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
 		
 		date_default_timezone_set('America/New_York');
 		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time());
-
+		$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
 		$session = $container->get('session');
 		$message = (new \Swift_Message())
 		  // Give the message a subject
-		  ->setSubject('ECMRS Daily Report')
-		  ->setFrom(['ecmrshelpdesk@apprioinc.com' => 'ECMRS Helpdesk'])
+		  ->setSubject('ECMRS Daily Report - CONUS')
+		  ->setFrom([$configService->get('email_from') => 'ECMRS Helpdesk'])
 		  ->setTo(['ecmrshelpdesk@apprioinc.com'])
 		  ->setBody('ECMRS Report')	  
 		  ;
@@ -68,7 +68,6 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
 			$dompdf->setPaper('A4', 'landscape');
 			$dompdf->render();
 			$pdfoutput = $dompdf->output();
-			$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
 			$zipname = $configService->get('files_dir').DIRECTORY_SEPARATOR.$date.'_'.$coreName.$res['title'].'.pdf';//.DIRECTORY_SEPARATOR.'export'.DIRECTORY_SEPARATOR.time().'.pdf';
 			file_put_contents($zipname, $pdfoutput);
 			$message->attach(\Swift_Attachment::fromPath($zipname));
@@ -85,8 +84,12 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
 		</body>
 		</html>';
 		$message->addPart($list, 'text/html');
-		$transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
-		$mailer = new \Swift_Mailer($transport);
+		//$transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+		$transporter = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 587, 'tls')
+		  ->setUsername($configService->get('email_from'))
+		  ->setPassword($configService->get('email_pass'));		
+		  
+		$mailer = new \Swift_Mailer($transporter);
 		$result = $mailer->send($message);
 		
         $output->success('command casebox:email:report for ' . $date);

@@ -126,7 +126,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		$list[] = '
 			<html>
 			<head>
-			  <title>Daily Action Log for '.$coreName.'</title>
+			  <title>Daily TRAINING Action Log for '.$coreName.'</title>
 			</head>
 			<body>
 			  <p>Here are the daily actions for today, '.$date.'</p>
@@ -163,14 +163,18 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		$message = (new \Swift_Message())
 		  // Give the message a subject
 		  ->setSubject($vars['title'])
-		  ->setFrom(['ecmrshelpdesk@apprioinc.com' => 'ECMRS Helpdesk'])
+		  ->setFrom([$configService->get('email_from') => 'ECMRS Helpdesk'])
 		  ->setTo(['dstoudt@apprioinc.com'])
 		  ->setBody($vars['title'])
 		  ->addPart(implode("",$list), 'text/html')
 		  ->attach(\Swift_Attachment::fromPath($zipname))
 		  ;
-		$transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
-		$mailer = new \Swift_Mailer($transport);
+		//$transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+		$transporter = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 587, 'tls')
+		  ->setUsername($configService->get('email_from'))
+		  ->setPassword($configService->get('email_pass'));		
+
+		$mailer = new \Swift_Mailer($transporter);
 		$result = $mailer->send($message);
 		
         $output->success('command casebox:user:deactivate for ' . $date);

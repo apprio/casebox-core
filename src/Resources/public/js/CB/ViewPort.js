@@ -448,7 +448,8 @@ Ext.define('CB.ViewPort', {
                 text: L.ApplicationFeedback
                 ,iconCls: 'i-settings'
                 ,handler: this.onApplicationFeedbackClick, scope: this
-            }            
+            }       
+            ,'-'
             ,{
                 text: L.Exit
                 ,iconCls: 'icon-exit'
