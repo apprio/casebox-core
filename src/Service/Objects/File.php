@@ -110,6 +110,10 @@ class File extends Object
         $this->configService->setFlag('disableActivityLog', false);
 
         $p = &$this->data;
+		
+		$this->parentObj = Objects::getCachedObject($p['pid']);
+		
+		$this->updateParentFollowers();
 
         $this->logAction(
             'file_update',
@@ -125,6 +129,22 @@ class File extends Object
 
     }
 
+			
+    public function deleteCustomData($p = false)
+    {
+        if ($p === false) {
+            $p = $this->data;
+        }
+        $this->parentObj = Objects::getCachedObject($p['pid']);
+		$posd = $this->parentObj->getSysData();
+
+		$posd['has_document_s'] = 'No';
+		$this->parentObj->updateSysData($posd);
+		
+        return parent::deleteCustomData($p);
+
+	}
+	
     /**
      * update objects custom data
      * @return void
@@ -211,6 +231,8 @@ class File extends Object
             $newUserIds[] = intval($uid);
         }
 
+		$posd['has_document_s'] = 'Yes';
+		$this->parentObj->updateSysData($posd);
         //update only if new users added
         if (!empty($newUserIds)) {
             $wu = array_merge($wu, $newUserIds);

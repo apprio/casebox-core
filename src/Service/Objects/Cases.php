@@ -363,6 +363,11 @@ class Cases extends Object
 
         $sd = &$p['sys_data'];
 		
+		if (!isset($sd['has_document_s']))
+		{
+			$sd['has_document_s'] = 'No';
+		}
+		
 		// Select only required properties for result
         $properties = [
             'race',
