@@ -213,7 +213,7 @@ $femasql = 'select
 			AND tree.pid in (select id from objects 
             where (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF)))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_total,
-			 (select count(*) from tree where template_id =607 and name like \'Salud de Comportamiento%\'
+			 (select count(*) from tree where template_id =607 and (name like \'Salud de Comportamiento%\' or name like \'Salud Mental%\')
 			AND tree.pid in (select id from objects 
             where (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF)))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_behavioral,   

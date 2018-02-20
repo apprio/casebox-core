@@ -229,7 +229,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			(LOCATE(\'"_location_type":\', data)+18)) in(LOCATION_STUFF))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_total,
-			 (select count(*) from tree where template_id =607 and name like \'Salud de Comportamiento%\'
+			 (select count(*) from tree where template_id =607 and (name like \'Salud de Comportamiento%\' or name like \'Salud Mental%\')
 			AND tree.pid in (select id from objects 
             where substring(data, LOCATE(\'"_location_type":\', data)+18, 
 			LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
