@@ -105,10 +105,12 @@ Ext.define('CB.object.edit.View', {
     }
 
     ,onSaveClick: function(b, e) {
+    	this.actions.save.setDisabled(true);    	
 		var rez = this.editForm.isValid();	
 		if (!rez)
 		{
-		  Ext.Msg.alert(L.Error, L.RequiredFieldsMessage);
+		  this.actions.save.setDisabled(false);				
+		  Ext.Msg.alert(L.Error, L.RequiredFieldsMessage);	  
 		  return false;
 		}
 		this.editForm.save(this.onAfterConfirming, this);
@@ -124,6 +126,7 @@ Ext.define('CB.object.edit.View', {
     }
 
     ,onAfterConfirming: function() {
+    	this.actions.save.setDisabled(false);
         if (this.confirmationCallback) {
             this.confirmationCallback();
         } else {
