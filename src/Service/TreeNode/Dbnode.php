@@ -49,7 +49,7 @@ class Dbnode extends Base
 
         $folderTemplates = $this->configService->get('folder_templates');
 
-        $p['fl'] = 'id,pid,system,path,name,case_id,date,date_end,size,cid,'.
+        $p['fl'] = 'id,pid,system,path,name,case_id,date,date_end,size,cid,order,'.
             'oid,cdate,uid,udate,template_id,acl_count,cls,status,task_status,versions,'.
             'comment_user_id,comment_date';
 

@@ -526,25 +526,70 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			group by tree.template_id';		
 				
 			//echo(str_replace("LOCATION_STUFF",$locations,$femasql));
+			//exit(0);
 			//echo(str_replace("LOCATION_STUFF",$locations,$ohseprsql));
 		
 			$res = $dbs->query(
 				str_replace("LOCATION_STUFF",$locations,$femasql)
 			);
-			if ($r = $res->fetch()) {
-				$id = null;
-				$sql2= 'select * from tree where template_id = 1205 and pid = '.$pid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
+			//if ($r = $res->fetch()) {
+				
+			//}
+			if ($pid === 1204)
+			{
+				$sql3= 'select * from tree where dstatus = 0 and template_id = 281012 and pid = '.$pid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
+							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
 							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
-						//echo($sql2);
-						$rezz = $dbs->query(
-							$sql2
-						);
+				echo($sql3);
+				$rezzz = $dbs->query(
+					$sql3
+				);
+				$idd = null;
+				if ($rzz = $rezzz->fetch()) {
+					$idd = $rzz['id'];
+				}
+				if (is_null($idd))
+				{
+					$staffing = [];
+					$staffing['report_date']=$date.'T00:00:00Z';
+					$staffingdata = [
+						'id' => is_null($idd)?null:$idd,
+						'pid' => $pid,//3286,
+						'title' => 'Daily Staffing Report',
+						'template_id' => 281012,
+						'path' => '/Test Event/Reports/',
+						'view' => 'edit',
+						'name' => 'Daily Staffing Report',
+						'data' => $staffing,
+						];
+					$objService = new Objects();
+					$newStaffing =$objService->save(['data'=>$staffingdata]);	
+				}				
+			}
+			$r = $res->fetch();
+			//print_r($r);
+			$id = null;
+				$sql2= 'select * from tree where dstatus = 0 and template_id = 1205 and pid = '.$pid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
+							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
+							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
+				echo($sql2);
+				$rezz = $dbs->query(
+					$sql2
+				);
 
-						if ($rz = $rezz->fetch()) {
-							$id = $rz['id'];
-						}
+				if ($rz = $rezz->fetch()) {
+					$id = $rz['id'];
+				}
 				$r['report_date']=$date.'T00:00:00Z';
 				$r['area'] = $areaName;
+				//print_r($r);
+				$objService = new Objects();
+				if (!is_null($id))
+				{
+					$obj = $objService->load(['id' => $id]);
+					$r = array_merge($obj['data']['data'], $r);
+					//print_r($r);
+				}
 				$data = [
 					'id' => is_null($id)?null:$id,
 					'pid' => $pid,//3286,
@@ -555,9 +600,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 					'name' => 'New FEMA Daily Report',
 					'data' => $r,
 					];
-				$objService = new Objects();
 				$newReferral =$objService->save(['data'=>$data]);
-			}
 				//OHSEPR Location Report
 				$res = $dbs->query(
 					str_replace("LOCATION_STUFF",$locations,$ohseprsql)

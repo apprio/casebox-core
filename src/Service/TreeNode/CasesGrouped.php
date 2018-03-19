@@ -104,7 +104,7 @@ class CasesGrouped extends Base
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
-        $p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s';
+        $p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
 		$p['rows'] = 0;
 
         $s = new Search();
@@ -143,7 +143,7 @@ class CasesGrouped extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
@@ -218,7 +218,7 @@ class CasesGrouped extends Base
         } else {
             $p['fq'][] = '-task_u_assignee:[* TO *]';
         }
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
 
@@ -298,7 +298,7 @@ class CasesGrouped extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
 
         $parent = $this->lastNode->parent;
 
@@ -398,7 +398,7 @@ class CasesGrouped extends Base
 
         $user_id = substr($this->lastNode->id, 3);
         $p['fq'][] = 'task_u_ongoing:'.$user_id;
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
         $s = new Search();
 
         $sr = $s->query($p);

@@ -176,9 +176,22 @@ class Instance
     			}
     		}
     		 
+			 
+			if (!empty($obj['data']['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($obj['data']['data']['_location_type']) ? $obj['data']['data']['_location_type']['value'] : $obj['data']['data']['_location_type'])))
+			{
+				$location = $objService->load(['id' => is_array($obj['data']['data']['_location_type']) ? $obj['data']['data']['_location_type']['value'] : $obj['data']['data']['_location_type']]);
+				$r['_locationname'] = $location['data']['data']['_locationname'];
+				$r['_locationtype'] = $location['data']['data']['_locationtype'];
+				$r['_locationcity'] = $location['data']['data']['_locationcity'];
+				$r['_locationstate'] = isset($location['data']['data']['_locationstate'])?$location['data']['data']['_locationstate']:'';
+				$r['_locationzipcode'] = isset($location['data']['data']['_locationzipcode'])?$location['data']['data']['_locationzipcode']:'';
+				$r['_locationcounty'] = $location['data']['data']['_locationcounty'];
+				$r['_locationregion'] = $location['data']['data']['_locationregion'];
+			} 
+			 
     		$caseManagerId = !empty($obj['data']['data']['assigned'])?$obj['data']['data']['assigned']:$obj['data']['cid'];
-    		$r['casemanagerid'] = 333;//$caseManagerId;
-    		$r['task_u_assignee'] = 333;//User::getDisplayName($caseManagerId);
+    		$r['casemanagerid'] = $caseManagerId;
+    		$r['task_u_assignee'] = User::getDisplayName($caseManagerId);
     		$r['casemanageremail'] = User::getEmail($caseManagerId);
     		$r['alias'] = isset($obj['data']['data']['_alias'])?$obj['data']['data']['_alias']:'';
     		$r['suffix'] = isset($obj['data']['data']['_suffix'])?$obj['data']['data']['_suffix']:'';
@@ -235,7 +248,7 @@ class Instance
     					
     					
     					$r['fm_firstname'.$familyMemberCount] = $fm['data']['data']['_firstname'];
-    					$r['fm_lastname'.$familyMemberCount] = $fm['data']['data']['_lastname'];
+    					$r['fm_lastname'.$familyMemberCount] = isset($fm['data']['data']['_lastname'])?$fm['data']['data']['_lastname']:'';
     					$r['fm_middlename'.$familyMemberCount] = isset($fm['data']['data']['_middlename'])?$fm['data']['data']['_middlename']:'';
     					$r['fm_age'.$familyMemberCount] = isset($fm['data']['data']['_age'])?(string) $fm['data']['data']['_age']:'';
     					//$r['fm_relationship'.$familyMemberCount] = $fm['data']['data']['_relationship'];
@@ -288,7 +301,7 @@ class Instance
     						foreach ($service['data']['data']['_commentgroup'] as $key) {
     							if (!empty($key['childs']))
     							{
-    								$comments = $comments. $key['childs']['_comments'] . (isset($key['childs']['_commentdate'])?' ('.Util\formatMysqlDate($key['childs']['_commentdate'], Util\getOption('short_date_format')):'').'),';
+    								$comments = $comments. isset($key['childs']['_comments'])?!empty($key['childs']['_comments'])?$key['childs']['_comments']:'':'' . (isset($key['childs']['_commentdate'])?' ('.Util\formatMysqlDate($key['childs']['_commentdate'], Util\getOption('short_date_format')):'').'),';
     							}
     						}
     						$comments = trim($comments,',') .(!empty($service['data']['data']['_commentgroup']['childs']['_comments'])?$service['data']['data']['_commentgroup']['childs']['_comments']:''). ' ('.(!empty($service['data']['data']['_commentgroup']['childs']['_commentdate'])?Util\formatMysqlDate($service['data']['data']['_commentgroup']['childs']['_commentdate'], Util\getOption('short_date_format')):'').'),';
@@ -857,7 +870,7 @@ class Instance
 		return $rez;
     }
     
-        public function getPDFContent($p, $zipcode="")
+        public function getPDFContent($p, $zipcode="", $language="")
     {
     	$container = Cache::get('symfony.container');
 		$twig = $container->get('twig');
@@ -902,7 +915,7 @@ class Instance
 							foreach ($service['data']['data']['_commentgroup'] as $key) {
 							if (!empty($key['childs']))
 								{
-								 $comments = $comments. $key['childs']['_comments'] . ' ('.Util\formatMysqlDate($key['childs']['_commentdate'], Util\getOption('short_date_format')).'),';
+								 $comments = $comments. isset($key['childs']['_comments'])?!empty($key['childs']['_comments'])?$key['childs']['_comments']:'':'' . ' ('.Util\formatMysqlDate($key['childs']['_commentdate'], Util\getOption('short_date_format')).'),';
 								 }
 							}
 							$comments = trim($comments,',') .(!empty($service['data']['data']['_commentgroup']['childs']['_comments'])?$service['data']['data']['_commentgroup']['childs']['_comments']:''). ' ('.(!empty($service['data']['data']['_commentgroup']['childs']['_commentdate'])?Util\formatMysqlDate($service['data']['data']['_commentgroup']['childs']['_commentdate'], Util\getOption('short_date_format')):'').'),';
@@ -938,7 +951,7 @@ class Instance
 				'client_lastname' => $obj['data']['data']['_lastname'],
 				'client_firstname' => $obj['data']['data']['_firstname'],			
 				'disaster_declaration_number' => $configService->get('disaster_declaration_number'),
-				'disaster_site_address' => empty($location)?'N/A': $location['data']['data']['_locationname'] .' - '.$location['data']['data']['_locationaddress'].' '.$location['data']['data']['_locationcity'] ,
+				'disaster_site_address' => empty($location)?'N/A': $location['data']['data']['_locationname'] .' - '.empty($location['data']['data']['_locationaddress'])?'':$location['data']['data']['_locationaddress'].' '.$location['data']['data']['_locationcity'] ,
 				'cm_phone' => $configService->get('disaster_phone_number'),
 				'cm_assigned' => $assigned,
 				'cm_phone' =>$configService->get('disaster_phone_number'),
@@ -948,7 +961,7 @@ class Instance
 				'services' =>
 					$services,
 			];
-			$html = $twig->render('CaseboxCoreBundle:email:recovery-plan.html.twig', $vars);
+			$html = $twig->render('CaseboxCoreBundle:email:recovery-plan'.$language.'.html.twig', $vars);
 		return $html;
     }
     

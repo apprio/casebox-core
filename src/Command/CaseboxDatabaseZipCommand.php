@@ -14,8 +14,10 @@ use Casebox\CoreBundle\Service\Cache;
 use Casebox\CoreBundle\Service\DataModel\FilesContent;
 use Casebox\CoreBundle\Service\DataModel\Files;
 use Casebox\CoreBundle\Service\Plugins\Export\Instance;
+use Casebox\CoreBundle\Service\Notifications;
 use ZipArchive;
 use Dompdf\Dompdf;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class CaseboxDatabaseZipCommand extends ContainerAwareCommand
@@ -53,70 +55,93 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
             'cfg' => 1,
             'data' => 1,
         ];
-        
-        $session->set('user', $user);
-        $zipname = $configService->get('files_dir').DIRECTORY_SEPARATOR.'file.zip';
-        echo($zipname);
-		$zip = new ZipArchive;
-		$zip->open($zipname, ZipArchive::CREATE);
-		        
-		$clientId = 42630;
+		$session->set('user', $user);
+		$request = new Request();
+		$request->setLocale('en');
+		Cache::set('symfony.request', $request);
 		
 		$export = new Instance();
-		
-		$html = $export->getPDFContent($clientId);
-		//echo($html);
-		
-		$dompdf = new Dompdf();
-		$dompdf->loadHtml($html);
-		$dompdf->setPaper('A4', 'landscape');
-		$dompdf->render();
-		$recoveryPlan = $dompdf->output();
-		
-		$zip->addFromString($clientId.'recoveryplan.pdf',$recoveryPlan);		
-		
-		
-		
-		$filePlugin = new \Casebox\CoreBundle\Service\Objects\Plugins\Files();
-		$files = $filePlugin->getData($clientId);
-			
-		foreach ($files['data'] as $file) {
-			$fileId = $file['id'];
-		}		
-		
-		$r = Files::read($fileId);
-		if (!empty($r)) {
-            $content = FilesContent::read($r['content_id']);
-			$file = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
-			$zip->addFile($file, $clientId.'consentform.pdf');
-		}			
-		
-		$zip->close();
-		
-		
-		
-				
-        /*$res = $dbs->query(
-            'select * from objects, tree where tree.id = objects.id 
-			and tree.template_id = 2265 and data not like \'%"PERSON_ID":""%\''
-        );
-
+		$reports = new Notifications();
 		$objService = new Objects();
-	
-        while ($r = $res->fetch()) {
-        //29702
-        	$content = DM\FilesContent::read($r['content_id']);
-			
-			$objectId = $r['id'];
-			$deleted = $r['dstatus'];
-			echo ($objectId.',');
+		ini_set('memory_limit', '1024M');
+		$res = $dbs->query(
+        'select replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\') county,case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END case_status, ifnull(fema_tier,\'No Tier\') fema_tier, count(*)
+			from rpt_clients c, tree t, objects o, rpt_locations l, users_groups u
+			where c.clientid = t.id and c.locationid = l.locationid
+			and t.dstatus = 0
+			and t.id = o.id
+			and IFNULL(c.assigned, 1) = u.id
+			group by case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END, c.fema_tier,replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\')
+			order by county');
+		while ($r = $res->fetch()) {
+			$county = $r['county'];
+			$case_status = $r['case_status'];
+			$fema_tier = $r['fema_tier'];
+			$folder = "/home/dstoudt/transfer/".$county.'/'.$case_status.'/'.$fema_tier;
+			if (!file_exists($folder))
+			{
+				mkdir($folder, 0777, true);
+			}
+			ini_set('memory_limit', '1024M');
+			$rez = [];
+			$fq = [];
+			if ($case_status=='Open')
+			{
+				$fq[] = 'case_status:"Closed" AND closurereason_s:*transitioning*';
+			}
+			else
+			{
+				$fq[] = ($case_status=='Closed')?'case_status:"'.$case_status.'" OR case_status:"Transferred"':'case_status:"'.$case_status.'"';
+			}
+			$fq[] = '((county_s:"'.$county.'" OR county_s:"'.$county.' County") OR (!county_s:[* TO *] AND (county:"'.$county.'" OR county:"'.$county.' County")))';
+			$fq[] = ($fema_tier=='No Tier')?'!fematier:[* TO *]':'fematier:"'.$fema_tier.'"';
+			//$fq[] = 'fematier:"'.$fema_tier.'"';
+			$p = [
+				'reportId' => 270656,
+				'skipSecurity' => true,
+				'fq' => $fq,
+				'rows' => 1
+			];
+			print_r($p);
+			$rez = $export->getFullExport($p);			
+			//print_r($rez);
+			file_put_contents($folder.'/records.csv',implode("\n", $rez));
 
-			$obj = $objService->load($r);
-			$obj['data']['UPDATE_FIELD'] = 3;
-			
-			$obj = $objService->save($obj);
-			//break;
-		}*/
+			array_shift($rez);
+			foreach ($rez as &$r) 
+			{
+				$arr = explode(",", $r);
+				$clientId = $arr[0];
+				$zipcode = (!empty($arr[27]) && is_numeric($arr[27]))?$arr[27]:$arr[8];
+				
+				$filePlugin = new \Casebox\CoreBundle\Service\Objects\Plugins\Files();
+				$files = $filePlugin->getData($clientId);
+
+				foreach ($files['data'] as $file) {
+					$fileId = $file['id'];
+				}		
+				
+				$fid = (isset($fileId)?Files::read($fileId):null);
+				if (!empty($fid)) {
+					$content = FilesContent::read($fid['content_id']);
+					$file = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
+					if (file_exists($file))
+					{
+						copy($file, $folder .'/'.$zipcode. '_'.$clientId.'_consentform.pdf');
+					}
+				}
+				$html = $export->getPDFContent($clientId,"","-en");
+				//echo($html);
+				
+				$dompdf = new Dompdf();
+				$dompdf->loadHtml($html);
+				$dompdf->setPaper('A4', 'landscape');
+				$dompdf->render();
+				$recoveryPlan = $dompdf->output();		
+				file_put_contents($folder .'/'.$zipcode. '_'.$clientId.'_recoveryplan.pdf',$recoveryPlan);			
+			}
+				
+		}
 		
         $output->success('command casebox:database:zip');
     }

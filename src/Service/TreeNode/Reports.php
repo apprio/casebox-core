@@ -18,7 +18,7 @@ class Reports extends Base
         $this->fq = [];
 
         // select only case templates
-		$this->fq[] = 'template_id:1205';
+		$this->fq[] = 'template_id:281012';
 		$this->fq[] = 'pid:1204';
 
     }
@@ -136,7 +136,7 @@ class Reports extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,udate,uid,name,template_id,cid,cdate,report_dt,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
+		$p['fl'] = 'id,udate,uid,name,template_id,cid,cdate,report_dt,enteredby_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
         $p['fq'] = $this->fq;
 		if (!isset($p['sort'])) {
 			$p['sort'][0]['property'] = 'id';    

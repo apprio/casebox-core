@@ -135,7 +135,7 @@ class Resources extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s';
+		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,resourceavailable_s,phones_s,website_s,hours_s,servicearea_s,qualification_s,zipcode_s,resourceavailable_s';
         $p['fq'] = $this->fq;
 
         if (@$this->requestParams['from'] == 'tree') {
@@ -179,7 +179,7 @@ class Resources extends Base
         } else {
             $p['fq'][] = 'cid:'.$userId;
         }
-		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,website_s,qualification_s,hours_s,zipcode_s';
+		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,resourceavailable_s,phones_s,website_s,qualification_s,hours_s,zipcode_s,resourceavailable_s';
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
 
@@ -259,7 +259,7 @@ class Resources extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,qualification_s,website_s,hours_s,servicearea_s,zipcode_s';
+		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,resourceavailable_s,phones_s,qualification_s,website_s,hours_s,servicearea_s,zipcode_s,resourceavailable_s';
         
         $parent = $this->lastNode->parent;
 
@@ -350,7 +350,7 @@ class Resources extends Base
 
         $user_id = $this->lastNode->id;
         $p['fq'][] = 'resourcetype_s:('.str_replace('&&','/',str_replace(' ', '\ ', $user_id)).')';
-		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,phones_s,qualification_s,website_s,hours_s,servicearea_s,zipcode_s';
+		$p['fl'] = 'id,providername_s,name,template_id,cdate,resourcetype_s,additionalinformation_s,streetaddress_s,city_s,state_s,zipcode_s,resourceavailable_s,phones_s,qualification_s,website_s,hours_s,servicearea_s,zipcode_s,resourceavailable_s';
         $s = new Search();
 
         $sr = $s->query($p);
