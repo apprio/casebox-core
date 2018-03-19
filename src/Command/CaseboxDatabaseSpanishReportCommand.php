@@ -36,8 +36,8 @@ class CaseboxDatabaseSpanishReportCommand extends ContainerAwareCommand
 		$countyFolder = 41490;
 		$regionFolder = 41500;
 		
-		
-		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time() - 60 * 60 * 24);
+		date_default_timezone_set('America/New_York');
+		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time());
 		//echo('test'.$date);
 		//$user = $container->get('doctrine.orm.entity_manager')->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername('root');
 		
@@ -572,7 +572,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 				$sql2= 'select * from tree where dstatus = 0 and template_id = 1205 and pid = '.$pid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
 							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
 							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
-				echo($sql2);
+				//echo($sql2);
 				$rezz = $dbs->query(
 					$sql2
 				);
