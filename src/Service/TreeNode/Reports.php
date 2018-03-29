@@ -18,8 +18,8 @@ class Reports extends Base
         $this->fq = [];
 
         // select only case templates
-		$this->fq[] = 'template_id:281012';
-		$this->fq[] = 'pid:1204';
+		$this->fq[] = 'template_id:281012 OR template_id:287633 OR template_id:287634';
+		//$this->fq[] = 'pid:1204';
 
     }
 

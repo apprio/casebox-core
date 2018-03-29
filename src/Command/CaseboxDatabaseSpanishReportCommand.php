@@ -537,10 +537,11 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			//}
 			if ($pid === 1204)
 			{
+			//Staffing Report
 				$sql3= 'select * from tree where dstatus = 0 and template_id = 281012 and pid = '.$pid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
 							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
 							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
-				echo($sql3);
+				//echo($sql3);
 				$rezzz = $dbs->query(
 					$sql3
 				);
@@ -554,17 +555,76 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 					$staffing['report_date']=$date.'T00:00:00Z';
 					$staffingdata = [
 						'id' => is_null($idd)?null:$idd,
-						'pid' => $pid,//3286,
+						'pid' => 287630,//3286,
 						'title' => 'Daily Staffing Report',
 						'template_id' => 281012,
-						'path' => '/Test Event/Reports/',
+						'path' => '/Test Event/Reports/Staffing/',
 						'view' => 'edit',
 						'name' => 'Daily Staffing Report',
 						'data' => $staffing,
 						];
 					$objService = new Objects();
 					$newStaffing =$objService->save(['data'=>$staffingdata]);	
-				}				
+				}		
+				//Technical
+				$sql3= 'select * from tree where dstatus = 0 and template_id = 287633 and pid = 287632 and (name like \'%'.$areaName.' - '.$date.'%\' or 
+							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
+							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
+				//echo($sql3);
+				$rezzz = $dbs->query(
+					$sql3
+				);
+				$idd = null;
+				if ($rzz = $rezzz->fetch()) {
+					$idd = $rzz['id'];
+				}
+				if (is_null($idd))
+				{
+					$staffing = [];
+					$staffing['report_date']=$date.'T00:00:00Z';
+					$staffingdata = [
+						'id' => is_null($idd)?null:$idd,
+						'pid' => 287632,//3286,
+						'title' => 'Daily Technical Report',
+						'template_id' => 287633,
+						'path' => '/Test Event/Reports/Technical/',
+						'view' => 'edit',
+						'name' => 'Daily Technical Report',
+						'data' => $staffing,
+						];
+					$objService = new Objects();
+					$newStaffing =$objService->save(['data'=>$staffingdata]);	
+				}		
+				//LNO				
+				$sql3= 'select * from tree where dstatus = 0 and template_id = 287634 and pid = 287631 and (name like \'%'.$areaName.' - '.$date.'%\' or 
+							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
+							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
+				//echo($sql3);
+				$rezzz = $dbs->query(
+					$sql3
+				);
+				$idd = null;
+				if ($rzz = $rezzz->fetch()) {
+					$idd = $rzz['id'];
+				}
+				if (is_null($idd))
+				{
+					$staffing = [];
+					$staffing['report_date']=$date.'T00:00:00Z';
+					$staffingdata = [
+						'id' => is_null($idd)?null:$idd,
+						'pid' => 287631,//3286,
+						'title' => 'Daily LNO Report',
+						'template_id' => 287634,
+						'path' => '/Test Event/Reports/LNO/',
+						'view' => 'edit',
+						'name' => 'Daily LNO Report',
+						'data' => $staffing,
+						];
+					$objService = new Objects();
+					$newStaffing =$objService->save(['data'=>$staffingdata]);	
+				}								
+				
 			}
 			$r = $res->fetch();
 			//print_r($r);
