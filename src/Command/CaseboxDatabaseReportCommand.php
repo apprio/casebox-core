@@ -36,7 +36,7 @@ class CaseboxDatabaseReportCommand extends ContainerAwareCommand
 		$countyFolder = 41490;
 		$regionFolder = 41500;
 		
-		
+		date_default_timezone_set('America/New_York');
 		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time() - 60 * 60 * 24);
 		//echo('test'.$date);
 		//$user = $container->get('doctrine.orm.entity_manager')->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername('root');
