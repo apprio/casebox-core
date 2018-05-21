@@ -200,7 +200,7 @@ class IndexController extends Controller
             try {
                 $decoded = JWT::decode($authHeader, $configService->get('jwt_key'), array($configService->get('jwt_algorithm')));
 				//print_r($decoded);  //do something with what we decoded?
-				$cmd = $rootDir.'/../bin/console'.' '.'ecmrs:database:export '.' --state='.$request->get('state').' --county='.$request->get('county').' --tier='.$request->get('tier').' --env='.$coreName;
+				$cmd = $rootDir.'/../bin/console'.' '.'ecmrs:database:export '.(!empty($request->get('state'))?' --state='.$request->get('state'):'').(!empty($request->get('county'))?' --county='.$request->get('county'):'').(!empty($request->get('tier'))?' --tier='.$request->get('tier'):'').' --env='.$coreName;
 				//echo($cmd);
         		$process = new Process($cmd);
         		$process->run();
