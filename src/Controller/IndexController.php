@@ -21,7 +21,9 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Casebox\CoreBundle\Service\Util;
 use Casebox\CoreBundle\Service\Templates\SingletonCollection;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\PhpProcess;
 use Firebase\JWT\JWT;
+
 
 /**
  * Class IndexController
@@ -189,22 +191,25 @@ class IndexController extends Controller
 		echo($jwt);
 		*/
         $configService = $this->get ( 'casebox_core.service.config' );
+                $container = Cache::get('symfony.container');
+        $rootDir = $container->getParameter('kernel.root_dir');
         
         $authHeader = $request->get('jwt');
     if ($request->isMethod ( Request::METHOD_GET ))
     {
-    /*
-     * Look for the 'authorization' header
-     */
-    if ($authHeader) {
+	    /*
+	     * Look for the 'authorization' header
+	     */
+    	if ($authHeader) {
             try {
                 $decoded = JWT::decode($authHeader, $configService->get('jwt_key'), array($configService->get('jwt_algorithm')));
 				//print_r($decoded);  //do something with what we decoded?
-				$cmd = $rootDir.'/../bin/console'.' '.'ecmrs:database:export '.(!empty($request->get('state'))?' --state='.$request->get('state'):'').(!empty($request->get('county'))?' --county='.$request->get('county'):'').(!empty($request->get('tier'))?' --tier='.$request->get('tier'):'').' --env='.$coreName;
+				$cmd = 'php '.$rootDir.'/../bin/console'.' '.'ecmrs:database:export '.(!empty($request->get('state'))?' --state='.$request->get('state'):'').(!empty($request->get('county'))?' --county='.$request->get('county'):'').(!empty($request->get('tier'))?' --tier='.$request->get('tier'):'').' --env='.$coreName;
 				//echo($cmd);
-        		$process = new Process($cmd);
-        		$process->run();
-        		$response->message = 'process <'. $cmd . '> ran';
+    	
+           		$pid = shell_exec($cmd .' > /dev/null & echo $!');
+        		   		
+        		$response->message = 'process <'. $cmd . '> started on pid <'.$pid.'>';
             } catch (\Exception $e) {
                 /*
                  * the token was not able to be decoded.
