@@ -20,6 +20,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Casebox\CoreBundle\Service\Util;
 use Casebox\CoreBundle\Service\Templates\SingletonCollection;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\PhpProcess;
+use Firebase\JWT\JWT;
+
 
 /**
  * Class IndexController
@@ -158,6 +162,82 @@ class IndexController extends Controller
 
         return new Response($result, 200, ['Content-Type' => 'application/json', 'charset' => 'UTF-8']);
     }
+
+	/**
+	 * @Route("/c/{coreName}/export", name="app_core_export_upload")
+	 * @Route("/c/{coreName}/export/", name="app_core_export_slash")
+	 * 
+	 * @param Request $request        	
+	 * @param string $coreName        	
+	 * @param string $id        	
+	 * @method ({"GET", "POST"})
+	 *        
+	 * @return Response
+	 * @throws \Exception
+	 */
+	public function export(Request $request, $coreName) {
+	
+	
+		/*$key = "test";
+		$token = array(
+    		"iss" => "http://example.org",
+    		"aud" => "http://example.com",
+    		"iat" => 1356999524,
+    		"nbf" => 1357000000
+		);
+
+		$jwt = JWT::encode($token, $key);
+		//print_r($decoded);
+		echo($jwt);
+		*/
+        $configService = $this->get ( 'casebox_core.service.config' );
+                $container = Cache::get('symfony.container');
+        $rootDir = $container->getParameter('kernel.root_dir');
+        
+        $authHeader = $request->get('jwt');
+    if ($request->isMethod ( Request::METHOD_GET ))
+    {
+	    /*
+	     * Look for the 'authorization' header
+	     */
+    	if ($authHeader) {
+            try {
+                $decoded = JWT::decode($authHeader, $configService->get('jwt_key'), array($configService->get('jwt_algorithm')));
+				//print_r($decoded);  //do something with what we decoded?
+				$cmd = 'php '.$rootDir.'/../bin/console'.' '.'ecmrs:database:export '.(!empty($request->get('state'))?' --state='.$request->get('state'):'').(!empty($request->get('county'))?' --county='.$request->get('county'):'').(!empty($request->get('tier'))?' --tier='.$request->get('tier'):'').' --env='.$coreName;
+				//echo($cmd);
+    	
+           		$pid = shell_exec($cmd .' > /dev/null & echo $!');
+        		   		
+        		$response->message = 'process <'. $cmd . '> started on pid <'.$pid.'>';
+            } catch (\Exception $e) {
+                /*
+                 * the token was not able to be decoded.
+                 * this is likely because the signature was not able to be verified (tampered token)
+                 */
+                header('HTTP/1.0 401 Unauthorized');
+                $response->message ='unable to decode';
+            } 
+        } else
+        {
+            header('HTTP/1.0 401 Unauthorized');
+            $response->message = 'no key provided';
+        }
+        }
+        else {
+            /*
+             * No token was able to be extracted from the authorization header
+             */
+            header('HTTP/1.0 400 Bad Request');
+            $response->message = 'this service only accepts get requests';
+        }
+        header('Content-type: application/json');
+		echo(json_encode($response));
+		exit(0);
+    
+    }	
+
+
 
 	/**
 	 * @Route("/c/{coreName}/bulkupload", name="app_core_bulk_upload")

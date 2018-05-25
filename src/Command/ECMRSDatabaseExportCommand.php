@@ -20,13 +20,16 @@ use Dompdf\Dompdf;
 use Symfony\Component\HttpFoundation\Request;
 
 
-class CaseboxDatabaseZipCommand extends ContainerAwareCommand
+class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('casebox:database:zip')
-            ->setDescription('Perform Zip')
+            ->setName('ecmrs:database:export')
+            ->setDescription('Perform Export of ECMRS Database for Desired Core')
+            ->addOption('state', 's', InputOption::VALUE_OPTIONAL, 'The state to run for')
+			->addOption('county', 'c', InputOption::VALUE_OPTIONAL, 'The county to run for')
+			->addOption('tier', 't', InputOption::VALUE_OPTIONAL, 'The tier to run for')
         ;
     }
 
@@ -35,7 +38,11 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
         $output = new SymfonyStyle($input, $output);
 
         $container = $this->getContainer();
-
+		
+		$state = $input->getOption('state');
+		$county = $input->getOption('county');
+		$tier = $input->getOption('tier');				
+        
         // Bootstrap
         $system = new System();
         $system->bootstrap($container);
@@ -64,23 +71,19 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 		$reports = new Notifications();
 		$objService = new Objects();
 		ini_set('memory_limit', '1024M');
-		$baseDirectory = isset($configService->get('export_directory'))?$configService->get('export_directory'):'/home/dstoudt/transfer/';
-		$exportReport = isset($configService->get('export_report'))?$configService->get('export_report'):2727;
-			
-		$res = $dbs->query(
-        'select replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\') county,case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END case_status, ifnull(fema_tier,\'No Tier\') fema_tier, count(*)
-			from rpt_clients c, tree t, objects o, rpt_locations l, users_groups u
-			where c.clientid = t.id and c.locationid = l.locationid
-			and t.dstatus = 0
-			and t.id = o.id
-			and IFNULL(c.assigned, 1) = u.id
-			group by case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END, c.fema_tier,replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\')
-			order by county');
+		$baseDirectory = !empty($configService->get('export_directory'))?$configService->get('export_directory'):'/home/dstoudt/transfer/';
+		$exportReport = !empty($configService->get('export_report'))?$configService->get('export_report'):2727;
+		$exportSql = !empty($configService->get('export_sql'))?$configService->get('export_sql'):'select * from dual';
+		$exportSql = $exportSql . ((isset($state)) ? ' AND state="'.$state.'"':'') . ((isset($tier)) ? ' AND fema_tier="'.$tier.'"':'') . ((isset($county)) ? ' AND county="'.$county.'"':'');
+		echo($exportSql);
+				
+		$res = $dbs->query($exportSql
+			);
 		while ($r = $res->fetch()) {
+			$state = $r['state'];
 			$county = $r['county'];
-			$case_status = $r['case_status'];
 			$fema_tier = $r['fema_tier'];
-			$folder = $baseDirectory.$county.'/'.$case_status.'/'.$fema_tier;
+			$folder = $baseDirectory.$state.'/'.$county.'/'.$fema_tier;
 			if (!file_exists($folder))
 			{
 				mkdir($folder, 0777, true);
@@ -88,16 +91,16 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 			ini_set('memory_limit', '1024M');
 			$rez = [];
 			$fq = [];
-			if ($case_status=='Open')
+			if (!empty($r['fq_1']))
 			{
-				$fq[] = 'case_status:"Closed" AND closurereason_s:*transitioning*';
+				$fq[] =  $r['fq_1'];
 			}
-			else
+			if (!empty($r['fq_2']))
 			{
-				$fq[] = ($case_status=='Closed')?'case_status:"'.$case_status.'" OR case_status:"Transferred"':'case_status:"'.$case_status.'"';
+				$fq[] =  $r['fq_2'];
 			}
-			$fq[] = '((county_s:"'.$county.'" OR county_s:"'.$county.' County") OR (!county_s:[* TO *] AND (county:"'.$county.'" OR county:"'.$county.' County")))';
-			$fq[] = ($fema_tier=='No Tier')?'!fematier:[* TO *]':'fematier:"'.$fema_tier.'"';
+						//$fq[] = '((county_s:"'.$county.'" OR county_s:"'.$county.' County") OR (!county_s:[* TO *] AND (county:"'.$county.'" OR county:"'.$county.' County")))';
+			//$fq[] = ($fema_tier=='No Tier')?'!fematier:[* TO *]':'fematier:"'.$fema_tier.'"';
 			//$fq[] = 'fematier:"'.$fema_tier.'"';
 			$p = [
 				'reportId' => $exportReport,
@@ -133,6 +136,7 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 						copy($file, $folder .'/'.$zipcode. '_'.$clientId.'_consentform.pdf');
 					}
 				}
+				echo($clientId);
 				$html = $export->getPDFContent($clientId,"","-en");
 				//echo($html);
 				
@@ -146,6 +150,6 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 				
 		}
 		
-        $output->success('command casebox:database:zip');
+        $output->success('command ecmrs:database:export');
     }
 }

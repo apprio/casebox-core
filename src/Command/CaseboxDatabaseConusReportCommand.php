@@ -116,7 +116,11 @@ class CaseboxDatabaseConusReportCommand extends ContainerAwareCommand
 		} //END COUNTIES		
 		
 		$this->runReport('', implode(', ',$all), $date, $overallFolder,$dbs);
-		
+		$qb = $dbs->getDbh()->prepare(
+				'CALL p_relationalize_data'
+			);
+		$qb->execute();		
+
         $output->success('command casebox:database:conusreport for '. $date);
     }
 	
@@ -213,7 +217,7 @@ $femasql = 'select
 			AND tree.pid in (select id from objects 
             where (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF)))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_total,
-			 (select count(*) from tree where template_id =607 and (name like \'Salud de Comportamiento%\' or name like \'Salud Mental%\')
+			 (select count(*) from tree where template_id =607 and name like \'Salud de Comportamiento%\'
 			AND tree.pid in (select id from objects 
             where (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF)))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_behavioral,   
@@ -487,6 +491,7 @@ and IF(template_id=141,id,pid) in (select id from objects
 						}
 				$r['report_date']=$date.'T00:00:00Z';
 				$r['area'] = $areaName;
+				
 				$data = [
 					'id' => is_null($id)?null:$id,
 					'pid' => $pid,//3286,
