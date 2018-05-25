@@ -446,6 +446,7 @@ Ext.define('CB.notifications.Reports', {
                      ,autoDestroy: true
                      ,restful: false
                      ,remoteSort: true
+                     ,pageSize: 250
                      ,model: 'FieldObjects'
                     ,proxy: {
                          type: 'direct'
