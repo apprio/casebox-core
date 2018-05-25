@@ -64,8 +64,8 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 		$reports = new Notifications();
 		$objService = new Objects();
 		ini_set('memory_limit', '1024M');
-		$baseDirectory = isset($configService->get('export_directory'))?$configService->get('export_directory'):'/home/dstoudt/transfer/';
-		$exportReport = isset($configService->get('export_report'))?$configService->get('export_report'):2727;
+		$baseDirectory = !empty($configService->get('export_directory'))?$configService->get('export_directory'):'/home/dstoudt/transfer/';
+		$exportReport = !empty($configService->get('export_report'))?$configService->get('export_report'):2727;
 			
 		$res = $dbs->query(
         'select replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\') county,case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END case_status, ifnull(fema_tier,\'No Tier\') fema_tier, count(*)
