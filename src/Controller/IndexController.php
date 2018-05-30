@@ -256,7 +256,6 @@ class IndexController extends Controller
 				$response->directorystructure = $directorystructure;
 				$response->processes = shell_exec('ps -ef | grep [e]cmrs:database:export');
 				$response->processcount = shell_exec('ps -ef | grep [e]cmrs:database:export | wc -l');				
-        		$response->message = 'process <'. $cmd . '> started on pid <'.$pid.'>';
             } catch (\Exception $e) {
                 /*
                  * the token was not able to be decoded.

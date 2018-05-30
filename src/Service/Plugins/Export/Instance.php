@@ -128,16 +128,20 @@ class Instance
     	
     			exit(0);
     		}
+			$rez = [];
+			$rez = $this->getCSVContent($p);
+				
+			header('Content-Type: text/csv; charset=utf-8');
+			header('Content-Disposition: attachment; filename=Exported_Results_'.date('Y-m-d_Hi').'.csv');
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			echo implode("\n", $rez);			
     	}        
-    	
-    	$rez = [];
-		$rez = $this->getCSVContent($p);
-		 	
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=Exported_Results_'.date('Y-m-d_Hi').'.csv');
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        echo implode("\n", $rez);
+    	else
+		{
+			echo ('Export functionality has been disabled.  Please contact the ECMRS Helpdesk for reports or exports.');
+			exit(0);
+		}
     }
 
     public function getFullExport($p)
