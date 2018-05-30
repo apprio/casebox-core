@@ -3,7 +3,6 @@
 namespace Casebox\CoreBundle\Command;
 
 use Casebox\CoreBundle\Service\System;
-use Casebox\CoreBundle\Service\Objects;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +13,6 @@ use Casebox\CoreBundle\Service\Cache;
 use Casebox\CoreBundle\Service\DataModel\FilesContent;
 use Casebox\CoreBundle\Service\DataModel\Files;
 use Casebox\CoreBundle\Service\Plugins\Export\Instance;
-use Casebox\CoreBundle\Service\Notifications;
 use ZipArchive;
 use Dompdf\Dompdf;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,29 +64,29 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 		$request = new Request();
 		$request->setLocale('en');
 		Cache::set('symfony.request', $request);
-		
-		$export = new Instance();
-		$reports = new Notifications();
-		$objService = new Objects();
-		ini_set('memory_limit', '1024M');
+		$log = $this->getContainer()->get('logger');
+        $log->pushHandler($container->get('monolog.handler.nested'));
+        $log->addInfo('Starting ecmrs:database:export process');
+
 		$baseDirectory = !empty($configService->get('export_directory'))?$configService->get('export_directory'):'/home/dstoudt/transfer/';
 		$exportReport = !empty($configService->get('export_report'))?$configService->get('export_report'):2727;
 		$exportSql = !empty($configService->get('export_sql'))?$configService->get('export_sql'):'select * from dual';
 		$exportSql = $exportSql . ((isset($state)) ? ' AND state="'.$state.'"':'') . ((isset($tier)) ? ' AND fema_tier="'.$tier.'"':'') . ((isset($county)) ? ' AND county="'.$county.'"':'');
-		echo($exportSql);
-				
+		$log->addInfo('Process ecmrs:database:export - sql:' . $exportSql);
+		
 		$res = $dbs->query($exportSql
 			);
 		while ($r = $res->fetch()) {
 			$state = $r['state'];
 			$county = $r['county'];
 			$fema_tier = $r['fema_tier'];
+			$log->addInfo('Process ecmrs:database:export - row result:' . var_export($r,true));
 			$folder = $baseDirectory.$state.'/'.$county.'/'.$fema_tier;
 			if (!file_exists($folder))
 			{
 				mkdir($folder, 0777, true);
 			}
-			ini_set('memory_limit', '1024M');
+			ini_set('memory_limit', '5000M');
 			$rez = [];
 			$fq = [];
 			if (!empty($r['fq_1']))
@@ -99,20 +97,23 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 			{
 				$fq[] =  $r['fq_2'];
 			}
-						//$fq[] = '((county_s:"'.$county.'" OR county_s:"'.$county.' County") OR (!county_s:[* TO *] AND (county:"'.$county.'" OR county:"'.$county.' County")))';
-			//$fq[] = ($fema_tier=='No Tier')?'!fematier:[* TO *]':'fematier:"'.$fema_tier.'"';
-			//$fq[] = 'fematier:"'.$fema_tier.'"';
+			if (!empty($r['fq_location']))
+			{
+				$fq[] =  '(location_i:'.str_replace('|',' OR location_i:',$r['fq_location']).')';
+			}
+
 			$p = [
 				'reportId' => $exportReport,
 				'skipSecurity' => true,
 				'fq' => $fq,
 				'rows' => 1
 			];
-			print_r($p);
+			$log->addInfo('Process ecmrs:database:export - running report: parameters:' . var_export($p,true));
+			$export = new Instance();
+			$log->addInfo('Process ecmrs:database:export - getting full export for folder:' . $folder);
 			$rez = $export->getFullExport($p);			
-			//print_r($rez);
 			file_put_contents($folder.'/records.csv',implode("\n", $rez));
-
+			$log->addInfo('Process ecmrs:database:export - added records.csv to folder:' . $folder);
 			array_shift($rez);
 			foreach ($rez as &$r) 
 			{
@@ -131,14 +132,13 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 				if (!empty($fid)) {
 					$content = FilesContent::read($fid['content_id']);
 					$file = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
-					if (file_exists($file))
+					if (file_exists($file) && !is_dir($file))
 					{
 						copy($file, $folder .'/'.$zipcode. '_'.$clientId.'_consentform.pdf');
 					}
 				}
-				echo($clientId);
+				//$log->addInfo('Finished ecmrs:database:export clientId:'.$clientId);
 				$html = $export->getPDFContent($clientId,"","-en");
-				//echo($html);
 				
 				$dompdf = new Dompdf();
 				$dompdf->loadHtml($html);
@@ -149,7 +149,7 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 			}
 				
 		}
-		
+		$log->addInfo('Finished ecmrs:database:export process');
         $output->success('command ecmrs:database:export');
     }
 }

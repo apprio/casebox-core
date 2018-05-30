@@ -176,27 +176,13 @@ class IndexController extends Controller
 	 * @throws \Exception
 	 */
 	public function export(Request $request, $coreName) {
-	
-	
-		/*$key = "test";
-		$token = array(
-    		"iss" => "http://example.org",
-    		"aud" => "http://example.com",
-    		"iat" => 1356999524,
-    		"nbf" => 1357000000
-		);
-
-		$jwt = JWT::encode($token, $key);
-		//print_r($decoded);
-		echo($jwt);
-		*/
         $configService = $this->get ( 'casebox_core.service.config' );
                 $container = Cache::get('symfony.container');
         $rootDir = $container->getParameter('kernel.root_dir');
-        
+        $response = new \stdClass(); //remove strict error message
         $authHeader = $request->get('jwt');
-    if ($request->isMethod ( Request::METHOD_GET ))
-    {
+		if ($request->isMethod ( Request::METHOD_GET ))
+		{
 	    /*
 	     * Look for the 'authorization' header
 	     */
@@ -238,6 +224,65 @@ class IndexController extends Controller
     }	
 
 
+	/**
+	 * @Route("/c/{coreName}/exportstatus", name="app_core_exportstatus_upload")
+	 * @Route("/c/{coreName}/exportstatus/", name="app_core_exportstatus_slash")
+	 * 
+	 * @param Request $request        	
+	 * @param string $coreName        	
+	 * @param string $id        	
+	 * @method ({"GET", "POST"})
+	 *        
+	 * @return Response
+	 * @throws \Exception
+	 */
+	public function exportstatus(Request $request, $coreName) {
+        $configService = $this->get ( 'casebox_core.service.config' );
+                $container = Cache::get('symfony.container');
+        $rootDir = $container->getParameter('kernel.root_dir');
+        
+        $authHeader = $request->get('jwt');
+		$response = new \stdClass(); //remove strict error message
+		if ($request->isMethod ( Request::METHOD_GET ))
+		{
+    	if ($authHeader) {
+            try {
+                $decoded = JWT::decode($authHeader, $configService->get('jwt_key'), array($configService->get('jwt_algorithm')));
+				$baseDirectory = !empty($configService->get('export_directory'))?$configService->get('export_directory'):'/home/dstoudt/transfer/';
+				shell_exec('cd '.$baseDirectory);
+				$directorystructure = shell_exec('cd '.$baseDirectory.';find . -mindepth 1 -type d -exec sh -c \'echo "{} - $(find "{}" -type f | wc -l)" \' \;');
+				$processes = shell_exec('ps | ');
+				
+				$response->directorystructure = $directorystructure;
+				$response->processes = shell_exec('ps -ef | grep [e]cmrs:database:export');
+				$response->processcount = shell_exec('ps -ef | grep [e]cmrs:database:export | wc -l');				
+        		$response->message = 'process <'. $cmd . '> started on pid <'.$pid.'>';
+            } catch (\Exception $e) {
+                /*
+                 * the token was not able to be decoded.
+                 * this is likely because the signature was not able to be verified (tampered token)
+                 */
+                header('HTTP/1.0 401 Unauthorized');
+                $response->message ='unable to decode';
+            } 
+        } else
+        {
+            header('HTTP/1.0 401 Unauthorized');
+            $response->message = 'no key provided';
+        }
+        }
+        else {
+            /*
+             * No token was able to be extracted from the authorization header
+             */
+            header('HTTP/1.0 400 Bad Request');
+            $response->message = 'this service only accepts get requests';
+        }
+        header('Content-type: application/json');
+		echo(json_encode($response));
+		exit(0);
+    
+    }	
 
 	/**
 	 * @Route("/c/{coreName}/bulkupload", name="app_core_bulk_upload")
