@@ -971,6 +971,7 @@ class Cases extends Object
 
 		//$actionsLine = '';
 		$addressLine = '';
+		$addresscityLine = '';
         $demographicsLine = '';
 		$femaLine = '';
 		$dateLines = '';
@@ -1073,6 +1074,11 @@ class Cases extends Object
 		elseif (!empty($sd['solr']['county'])) {
 			$addressLine = $addressLine . ' ' . $this->trans('RegisteredCounty').':'.$sd['solr']['county']. " - ";
 		}
+			
+		if (!empty($sd['solr']['location_type'])) {
+			$addressLine = $addressLine . $sd['solr']['location_type']. " - ";
+		}
+	
 
 			$filePlugin = new Files();
 			$files = $filePlugin->getData($data['id']);
