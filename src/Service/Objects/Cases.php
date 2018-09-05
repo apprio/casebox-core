@@ -12,6 +12,7 @@ use Casebox\CoreBundle\Service\Log;
 use Casebox\CoreBundle\Service\Solr\Client;
 use Casebox\CoreBundle\Service\Objects\Plugins\Files;
 use Casebox\CoreBundle\Service\Objects\Plugins\ContentItems;
+use Casebox\CoreBundle\Service\Objects\Plugins\Export;
 
 /**
  * Class Cases
@@ -1078,7 +1079,18 @@ class Cases extends Object
 		if (!empty($sd['solr']['location_type'])) {
 			$addressLine = $addressLine . $sd['solr']['location_type']. " - ";
 		}
-	
+		
+		/*
+		 * Intake location commented out until otherwise noted.
+		 
+		if (!empty($data['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type'])))
+			{
+				$objService = new Objects();
+				$location = $objService->load(['id' => is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type']]);
+				$addressLine = $addressLine . $location['data']['data']['_locationcity'];
+			} 
+		*/
+		
 
 			$filePlugin = new Files();
 			$files = $filePlugin->getData($data['id']);
