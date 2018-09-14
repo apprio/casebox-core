@@ -305,9 +305,36 @@ class SearchResults extends Dbnode
             case 'varchar':
             case 'text':
             case 'memo':
-            case 'html':
-                $rez = $f.':"'.$v.'"';
-
+			case 'html':
+				switch ($value['cond']) {
+                        case 'end':
+                            $rez = $f.':*'.$v.'';
+                            break;	
+						case 'start':
+                            $rez = $f.':'.$v.'*';
+                            break;		
+                        case 'contain':
+                            $rez = $f.':*'.$v.'*';
+                            break;							
+                        case 'not':
+                            $rez = '-'.$f.':*'.$v.'*';
+                            break;
+                        case '!=':
+                            $rez = '-'.$f.':"'.$v.'"';
+                            break;
+                        case '=':
+                        default:
+							$rez = $f.':"'.$v.'"';
+                            break;
+                }
+                /*cond = [
+                    {id: 'contain', name: 'contain'}
+                    ,{id: 'start', name: 'start with'}
+                    ,{id: 'end', name: 'end with'}
+                    ,{id: 'not', name: 'does not contain'}
+                    ,{id: '=', name: 'equal'}
+                    ,{id: '!=', name: 'not equal'}
+                ];/**/
                 break;
 
             case 'checkbox':
