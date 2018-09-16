@@ -189,7 +189,14 @@ Ext.define('CB.VerticalEditGrid', {
                     if(tr.get('cfg').required && Ext.isEmpty(record.data.value)) {
                         meta.css += ' cRequired';
                         v += ' *';
-                    }
+                    } else if(tr.get('cfg').validationRe) {
+                    	var regEx = new RegExp(tr.get('cfg').validationRe);
+                    	if (!regEx.test(record.data.value))
+                    	{
+							meta.css += ' cRequired';
+                        	v += ' *';
+                    	}
+                    }     
 
                 }
 
@@ -676,6 +683,14 @@ Ext.define('CB.VerticalEditGrid', {
 
             this.attachKeyListeners(te);
             if(te) {
+            	if (Ext.isDefined(tr.get('cfg').maskRe))
+	            {
+	            	te.maskRe = new RegExp(tr.get('cfg').maskRe);
+	            }
+            	if (Ext.isDefined(tr.get('cfg').emptyText))
+	            {
+					te.emptyText = tr.get('cfg').emptyText;
+	            }
                 col.setEditor(te);
             }
         }
@@ -892,6 +907,12 @@ Ext.define('CB.VerticalEditGrid', {
                 }
             }
 
+            if (Ext.isDefined(tr.get('cfg').validationRe))
+            {
+            	var regEx = new RegExp(tr.get('cfg').validationRe);
+            	context.record.set('valid',regEx.test(context.value));
+            }
+
             if(context.value != context.originalValue){
                 this.helperTree.resetChildValues(nodeId);
             }
@@ -1020,7 +1041,8 @@ Ext.define('CB.VerticalEditGrid', {
                 if((r.get('valid') === false) ||
                     (n.data.templateRecord.get('cfg').required &&
                     Ext.isEmpty(r.get('value'))
-                    )
+                    ) || (n.data.templateRecord.get('cfg').validationRe && 
+                   !(new RegExp(n.data.templateRecord.get('cfg').validationRe).test(r.get('value'))))
                 ) {
                     this.invalidRecord = r;
                     rez = false;
