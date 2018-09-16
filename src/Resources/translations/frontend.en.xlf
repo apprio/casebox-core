@@ -3127,7 +3127,7 @@
             </trans-unit>
             <trans-unit id="3139">
                 <source>FillFieldMsg</source>
-                <target>Please fill out the '{fieldName}' field</target>
+                <target>Please fill out the '{fieldName}' field using the correct format</target>
             </trans-unit>
             <trans-unit id="3141">
                 <source>Map</source>
@@ -3435,7 +3435,7 @@
             </trans-unit> 
  	   	 	<trans-unit id="3218">
                 <source>RequiredFieldsMessage</source>
-                <target>Please fix required fields and resubmit</target>
+                <target>Please fix required fields and formatting for fields and resubmit</target>
             </trans-unit>       
  	    	<trans-unit id="3219">
                 <source>Website</source>
