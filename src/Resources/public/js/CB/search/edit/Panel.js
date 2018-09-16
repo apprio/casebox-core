@@ -62,6 +62,7 @@ Ext.define('CB.search.edit.Panel', {
                     iconCls: 'im-points'
                     ,itemId: 'more'
                     ,scale: 'medium'
+                    ,hidden:true
                     ,scope: this
                     ,handler: function(b, e) {
                         this.moreMenu.showBy(b.getEl());

@@ -13,8 +13,8 @@ Ext.define('CB.search.edit.Window', {
     ,border: false
     ,minWidth: 200
     ,minHeight: 200
-    ,width: 400
-    ,height: 450
+    ,width: 350
+    ,height: 300
     ,iconCls: 'icon-none'
     ,scrollable: true
 
