@@ -7,6 +7,7 @@ use Casebox\CoreBundle\Service\Search;
 use Casebox\CoreBundle\Service\Templates;
 use Casebox\CoreBundle\Service\User;
 use Casebox\CoreBundle\Service\DataModel as DM;
+use Casebox\CoreBundle\Service\Cache;
 
 /**
  * Class DailyReport
@@ -18,7 +19,9 @@ class Reports extends Base
         $this->fq = [];
 
         // select only case templates
-		$this->fq[] = 'template_id:281012 OR template_id:287633 OR template_id:287634';
+        $configService = Cache::get('symfony.container')->get('casebox_core.service.config');
+		$reportTemplateId = !empty($configService->get('staffing_report_id'))?$configService->get('staffing_report_id'):246777;
+		$this->fq[] = 'template_id:'.$reportTemplateId;
 		//$this->fq[] = 'pid:1204';
 
     }
