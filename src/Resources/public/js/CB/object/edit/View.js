@@ -110,8 +110,9 @@ Ext.define('CB.object.edit.View', {
 		if (!rez)
 		{
 		  this.actions.save.setDisabled(false);				
-		  Ext.Msg.alert(L.Error, L.RequiredFieldsMessage);	  
-		  return false;
+		  return this.editForm.grid.focusInvalidRecord();
+		  //Ext.Msg.alert(L.Error, L.RequiredFieldsMessage);	  
+		  //return false;
 		}
 		this.editForm.save(this.onAfterConfirming, this);
     }
