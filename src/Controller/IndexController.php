@@ -443,6 +443,58 @@ class IndexController extends Controller
     	return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
     }	
 	
+	/**
+	 * @Route("/c/{coreName}/run", name="app_core_command")
+	 * @Route("/c/{coreName}/run/", name="app_core_command_slash")
+	 * 
+	 * @param Request $request        	
+	 * @param string $coreName        	
+	 * @param string $id        	
+	 * @method ({"GET", "POST"})
+	 *        
+	 * @return Response
+	 * @throws \Exception
+	 */
+	public function run(Request $request, $coreName) {
+        $configService = $this->get ( 'casebox_core.service.config' );
+        $container = Cache::get('symfony.container');
+        $rootDir = $container->getParameter('kernel.root_dir');
+        $response = new \stdClass(); //remove strict error message
+        $configService = $this->get ( 'casebox_core.service.config' );
+		$auth = $this->container->get ( 'casebox_core.service_auth.authentication' );
+		if (! $auth->isLogged ( false )) {
+			return $this->redirectToRoute ( 'app_core_login', [ 
+					'coreName' => $coreName 
+			] );
+		}
+
+		if (empty($request->get('command'))) {
+			echo('Please enter a command');
+			exit(0);
+		}	
+
+		$cmd = 'php '.$rootDir.'/../bin/console'.' '.$request->get('command');
+		
+		$params = $request->query->all();
+		foreach($params as $key => $val)
+		{
+			if ($key != 'command' && $key != 'detach')
+			{
+				$cmd = $cmd . ' --' . $key . '=' . $val;
+			}
+		}
+		$cmd = $cmd . ' --env='.$coreName;
+		
+		if (!empty($request->get('detach'))) {
+			$cmd = $cmd . ' > /dev/null & echo $!';
+		}	
+		$cmdResponse = shell_exec($cmd);
+		
+        header('Content-type: application/json');
+		echo(json_encode('process <'. $cmd . '> started with response <'.$cmdResponse.'>'));
+		exit(0);
+    }		
+	
     /**
      * @Route("/c/{coreName}/edit/{templateId}/{id}",
      *     name="app_core_item_edit",

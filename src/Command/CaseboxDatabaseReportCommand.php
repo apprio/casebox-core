@@ -36,7 +36,6 @@ class CaseboxDatabaseReportCommand extends ContainerAwareCommand
 		$countyFolder = 41490;
 		$regionFolder = 41500;
 		
-		date_default_timezone_set('America/New_York');
 		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time() - 60 * 60 * 24);
 		//echo('test'.$date);
 		//$user = $container->get('doctrine.orm.entity_manager')->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername('root');
@@ -99,7 +98,10 @@ class CaseboxDatabaseReportCommand extends ContainerAwareCommand
 		} //END REGIONS
 		
 		$this->runReport('', implode(', ',$all), $date, 1204,$dbs);
-		
+		$qb = $dbs->getDbh()->prepare(
+				'CALL p_relationalize_data'
+		);
+		$qb->execute();		
         $output->success('command casebox:database:report for '. $date);
     }
 	
@@ -363,8 +365,6 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			(select id from users_groups 
 			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'Case Manager Supervisor\'))) case_manager_supervisors
 			where 
-			tree.template_id = 141
-			and
 			objects.id = tree.id
 			and 
 			tree.dstatus = 0
@@ -378,7 +378,7 @@ and IF(template_id=141,id,pid) in (select id from objects
             where substring(data, LOCATE(\'"_location_type":\', data)+18, 
 LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 (LOCATE(\'"_location_type":\', data)+18)) in(LOCATION_STUFF))				
-				) 
+				)
 			group by tree.template_id, case_managers.total, case_manager_supervisors.total';
 			
 			
@@ -499,6 +499,45 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			group by tree.template_id';		
 				
 			//echo(str_replace("LOCATION_STUFF",$locations,$femasql));
+			
+			if ($pid === 1204)
+			{
+				$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
+				$staffingTemplateId = !empty($configService->get('staffing_report_id'))?$configService->get('staffing_report_id'):246777;
+				$staffingPid = !empty($configService->get('staffing_report_pid'))?$configService->get('staffing_report_pid'):246787;
+				//Staffing Report
+				$sql3= 'select * from tree where dstatus = 0 and template_id = '.$staffingTemplateId.' and pid = '.$staffingPid.' and (name like \'%'.$areaName.' - '.$date.'%\' or 
+							name like \'%'.$areaName.' - '.date("d.m.Y", strtotime($date)).'%\' or
+							name like \'%'.$areaName.' - '.date("m/d/Y", strtotime($date)).'%\')';
+				//echo($sql3);
+				$rezzz = $dbs->query(
+					$sql3
+				);
+				$idd = null;
+				if ($rzz = $rezzz->fetch()) {
+					$idd = $rzz['id'];
+				}
+				if (is_null($idd))
+				{
+					$staffing = [];
+					$staffing['report_date']=$date.'T00:00:00Z';
+					$staffingdata = [
+						'id' => is_null($idd)?null:$idd,
+						'pid' => $staffingPid,//3286,
+						'title' => 'Daily Staffing Report',
+						'template_id' => $staffingTemplateId,
+						'path' => '/Test Event/Reports/Staffing/',
+						'view' => 'edit',
+						'name' => 'Daily Staffing Report',
+						'data' => $staffing,
+						];
+					$objService = new Objects();
+					$newStaffing =$objService->save(['data'=>$staffingdata]);	
+				}		
+			}
+//			$r = $res->fetch();
+			//print_r($r);
+			$id = null;
 			
 		
 			$res = $dbs->query(
