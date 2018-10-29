@@ -616,7 +616,7 @@
             </trans-unit>
             <trans-unit id="2887">
                 <source>OtherCases</source>
-                <target>Other clients</target>
+                <target>Other disaster survivors</target>
             </trans-unit>
             <trans-unit id="2888">
                 <source>DeletedByMe</source>
@@ -712,7 +712,7 @@
             </trans-unit>
             <trans-unit id="2960">
                 <source>AllMyCases</source>
-                <target>My clients</target>
+                <target>My disaster survivors</target>
             </trans-unit>
             <trans-unit id="2963">
                 <source>Assignee</source>
@@ -939,11 +939,11 @@
             </trans-unit>   
            <trans-unit id="3167">
                 <source>Clients</source>
-                <target>Clients</target>
+                <target>Disaster Survivors</target>
             </trans-unit>       
            <trans-unit id="3168">
                 <source>MyClients</source>
-                <target>My Clients</target>
+                <target>My Disaster Survivors</target>
             </trans-unit>       
            <trans-unit id="3169">
                 <source>Unassigned</source>
@@ -979,7 +979,7 @@
             </trans-unit>              
            <trans-unit id="3177">
                 <source>ClientIntake</source>
-                <target>Client Intake</target>
+                <target>Disaster Survivor Intake</target>
             </trans-unit>     
            <trans-unit id="3178">
                 <source>FamilyMembers</source>
@@ -1035,7 +1035,7 @@
             </trans-unit>     
            <trans-unit id="3191">
                 <source>AssignClientToMe</source>
-                <target>Assign Client To Me</target>
+                <target>Assign Disaster Survivor To Me</target>
             </trans-unit>       
            <trans-unit id="3192">
                 <source>LastAction</source>

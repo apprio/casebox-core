@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="105">
                 <source>Case</source>
-                <target>Client</target>
+                <target>Disaster Survivor</target>
             </trans-unit>
             <trans-unit id="118">
                 <source>ofCase</source>
@@ -165,7 +165,7 @@
             </trans-unit>
             <trans-unit id="159">
                 <source>Cases</source>
-                <target>Clients</target>
+                <target>Disaster Survivors</target>
             </trans-unit>
             <trans-unit id="160">
                 <source>male</source>
@@ -222,7 +222,7 @@
             </trans-unit>
             <trans-unit id="671">
                 <source>AddCaseTask</source>
-                <target>Add task to client</target>
+                <target>Add task to disaster survivor</target>
             </trans-unit>
             <trans-unit id="674">
                 <source>addedByUser</source>
@@ -299,7 +299,7 @@
             </trans-unit>
             <trans-unit id="695">
                 <source>allCaseFiles</source>
-                <target>all client files</target>
+                <target>all disaster survivor files</target>
             </trans-unit>
             <trans-unit id="698">
                 <source>AllWithDeadlines</source>
@@ -386,19 +386,19 @@
             </trans-unit>
             <trans-unit id="728">
                 <source>CaseClosing</source>
-                <target>Closing the client</target>
+                <target>Closing the disaster survivor</target>
             </trans-unit>
             <trans-unit id="729">
                 <source>CaseClosingMessage</source>
-                <target>Are you sure you want to close the client?</target>
+                <target>Are you sure you want to close the disaster survivor?</target>
             </trans-unit>
             <trans-unit id="730">
                 <source>CaseDeletingMessage</source>
-                <target>Are you sure you want to delete this client?</target>
+                <target>Are you sure you want to delete this disaster survivor?</target>
             </trans-unit>
             <trans-unit id="731">
                 <source>CaseEditedMessage</source>
-                <target>This client has been edited. Do you want to save changes?</target>
+                <target>This disaster survivor has been edited. Do you want to save changes?</target>
             </trans-unit>
             <trans-unit id="732">
                 <source>CaseFiles</source>
@@ -2858,11 +2858,11 @@
             </trans-unit>
             <trans-unit id="3059">
                 <source>GridDDMgs</source>
-                <target><![CDATA[Navigate clients/resources using the tree to the left<br />or search for a client in the search box above]]></target>
+                <target><![CDATA[Navigate disaster survivors/resources using the tree to the left<br />or search for a disaster survivor in the search box above]]></target>
             </trans-unit>
             <trans-unit id="3060">
                 <source>GridEmptyText</source>
-                <target><![CDATA[<h3>Navigate clients/resources using the tree to the left</h3> or search for a client in the search box above]]></target>
+                <target><![CDATA[<h3>Navigate disaster survivors/resources using the tree to the left</h3> or search for a disaster survivor in the search box above]]></target>
             </trans-unit>
             <trans-unit id="3061">
                 <source>NoResultsFound</source>
@@ -3251,7 +3251,7 @@
             </trans-unit>    
             <trans-unit id="3172">
                 <source>ClientID</source>
-                <target>Client ID</target>
+                <target>Disaster Survivor ID</target>
             </trans-unit>    
             <trans-unit id="3173">
                 <source>AssignedCM</source>
@@ -3311,11 +3311,11 @@
             </trans-unit>        
             <trans-unit id="3187">
                 <source>ClientAssessmentsNeeded</source>
-                <target>Client Assessments to be completed</target>
+                <target>Disaster Survivor Assessments to be completed</target>
             </trans-unit>       
             <trans-unit id="3188">
                 <source>ClientAssessmentsCompleted</source>
-                <target>Client Assessments completed</target>
+                <target>Disaster Survivor Assessments completed</target>
             </trans-unit>       
             <trans-unit id="3189">
                 <source>ToBeCreated</source>
@@ -3323,11 +3323,11 @@
             </trans-unit>       
             <trans-unit id="3190">
                 <source>ClientRecoveryNeeded</source>
-                <target>Client Recovery to be completed</target>
+                <target>Disaster Survivor Recovery to be completed</target>
             </trans-unit>       
             <trans-unit id="3191">
                 <source>ClientReferrals</source>
-                <target>Client Referrals</target>
+                <target>Disaster Survivor Referrals</target>
             </trans-unit>                                                                   
             <trans-unit id="3192">
                 <source>ReferralsMade</source>
@@ -3343,7 +3343,7 @@
             </trans-unit> 
             <trans-unit id="3195">
                 <source>ClientTasks</source>
-                <target>Client Tasks</target>
+                <target>Disaster Survivor Tasks</target>
             </trans-unit>   
             <trans-unit id="3196">
                 <source>TotalRecords</source>
@@ -3487,7 +3487,7 @@
             </trans-unit>       
  	    	<trans-unit id="3231">
                 <source>ClientID</source>
-                <target>Client ID</target>
+                <target>Disaster Survivor ID</target>
             </trans-unit>   
  	    	<trans-unit id="3232">
                 <source>CMTelephoneNumber</source>
@@ -3495,7 +3495,7 @@
             </trans-unit>   
  	    	<trans-unit id="3233">
                 <source>ClientPlanCreationDate</source>
-                <target>Client Plan Creation Date</target>
+                <target>Disaster Survivor Plan Creation Date</target>
             </trans-unit>       
  	    	<trans-unit id="3234">
                 <source>IDCMSiteAddress</source>
@@ -3543,7 +3543,7 @@
             </trans-unit>     
  	    	<trans-unit id="3245">
                 <source>ClientSignature</source>
-                <target>Client Signature</target>
+                <target>Disaster Survivor Signature</target>
             </trans-unit>  
  	    	<trans-unit id="3246">
                 <source>DateTime</source>
@@ -3607,7 +3607,7 @@
             </trans-unit>	
  	    	<trans-unit id="3261">
                 <source>ClientRace</source>
-                <target>Client Race</target>
+                <target>Disaster Survivor Race</target>
             </trans-unit>		
  	    	<trans-unit id="3262">
                 <source>Ethnicity</source>
@@ -3615,7 +3615,7 @@
             </trans-unit>		
  	    	<trans-unit id="3263">
                 <source>Client</source>
-                <target>Client</target>
+                <target>Disaster Survivor</target>
             </trans-unit>		
  	    	<trans-unit id="3264">
                 <source>Resource</source>
