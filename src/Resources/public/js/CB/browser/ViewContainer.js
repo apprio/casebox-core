@@ -1628,7 +1628,7 @@ Ext.define('CB.browser.ViewContainer', {
 
             switch(detectFileEditor(p.name)) {
                 case 'webdav':
-                    App.openWebdavDocument(p);
+                    this.editObject(p);
                     break;
 
                 default:
