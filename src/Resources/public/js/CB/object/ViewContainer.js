@@ -98,6 +98,7 @@ Ext.define('CB.object.ViewContainer', {
                 iconCls: 'im-edit-obj'
                 ,itemId: 'edit'
                 ,text: L.Edit
+                ,hidden: true                
                 ,disabled: true
                 ,scale: 'medium'
                 ,scope: this

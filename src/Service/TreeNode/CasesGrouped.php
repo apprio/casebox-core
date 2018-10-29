@@ -86,7 +86,7 @@ class CasesGrouped extends Base
             case 7:
                 return $this->trans('InformationOnly');		
             case 8:
-            	return $this->trans('Transferred');
+            	return $this->trans('Transitioned');
             case 'assignee':
                 return $this->trans('IntakeRepresentative');
             default:
@@ -262,7 +262,7 @@ class CasesGrouped extends Base
             }		
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'6'})) {
             	$rez['data'][] = [
-            		'name' => $this->trans('Transferred').$this->renderCount(
+            		'name' => $this->trans('Transitioned').$this->renderCount(
             				$sr['facets']->facet_fields->{'0task_status'}->{'6'}
             			),
      				'id' => $this->getId(8),

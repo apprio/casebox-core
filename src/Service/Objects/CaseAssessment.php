@@ -144,7 +144,7 @@ class CaseAssessment extends Object
 				}
 				if ($p['data']['_notetype']['value'] == 603) //transfer note
 				{
-					$case->markTransferred();
+					$case->markTransitioned();
 				}				
 			}
 
