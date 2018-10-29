@@ -68,13 +68,13 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 		$exportReport = !empty($configService->get('export_report'))?$configService->get('export_report'):2727;
 			
 		$res = $dbs->query(
-        'select replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\') county,case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END case_status, ifnull(fema_tier,\'No Tier\') fema_tier, count(*)
+        'select replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\') county,case when (case_status = \'Transitioned\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END case_status, ifnull(fema_tier,\'No Tier\') fema_tier, count(*)
 			from rpt_clients c, tree t, objects o, rpt_locations l, users_groups u
 			where c.clientid = t.id and c.locationid = l.locationid
 			and t.dstatus = 0
 			and t.id = o.id
 			and IFNULL(c.assigned, 1) = u.id
-			group by case when (case_status = \'Transferred\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END, c.fema_tier,replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\')
+			group by case when (case_status = \'Transitioned\') THEN \'Closed\' when (case_status=\'Closed\' AND c.closure_reason like \'%transitioning%\' ) THEN \'Open\' ELSE case_status END, c.fema_tier,replace(case when county_s is null then l.locationcounty else county_s end, \' County\',\'\')
 			order by county');
 		while ($r = $res->fetch()) {
 			$county = $r['county'];
@@ -94,7 +94,7 @@ class CaseboxDatabaseZipCommand extends ContainerAwareCommand
 			}
 			else
 			{
-				$fq[] = ($case_status=='Closed')?'case_status:"'.$case_status.'" OR case_status:"Transferred"':'case_status:"'.$case_status.'"';
+				$fq[] = ($case_status=='Closed')?'case_status:"'.$case_status.'" OR case_status:"Transitioned"':'case_status:"'.$case_status.'"';
 			}
 			$fq[] = '((county_s:"'.$county.'" OR county_s:"'.$county.' County") OR (!county_s:[* TO *] AND (county:"'.$county.'" OR county:"'.$county.' County")))';
 			$fq[] = ($fema_tier=='No Tier')?'!fematier:[* TO *]':'fematier:"'.$fema_tier.'"';

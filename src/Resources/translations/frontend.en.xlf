@@ -3443,11 +3443,11 @@
             </trans-unit>   
  	    	<trans-unit id="3220">
                 <source>caseStatus6</source>
-                <target>Transferred</target>
+                <target>Transitioned</target>
             </trans-unit>   	
  	    	<trans-unit id="3221">
-                <source>Transferred</source>
-                <target>Transferred</target>
+                <source>Transitioned</source>
+                <target>Transitioned</target>
             </trans-unit> 
  	    	<trans-unit id="3222">
                 <source>RecoveryPlan</source>
@@ -3571,7 +3571,7 @@
             </trans-unit>	
  	    	<trans-unit id="3252">
                 <source>IdentifiedNeeds</source>
-                <target>Identified Needs</target>
+                <target>Self-Identified Needs</target>
             </trans-unit>	
  	    	<trans-unit id="3253">
                 <source>AssessmentsNeeded</source>

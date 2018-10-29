@@ -3446,7 +3446,7 @@
                 <target>Transferido</target>
             </trans-unit>   	
  	    	<trans-unit id="3221">
-                <source>Transferred</source>
+                <source>Transitioned</source>
                 <target>Transferido</target>
             </trans-unit>       
  	    	<trans-unit id="3222">
