@@ -133,7 +133,7 @@ class IndexController extends Controller
             $file['tmp_name'] = tempnam($configService->get('incomming_files_dir'), 'cbup');
             $file['name'] = urldecode($file['name']);
 
-		if (substr($file['type'], 0, 6) !== 'image/' && $file['type'] !== 'application/pdf' && (strrpos($file['type'], "document")=== false)) {
+		if (substr($file['type'], 0, 6) !== 'image/' && $file['type'] !== 'application/pdf' && (pathinfo($file['name'])['extension'] !== "docx") && (pathinfo($file['name'])['extension'] !== "doc") && (strrpos($file['type'], "document")=== false)) {
 			$result=['success' => false, 'msg' => 'Not an image'.$file['type']];
 			$result = json_encode($result);
 			return new Response($result, 200, ['Content-Type' => 'application/json', 'charset' => 'UTF-8']);
@@ -350,7 +350,7 @@ class IndexController extends Controller
 					// get titles
 					$titles = fgetcsv ( $csvFile );
 					$objService = new Objects ();
-					Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'suptestssss', (array) $titles);
+					//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'suptestssss', (array) $titles);
 					$templates = json_decode($configService->get('bulkupload'),true);
 					$template = $templates[$request->get('templateId')];
 					
@@ -415,10 +415,6 @@ class IndexController extends Controller
 						$newReferral = $objService->save ( [ 
 								'data' => $data 
 						] );
-						if ($id < 211431)
-						{
-							Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'heywhathtehell' . $id, $results );
-							}
 					}
 					}
 					// close opened csv file
