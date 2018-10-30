@@ -61,7 +61,8 @@ Ext.define('CB.file.edit.Window', {
         return [
             //this.actions.edit
             //,this.actions.restoreVersion
-            ,this.actions.save
+            //,
+            this.actions.save
             ,this.actions.cancel
             ,this.downloadSeparator
             ,this.actions.download
