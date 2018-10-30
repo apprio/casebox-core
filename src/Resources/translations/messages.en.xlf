@@ -1007,7 +1007,7 @@
             </trans-unit>     
            <trans-unit id="3184">
                 <source>IdentifiedNeeds</source>
-                <target>Identified Needs</target>
+                <target>Self-Identified Needs</target>
             </trans-unit>      
            <trans-unit id="3185">
                 <source>AddAddress</source>
@@ -1071,7 +1071,7 @@
             </trans-unit>         
            <trans-unit id="3201">
                 <source>caseStatus6</source>
-                <target>Transferred</target>
+                <target>Transitioned</target>
             </trans-unit>   		
             <trans-unit id="3203">
                 <source>Resources</source>

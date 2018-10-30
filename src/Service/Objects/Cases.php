@@ -688,7 +688,7 @@ class Cases extends Object
      * Mark the task as transferred
      * @return void
      */
-    public function markTransferred()
+    public function markTransitioned()
     {
     	$d = &$this->data;
     	$sd = &$d['sys_data'];
@@ -1178,7 +1178,7 @@ class Cases extends Object
 
         if (!empty($sd['transferred_dt'])) {
         	$dateLines .= '<tr><td class="prop-key">'.
-        			$this->trans('Transferred').':</td><td>'.
+        			$this->trans('Transitioned').':</td><td>'.
         			Util\formatAgoTime($sd['transferred_dt']).'</td></tr>';
         }
         
@@ -1252,7 +1252,7 @@ class Cases extends Object
                     '</div></td><td>'.$un.''.
                     '<p class="gr" title="'.$cdt.'">'.(
                     $transferred
-                        ? $this->trans('Transferred').$tdateText.'<br/>'
+                        ? $this->trans('Transitioned').$tdateText.'<br/>'
                         : ''
                     ).(
                     $completed

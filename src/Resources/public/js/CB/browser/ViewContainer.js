@@ -1306,9 +1306,6 @@ Ext.define('CB.browser.ViewContainer', {
             this.actions['delete'].setDisabled(inRecycleBin);
             this.actions.contextDelete.setDisabled(inRecycleBin);
 
-            this.actions.webdavlink.setDisabled(firstObjType !== 'file');
-            this.actions.webdavlink.setHidden(firstObjType !== 'file' || (firstFileEditor !== 'webdav'));
-
             if(!inRecycleBin && (inGridView || inDashboardView)) {
                 this.actions['delete'].show();
 				this.actions['edit'].show();
@@ -1628,7 +1625,7 @@ Ext.define('CB.browser.ViewContainer', {
 
             switch(detectFileEditor(p.name)) {
                 case 'webdav':
-                    App.openWebdavDocument(p);
+                    this.editObject(p);
                     break;
 
                 default:

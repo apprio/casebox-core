@@ -1293,7 +1293,7 @@ Ext.define('CB.object.edit.Window', {
     ,onPermalinkClick: function(b, e) {
         window.prompt(
             'Copy to clipboard: Ctrl+C, Enter'
-            , window.location.origin + '/' + App.config.coreName + '/view/' + this.data.id + '/'
+            , window.location.origin + '/c/' + App.config.coreName + '/view/' + this.data.id + '/'
         );
     }
 

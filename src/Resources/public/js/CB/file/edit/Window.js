@@ -59,9 +59,10 @@ Ext.define('CB.file.edit.Window', {
         this.downloadSeparator = Ext.create({xtype: 'tbseparator'});
 
         return [
-            this.actions.edit
-            ,this.actions.restoreVersion
-            ,this.actions.save
+            //this.actions.edit
+            //,this.actions.restoreVersion
+            //,
+            this.actions.save
             ,this.actions.cancel
             ,this.downloadSeparator
             ,this.actions.download
@@ -76,12 +77,12 @@ Ext.define('CB.file.edit.Window', {
                 ,iconCls: 'i-points'
                 ,menu: [
                     this.actions['delete']
-                    ,this.actions.webdavlink
-                    ,this.actions.rename
-                    ,this.actions.permalink
-                    ,'-'
-                    ,this.actions.notifyOn
-                    ,this.actions.notifyOff
+                    //,this.actions.webdavlink
+                    //,this.actions.rename
+                    //,this.actions.permalink
+                    //,'-'
+                    //,this.actions.notifyOn
+                    //,this.actions.notifyOff
                 ]
             })
            // ,this.actions.showInfoPanel // Apprio Dumb Down
