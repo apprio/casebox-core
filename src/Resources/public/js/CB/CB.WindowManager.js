@@ -197,7 +197,7 @@ Ext.define('CB.WindowManager', {
 
         url = url + 'edit/' + data.template_id;
         if(!Ext.isEmpty(data.id)) {
-            url += '/' + data.id;
+            url += '/c/' + data.id;
         }
 
         window.open(url, '_blank');

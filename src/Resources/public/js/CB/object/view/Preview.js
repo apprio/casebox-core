@@ -314,9 +314,9 @@ Ext.define('CB.object.view.Preview', {
 
         this.update('<div class="x-preview-mask">' + L.SelectPreviewItem + '</div>');
 
-        if(this.getEl().isVisible(true)) {
+        /*if(this.getEl().isVisible(true)) {
             this.body.scrollTo('top', 0);
-        }
+        }*/
     }
 
     ,getContainerToolbarItems: function() {
