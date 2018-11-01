@@ -370,7 +370,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
             )
 			and users_groups.id in 
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in 
-			(select id from users_groups where replace(users_groups.name,\'Managers\',\'Manager\') = \'Case Manager\'))) case_managers,
+			(select id from users_groups where replace(users_groups.name,\'Workers\',\'Worker\') = \'Case Worker\'))) case_managers,
 			(select 141 template_id, count(*) total from users_groups 
 			where enabled = 1 and users_groups.id IN 
 			(SELECT distinct aa.id
@@ -388,7 +388,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			and users_groups.id in
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in
 			(select id from users_groups 
-			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'Case Manager Supervisor\'))) case_manager_supervisors
+			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'Case Worker Supervisor\'))) case_manager_supervisors
 			where 
 			tree.template_id = 141
 			and
