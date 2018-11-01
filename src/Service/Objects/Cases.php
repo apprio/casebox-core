@@ -1305,7 +1305,6 @@ class Cases extends Object
 		
 		$pb[2] = 
             '<table class="obj-preview"><tbody>'.
-			//'<tr class="prop-header"><th colspan="2" width="50%" style>Assigned Case Manager</th><th colspan="2" width="50%" style>Self Reported/Identified Population and Needs</th></tr>'.
             $ownerRow.'</tbody></table></td>'.
             $assigneeRow. '</tbody></table>'.
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('ClientIntake') .':</td><td width="35%" style="width:15%" class="prop-val">'.

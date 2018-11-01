@@ -655,11 +655,11 @@ class Instance
 		$zip->addFromString($clientId.'recoveryplan.pdf',$recoveryPlan);
 		$data = [
 				'pid' => $clientId,
-				'title' => 'Case Note',
+				'title' => 'Record Note',
 				'template_id' => 527,
 				'path' => 'Tree/System/Clients',
 				'view' => 'edit',
-				'name' => 'New Case Note',
+				'name' => 'New Record Note',
 				'data' => [
 						'_entrydate' => date('Y-m-d\TH:i:s\Z'),
 						'_casenote' => 'Transfer from Export',
