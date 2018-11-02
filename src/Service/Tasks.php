@@ -66,7 +66,7 @@ class Tasks
         $obj = Objects::getCachedObject($p['id']);
         $data = $obj->getData();
 
-		if ($obj->getTemplateName() == "Client")
+		if ($obj->getType() == 'case')
 		{
 			$obj->setUserStatus($status, false); //Set user to current user
 			return $rez;

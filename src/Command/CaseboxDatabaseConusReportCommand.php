@@ -180,7 +180,7 @@ $femasql = 'select
    (SELECT COUNT(*) FROM objects where
       sys_data like \'%"case_status":"Cerrado"%\'
 			and (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF))
-      and sys_data like \'%"closurereason_s":"Cliente se ha mudado fuera del área de servicio%\' and
+      and sys_data like \'%"closurereason_s":"Cliente se ha mudado fuera del ï¿½rea de servicio%\' and
       sys_data like CONCAT(\'%task_d_closed":"\',\''.$date.'\',\'%\')) closed_records_moved, 
          (SELECT COUNT(*) FROM objects, tree where
          tree.id = objects.id and 
@@ -245,7 +245,7 @@ $femasql = 'select
 						AND tree.pid in (select id from objects 
             where (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF)))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_food,  
-			 (select count(*) from tree where template_id =607 and name like \'Muebles y Electrodomésticos%\'
+			 (select count(*) from tree where template_id =607 and name like \'Muebles y Electrodomï¿½sticos%\'
 			AND tree.pid in (select id from objects 
             where (je(data, \'_location_type\') in (LOCATION_STUFF) or je(data, \'_location_type.value\') in (LOCATION_STUFF)))
 			and name not like \'%-  []%\' and dstatus = 0 AND DATE(tree.cdate) = \''.$date.'\') referrals_furniture,                          
@@ -324,7 +324,7 @@ $femasql = 'select
             )
 			and users_groups.id in 
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in 
-			(select id from users_groups where replace(users_groups.name,\'Managers\',\'Manager\') = \'Case Manager\'))) case_managers,
+			(select id from users_groups where replace(users_groups.name,\'Supervisors\',\'Supervisor\') = \'Case Supervisor\'))) case_managers,
 			(select 141 template_id, count(*) total from users_groups 
 			where enabled = 1 and users_groups.id IN 
 			(SELECT distinct aa.id
@@ -342,7 +342,7 @@ $femasql = 'select
 			and users_groups.id in
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in
 			(select id from users_groups 
-			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'Case Manager Supervisor\'))) case_manager_supervisors
+			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'IDCM Worker Supervisor\'))) case_manager_supervisors
 			where 
 			tree.template_id = 141
 			and
@@ -402,33 +402,33 @@ and IF(template_id=141,id,pid) in (select id from objects
 			SUM(IF (sys_data like \'%"housingclientdamagerating_s":"No dete%\',1,0) ) home_damage_unknown,
 			SUM(IF (sys_data like \'%(TSA)%\',1,0) ) home_enrolled_in_tsa,
 			SUM(IF (sys_data like \'%seguro de propietario%\',1,0) ) home_homeowners_insurance,
-			SUM(IF (sys_data like \'%específico para el tipo de dano%\',1,0) ) home_hazard_insurance,
+			SUM(IF (sys_data like \'%especï¿½fico para el tipo de dano%\',1,0) ) home_hazard_insurance,
 			SUM(IF (sys_data like \'%Falta de cobertura de seguro apropiada%\',1,0) ) home_lackof_insurance,
 			SUM(IF (sys_data like \'%Cliente no conoce su estado de seguro%\',1,0) ) home_doesntknow_insurance,
 			SUM(IF (sys_data like \'%Cliente estaba asegurado pero no tiene informacion de su poliza%\',1,0) ) home_doesnthave_insurance,
 			SUM(IF (sys_data like \'%Cliente no estaba asegurado%\',1,0) ) home_uninsured,
 			TRUNCATE(AVG(IF (sys_data like \'%financialmonthlyincome_i%\',substring(sys_data, LOCATE(\'financialmonthlyincome_i\',sys_data)+26,LOCATE(\',\', substring(sys_data, LOCATE(\'financialmonthlyincome_i\',sys_data)+27))),0)),2) financial_income_level,
 			TRUNCATE(AVG(IF (sys_data like \'%financialpercentageoffederalpoverylevel_f%\',substring(sys_data, LOCATE(\'financialpercentageoffederalpoverylevel_f\',sys_data)+43,LOCATE(\',\', substring(sys_data, LOCATE(\'financialpercentageoffederalpoverylevel_f\',sys_data)+44))),0)),2) financial_federal_poverty_level,
-			SUM(IF (sys_data like \'%"employmentreferralneeded_s":"Sí"%\',1,0) ) employment_referral_needed,
-			SUM(IF (sys_data like \'%"healthinsurancelostdisaster_s":"Sí"%\',1,0) ) insurance_lost_to_disaster,
-			SUM(IF (sys_data like \'%"healthhavehealthinsurance_s":"Sí"%\',1,0) ) insurance_have_insurance,
+			SUM(IF (sys_data like \'%"employmentreferralneeded_s":"Sï¿½"%\',1,0) ) employment_referral_needed,
+			SUM(IF (sys_data like \'%"healthinsurancelostdisaster_s":"Sï¿½"%\',1,0) ) insurance_lost_to_disaster,
+			SUM(IF (sys_data like \'%"healthhavehealthinsurance_s":"Sï¿½"%\',1,0) ) insurance_have_insurance,
 			SUM(IF (sys_data like \'%"healthinsurancetype_s":"S-Chip%"%\',1,0) ) insurance_s_chip,
-			SUM(IF (sys_data like \'%"transportationreferralneeded_s":"Sí"%\',1,0) ) transportation_referral_needed,
-			SUM(IF (sys_data like \'%"medicalreferralneeded_s":"Sí"%\',1,0) ) health_referral_needed,
-            SUM(IF (sys_data like \'%"medicalliketospeak_s":"Sí"%\',1,0) ) client_speak_to_someone,
-            SUM(IF (sys_data like \'%"medicalindistress_s":"Sí"%\',1,0) ) relational_stress,			
+			SUM(IF (sys_data like \'%"transportationreferralneeded_s":"Sï¿½"%\',1,0) ) transportation_referral_needed,
+			SUM(IF (sys_data like \'%"medicalreferralneeded_s":"Sï¿½"%\',1,0) ) health_referral_needed,
+            SUM(IF (sys_data like \'%"medicalliketospeak_s":"Sï¿½"%\',1,0) ) client_speak_to_someone,
+            SUM(IF (sys_data like \'%"medicalindistress_s":"Sï¿½"%\',1,0) ) relational_stress,			
 			SUM(IF (sys_data like \'%Cuidado de Ninos%\' AND sys_data like \'%"childassesmentreferralneeded_s"%\',1,0) ) child_care_referral_needed,
-			SUM(IF (sys_data like \'%"childassesmentfosterchildren_s":"Sí"%\',1,0) ) child_fostercare,
+			SUM(IF (sys_data like \'%"childassesmentfosterchildren_s":"Sï¿½"%\',1,0) ) child_fostercare,
 			SUM(IF (sys_data like \'%Head Start%\' AND sys_data like \'%"childassesmentreferralneeded_s"%\',1,0) ) child_headstart_referral_needed,
 			SUM(IF (sys_data like \'%Manutencion de Ninos%\' AND sys_data like \'%"childassesmentreferralneeded_s"%\',1,0) ) child_support_referral_needed,
 			SUM(IF ((sys_data like \'%Distrito Escolar%\' OR sys_data like \'%school supplies%\') AND sys_data like \'%"childassesmentreferralneeded_s"%\',1,0) ) child_education_support_needed,
-			SUM(IF (sys_data like \'%"foodreferralneeded_s":"Sí"%\',1,0) ) food_referral_needed,
+			SUM(IF (sys_data like \'%"foodreferralneeded_s":"Sï¿½"%\',1,0) ) food_referral_needed,
 			SUM(IF (sys_data like \'%D-SNAP%\',1,0) ) dsnap_referral_needed,
-			SUM(IF (sys_data like \'%"clothingreferralneeded_s":"Sí"%\',1,0) ) clothing_referral_needed,
-			SUM(IF (sys_data like \'%"furnitureandappliancesreferralneeded_s":"Sí"%\',1,0) ) furniture_referral_needed,
-			SUM(IF (sys_data like \'%"seniorservicesreferralneeded_s":"Sí"%\',1,0) ) senior_referral_needed,
-			SUM(IF (sys_data like \'%"languagereferralneeded_s":"Sí"%\',1,0) ) language_referral_needed,
-			SUM(IF (sys_data like \'%"legalservicesreferralneeded_s":"Sí"%\',1,0) ) legal_referral_needed,
+			SUM(IF (sys_data like \'%"clothingreferralneeded_s":"Sï¿½"%\',1,0) ) clothing_referral_needed,
+			SUM(IF (sys_data like \'%"furnitureandappliancesreferralneeded_s":"Sï¿½"%\',1,0) ) furniture_referral_needed,
+			SUM(IF (sys_data like \'%"seniorservicesreferralneeded_s":"Sï¿½"%\',1,0) ) senior_referral_needed,
+			SUM(IF (sys_data like \'%"languagereferralneeded_s":"Sï¿½"%\',1,0) ) language_referral_needed,
+			SUM(IF (sys_data like \'%"legalservicesreferralneeded_s":"Sï¿½"%\',1,0) ) legal_referral_needed,
 			(SELECT SUBSTR(tree.name, 1, LOCATE(\'-\', tree.name) - 1) FROM   objects, tree where objects.id = tree.id 
 			AND tree.template_id = 607 and tree.name not like \'%-  []%\' and dstatus = 0 
 			AND (DATE(tree.cdate) = \''.$date.'\')

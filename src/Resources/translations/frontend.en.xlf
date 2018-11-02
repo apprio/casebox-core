@@ -3255,7 +3255,7 @@
             </trans-unit>    
             <trans-unit id="3173">
                 <source>AssignedCM</source>
-                <target>Assigned CM</target>
+                <target>IDCM Worker</target>
             </trans-unit> 
             <trans-unit id="3174">
                 <source>FEMATier</source>
@@ -3475,7 +3475,7 @@
             </trans-unit>       
  	    	<trans-unit id="3228">
                 <source>CaseManager</source>
-                <target>Case Manager</target>
+                <target>IDCM Worker</target>
             </trans-unit>   
  	    	<trans-unit id="3229">
                 <source>EmailAddress</source>
@@ -3491,7 +3491,7 @@
             </trans-unit>   
  	    	<trans-unit id="3232">
                 <source>CMTelephoneNumber</source>
-                <target>CM Telephone Number</target>
+                <target>IDCM Telephone Number</target>
             </trans-unit>   
  	    	<trans-unit id="3233">
                 <source>ClientPlanCreationDate</source>
@@ -3539,7 +3539,7 @@
             </trans-unit>     
  	    	<trans-unit id="3244">
                 <source>CaseManagerSignature</source>
-                <target>Case Manager Signature</target>
+                <target>IDCM Worker Signature</target>
             </trans-unit>     
  	    	<trans-unit id="3245">
                 <source>ClientSignature</source>

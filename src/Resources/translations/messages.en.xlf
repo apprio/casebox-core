@@ -987,11 +987,11 @@
             </trans-unit>     
            <trans-unit id="3179">
                 <source>SpecialAtRiskPopulation</source>
-                <target>Special/At Risk Population</target>
+                <target>Self-Reported Special/At Risk Population</target>
             </trans-unit>     
            <trans-unit id="3180">
                 <source>CaseManager</source>
-                <target>Case Manager</target>
+                <target>IDCM Worker</target>
             </trans-unit>     
            <trans-unit id="3181">
                 <source>ConsentForm</source>
