@@ -342,7 +342,7 @@ $femasql = 'select
 			and users_groups.id in
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in
 			(select id from users_groups 
-			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'Case Worker Supervisor\'))) case_manager_supervisors
+			where replace(replace(users_groups.name,\'Managers\',\'Manager\'), \'Supervisors\',\'Supervisor\') = \'IDCM Worker Supervisor\'))) case_manager_supervisors
 			where 
 			tree.template_id = 141
 			and
