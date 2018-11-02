@@ -3475,7 +3475,7 @@
             </trans-unit>       
  	    	<trans-unit id="3228">
                 <source>CaseManager</source>
-                <target>Case Worker</target>
+                <target>IDCM Worker</target>
             </trans-unit>   
  	    	<trans-unit id="3229">
                 <source>EmailAddress</source>
@@ -3539,7 +3539,7 @@
             </trans-unit>     
  	    	<trans-unit id="3244">
                 <source>CaseManagerSignature</source>
-                <target>Case Worker Signature</target>
+                <target>IDCM Worker Signature</target>
             </trans-unit>     
  	    	<trans-unit id="3245">
                 <source>ClientSignature</source>
