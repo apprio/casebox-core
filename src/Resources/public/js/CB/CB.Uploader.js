@@ -920,3 +920,24 @@ Ext.define('CB.UploadWindowButton', {
         this.setText(L.UploadQueue);
     }
 });
+
+Ext.define('CB.PRAWindowButton', {
+    extend: 'Ext.Button'
+    ,alias: ['widget.prawindowbutton']
+    // ,cls: 'upload-btn'
+
+    ,initComponent: function(){
+        
+        Ext.apply(this, {
+            text: L.PRAWindow
+            ,handler: this.showPRAWindow
+            ,scope: this
+        });
+
+        this.callParent(arguments);
+
+    }
+    ,showPRAWindow: function(b, e){
+        Ext.Msg.alert(L.PRAWindow, L.PRAStatement);
+    }
+});

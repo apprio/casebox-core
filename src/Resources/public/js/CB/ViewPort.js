@@ -207,7 +207,9 @@ Ext.define('CB.ViewPort', {
                 style:'border-top: 1px solid #aeaeae'
                 ,height: 25
                 ,trayItems: [
-                    {xtype: 'uploadwindowbutton'}
+                    {xtype: 'uploadwindowbutton'},
+                    '-',
+                    {xtype: 'prawindowbutton'}
                 ]
         });
     }
