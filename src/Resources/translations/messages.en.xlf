@@ -1072,7 +1072,11 @@
            <trans-unit id="3201">
                 <source>caseStatus6</source>
                 <target>Transitioned</target>
-            </trans-unit>   		
+            </trans-unit>   	
+            <trans-unit id="3202">
+                <source>Favorites</source>
+                <target>Favorites</target>
+            </trans-unit>		            	
             <trans-unit id="3203">
                 <source>Resources</source>
                 <target>Resources</target>
