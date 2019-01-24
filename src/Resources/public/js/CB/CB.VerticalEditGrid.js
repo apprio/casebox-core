@@ -884,7 +884,50 @@ Ext.define('CB.VerticalEditGrid', {
 						}
 						break;						
 						
-                    case '_objects':
+                    case '_objects': // FIRST START FEMA NUMBER CUSTOM CODE
+                    	if (tr.get('title') === "Does disaster survivor have a FEMA registration number?") //HARDCODED!
+                    	{
+                    		 //1547 = DECLINED, 1548 = DOESNT KNOW,1546 = WOULD LIKE TO REGISTER,1549 - DECLINED REGISTER
+	            			 var femaValue = "";
+	            			 var femaRequired = false;
+	            			 switch (context.value) {
+								  case 1547:
+								    femaValue = "DECLINED";
+								    break;
+								  case 1548:
+								    femaValue = "FOLLOWUP";
+								    break;
+								  case 1546:
+								     femaValue = "REGISTER";
+								    break;
+								  case 1549:
+								    femaValue = "DECLINEDREGISTER";
+								    break;
+								  case 1545:
+								  	femaValue = "";
+								  	femaRequired = true;
+								}
+                    		if (femaValue != "") //THEY DON'T HAVE #
+                    		{
+		                	 	if (femaValue == "FOLLOWUP" || femaValue == "REGISTER") //They are going to followup or register
+		          				{
+		      				            Ext.Msg.alert(
+						                'Notice',
+						                'You have selected a ' + femaValue.toLowerCase() + ' action and agree to ' + femaValue.toLowerCase() + ' with the client.  If this is not what was meant, please select another option.'
+						            	);
+						        }
+                    		}
+                    		var recordIndex = this.store.findExact('title', 'FEMA Registration Number'); //HARDCODED!
+                    		if(recordIndex >= 0) //FEMA REGISTRATION NUMBER FIELD 
+							{
+								var r = this.store.getAt(recordIndex);
+								var n = this.helperTree.getNode(r.get('id'));
+								n.data.templateRecord.get('cfg').required = femaRequired;
+								n.data.templateRecord.get('cfg').readOnly = !femaRequired;
+								r.set('value', femaValue);
+                    		}
+                    	}
+                    	
                         if(Ext.isArray(context.value)) {
                             context.value = context.value.join(',');
                             context.record.set('value', context.value);

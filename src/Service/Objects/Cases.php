@@ -1027,7 +1027,13 @@ class Cases extends Object
 		}		
 
 		if (!empty($sd['solr']['femanumber_s'])) {
-			$femaLine = $femaLine . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . " - ";
+			if (!is_numeric($sd['solr']['femanumber_s']))
+			{
+				$femaLine = $femaLine . '<span style="color:red;font-weight:bold;">' . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . "</span> - ";
+			}
+			else {
+				$femaLine = $femaLine . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . " - ";	
+			}
 		}	
 		else
 		{
