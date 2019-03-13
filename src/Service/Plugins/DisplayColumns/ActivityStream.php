@@ -47,7 +47,7 @@ class ActivityStream extends Base
         $actionLogIds = [];
 		$caseId = $p['inputParams']['pid'];
         $comments = new Objects\Plugins\Comments();
-		$oldName = 'Object';
+		$oldName = 'CBObject';
         $logRecs = DM\Log::getRecordsByParent($caseId);
 
 		foreach ($logRecs as $r) {

@@ -29,11 +29,11 @@ use Casebox\CoreBundle\Traits\TranslatorTrait;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * Class Object
+ * Class CBObject
  *
  * Class for generic casebox objects
  */
-class Object
+class CBObject
 {
     use TranslatorTrait;
 
@@ -85,7 +85,7 @@ class Object
     ];
 
     /**
-     * Object constructor
+     * CBObject constructor
      */
     public function __construct($id = null, $loadTemplate = true)
     {
@@ -101,7 +101,7 @@ class Object
     /**
      * Create an object with specified params
      *
-     * @param array|bool|false $p Object properties
+     * @param array|bool|false $p CBObject properties
      *
      * @return int
      * @throws \Exception

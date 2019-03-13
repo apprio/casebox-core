@@ -526,7 +526,7 @@ class Browser
                     }
 
                     /*get distinct target field values for selected objects in parent field */
-                    $obj = new Objects\Object();
+                    $obj = new Objects\CBObject();
                     $values = [];
                     foreach ($ids as $id) {
                         $obj->load($id);

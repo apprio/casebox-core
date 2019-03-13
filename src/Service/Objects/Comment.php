@@ -7,7 +7,7 @@ use Casebox\CoreBundle\Service\User;
 use Casebox\CoreBundle\Service\Objects;
 use Casebox\CoreBundle\Service\Log;
 
-class Comment extends Object
+class Comment extends CBObject
 {
     /**
      * create method
@@ -27,7 +27,7 @@ class Comment extends Object
         //     $p['data']['_title'] = $msg;
         // }
 
-        //disable default log from parent Object class
+        //disable default log from parent CBObject class
         //we'll set comments add as comment action for parent
         $this->configService->setFlag('disableActivityLog', true);
 
@@ -58,7 +58,7 @@ class Comment extends Object
      */
     public function update($p = false)
     {
-        //disable default log from parent Object class
+        //disable default log from parent CBObject class
         //we'll set comments add as comment action for parent
         $this->configService->setFlag('disableActivityLog', true);
 

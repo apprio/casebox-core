@@ -2,7 +2,7 @@
 
 namespace Casebox\CoreBundle\Event;
 
-use Casebox\CoreBundle\Service\Objects\Object as ObjectsObject;
+use Casebox\CoreBundle\Service\Objects\CBObject as ObjectsObject;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

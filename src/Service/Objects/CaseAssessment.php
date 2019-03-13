@@ -11,7 +11,7 @@ use Casebox\CoreBundle\Service\DataModel as DM;
 /**
  * Template class
  */
-class CaseAssessment extends Object
+class CaseAssessment extends CBObject
 {
 	public function create($p = false)
     {

@@ -11,7 +11,7 @@ use Casebox\CoreBundle\Service\Log;
 /**
  * class for casebox files objects
  */
-class File extends Object
+class File extends CBObject
 {
     /**
      * create method
@@ -19,7 +19,7 @@ class File extends Object
      */
     public function create($p = false)
     {
-        //disable default log from parent Object class
+        //disable default log from parent CBObject class
         //we'll set comments add as comment action for parent
         $disableLogFlag = $this->configService->getFlag('disableActivityLog');
 
@@ -102,7 +102,7 @@ class File extends Object
      */
     public function update($p = false)
     {
-        //disable default log from parent Object class
+        //disable default log from parent CBObject class
         $this->configService->setFlag('disableActivityLog', true);
 
         $rez = parent::update($p);
