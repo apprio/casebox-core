@@ -4,7 +4,7 @@ namespace Casebox\CoreBundle\Service\Objects\Plugins;
 
 use Casebox\CoreBundle\Service\Cache;
 use Casebox\CoreBundle\Service\Files as FilesService;
-use Casebox\CoreBundle\Service\Objects\Object;
+use Casebox\CoreBundle\Service\Objects\CBObject;
 use Casebox\CoreBundle\Service\Search;
 use Casebox\CoreBundle\Service\User;
 use Casebox\CoreBundle\Service\DataModel as DM;
@@ -83,7 +83,7 @@ class Comments extends Base
             //data in solr has already encoded html special chars
             // so we need to decode it and to format the message (where the chars will be encoded again)
             $d['content'] = htmlspecialchars_decode($d['content'], ENT_COMPAT);
-            $d['content'] = Object::processAndFormatMessage($d['content']);
+            $d['content'] = CBObject::processAndFormatMessage($d['content']);
 
             array_unshift($rez['data'], $d);
         }
@@ -131,7 +131,7 @@ class Comments extends Base
             //data in solr has already encoded html special chars
             // so we need to decode it and to format the message (where the chars will be encoded again)
             $d['content'] = htmlspecialchars_decode($d['content'], ENT_COMPAT);
-            $d['content'] = Object::processAndFormatMessage($d['content']);
+            $d['content'] = CBObject::processAndFormatMessage($d['content']);
 
             array_unshift($rez['data'], $d);
         }

@@ -12,7 +12,7 @@ use Casebox\CoreBundle\Service\User;
 /**
  * Class Task
  */
-class Task extends Object
+class Task extends CBObject
 {
     public static $STATUS_NONE = 0;
 

@@ -2,7 +2,7 @@
 
 namespace Casebox\CoreBundle\Event;
 
-use Casebox\CoreBundle\Service\Objects\Object;
+use Casebox\CoreBundle\Service\Objects\CBObject;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -11,14 +11,14 @@ use Symfony\Component\EventDispatcher\Event;
 class BeforeNodeDbUpdateEvent extends Event
 {
     /**
-     * @var Object
+     * @var CBObject
      */
     protected $params;
 
     /**
      * BeforeNodeDbUpdateEvent constructor
      */
-    public function __construct(Object $object)
+    public function __construct(CBObject $object)
     {
         $this->params = $object;
     }

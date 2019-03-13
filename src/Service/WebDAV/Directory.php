@@ -20,7 +20,7 @@ class Directory extends Node implements ICollection, IQuota
 
     // public $nodeId;   // the ID of the node
 
-    public $cbNode;   // CB Object of Directory
+    public $cbNode;   // CB CBObject of Directory
 
     private $env;
 

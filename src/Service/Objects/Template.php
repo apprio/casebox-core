@@ -13,7 +13,7 @@ use Casebox\CoreBundle\Service\Search;
 /**
  * Template class
  */
-class Template extends Object
+class Template extends CBObject
 {
     /**
      * available table fields in templates table
@@ -519,7 +519,7 @@ class Template extends Object
                     if (empty($renderers)) {
                         $value = nl2br(htmlspecialchars($value, ENT_COMPAT));
                     } else {
-                        $value = nl2br(Object::processAndFormatMessage($value), $renderers);
+                        $value = nl2br(CBObject::processAndFormatMessage($value), $renderers);
                     }
 
                     break;

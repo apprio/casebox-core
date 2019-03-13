@@ -8,7 +8,7 @@ use Casebox\CoreBundle\Service\DataModel as DM;
 /**
  * Class Shortcut
  */
-class Shortcut extends Object
+class Shortcut extends CBObject
 {
     /**
      * target object id

@@ -10,7 +10,7 @@ use Casebox\CoreBundle\Service\DataModel as DM;
 /**
  * Template class
  */
-class TemplateField extends Object
+class TemplateField extends CBObject
 {
     /**
      * available table fields in templates table

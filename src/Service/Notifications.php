@@ -3,7 +3,7 @@
 namespace Casebox\CoreBundle\Service;
 
 use Casebox\CoreBundle\Service\DataModel as DM;
-use Casebox\CoreBundle\Service\Objects\Object;
+use Casebox\CoreBundle\Service\Objects\CBObject;
 use Casebox\CoreBundle\Traits\TranslatorTrait;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -734,7 +734,7 @@ class Notifications
 
     protected static function getCommentMailBody(&$action, &$userData)
     {
-        $rez = nl2br(Object::processAndFormatMessage($action['data']['comment']));
+        $rez = nl2br(CBObject::processAndFormatMessage($action['data']['comment']));
         $rez .= '<br /><hr />'.'To add a comment, reply to this email.<br />';
 
         // <a href="#">Unsubscribe</a> (will not receive emails with new comments for “' . $name . '”)';
