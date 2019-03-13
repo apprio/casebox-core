@@ -12,7 +12,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 /**
  * Class TimeTracking
  */
-class TimeTracking extends Object
+class TimeTracking extends CBObject
 {
     /**
      * create method
@@ -26,7 +26,7 @@ class TimeTracking extends Object
 
         $p['data']['cost'] = $this->getTimeCost();
 
-        //disable default log from parent Object class
+        //disable default log from parent CBObject class
         $this->configService->setFlag('disableActivityLog', true);
 
         $rez = parent::create($p);
@@ -53,7 +53,7 @@ class TimeTracking extends Object
 
         $p['data']['cost'] = $this->getTimeCost();
 
-        //disable default log from parent Object class
+        //disable default log from parent CBObject class
         $this->configService->setFlag('disableActivityLog', true);
 
         $rez = parent::update($p);

@@ -8,7 +8,7 @@ use Casebox\CoreBundle\Service\Objects;
 /**
  * Class Config
  */
-class Config extends Object
+class Config extends CBObject
 {
     /**
      * internal function used by create method for creating custom data

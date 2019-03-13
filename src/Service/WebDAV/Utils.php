@@ -4,7 +4,7 @@ namespace Casebox\CoreBundle\Service\WebDAV;
 use Casebox\CoreBundle\Service\Cache;
 use Casebox\CoreBundle\Service\Files;
 use Casebox\CoreBundle\Service\Objects\File;
-use Casebox\CoreBundle\Service\Objects\Object;
+use Casebox\CoreBundle\Service\Objects\CBObject;
 use Casebox\CoreBundle\Service\Search;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -14,15 +14,15 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class Utils
 {
     /**
-     *  Loads CB Object by Id
+     *  Loads CB CBObject by Id
      *
      * @param int $id nodeId
      *
-     * @return Object
+     * @return CBObject
      */
     public static function getNodeById($id)
     {
-        $o = new Object();
+        $o = new CBObject();
 
         return $o->load($id);
     }
@@ -186,7 +186,7 @@ class Utils
      * @param integer $pid
      * @param string $name
      *
-     * @return Object|int
+     * @return CBObject|int
      * @throws \Exception
      */
     public static function createDirectory($pid, $name)
@@ -201,7 +201,7 @@ class Utils
             ),
             'data' => ['_title' => $name],
         ];
-        $temp = new Object();
+        $temp = new CBObject();
         $temp = $temp->create($item);
 
         // Solr tree Update
@@ -288,7 +288,7 @@ class Utils
      */
     public static function deleteObject($id)
     {
-        $node = new Object($id);
+        $node = new CBObject($id);
         $node->delete();
 
         // Solr tree Update

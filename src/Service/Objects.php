@@ -274,7 +274,7 @@ class Objects
             }
 
             /* select distinct associated case ids from the case */
-            $obj = new Objects\Object($p['id']);
+            $obj = new Objects\CBObject($p['id']);
             $obj->load();
             $template = $obj->getTemplate();
             $linearData = $obj->getLinearData();
@@ -610,7 +610,7 @@ class Objects
                 break;
 
             default:
-                return new Objects\Object($objectId);
+                return new Objects\CBObject($objectId);
                 break;
         }
     }

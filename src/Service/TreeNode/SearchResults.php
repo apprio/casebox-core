@@ -2,7 +2,7 @@
 
 namespace Casebox\CoreBundle\Service\TreeNode;
 
-use Casebox\CoreBundle\Service\Objects\Object;
+use Casebox\CoreBundle\Service\Objects\CBObject;
 use Casebox\CoreBundle\Service\Search;
 use Casebox\CoreBundle\Service\Util;
 
@@ -135,7 +135,7 @@ class SearchResults extends Dbnode
     protected function getSearchParams(&$rp) //searchObject
     {
         // creating search object
-        $so = new Object();
+        $so = new CBObject();
 
         if (!empty($rp['search']['template_id'])) {
             // searching from a search form

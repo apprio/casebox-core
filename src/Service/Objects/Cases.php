@@ -18,7 +18,7 @@ use Casebox\CoreBundle\Service\Objects\Plugins\Export;
  * Class Cases
  * Custom class for cases
  */
-class Cases extends Object
+class Cases extends CBObject
 {
     public static $STATUS_NONE = 0;
 
