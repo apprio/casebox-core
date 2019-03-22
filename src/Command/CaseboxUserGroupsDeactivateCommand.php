@@ -20,21 +20,22 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
         $this
             ->setName('casebox:user:deactivate')
             ->setDescription('Deactivate users based on days.')
-            ->addArgument('days', InputArgument::REQUIRED, 'The days since last login required to deactivate')
+            ->addOption('days', 'days', InputOption::VALUE_OPTIONAL, 'The days since last login required to deactivate')
 			->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'Date for action log.')
+			->addOption('emailTo', 'et', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Distribution list')		
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output = new SymfonyStyle($input, $output);
-
+		$emailTo = (!empty($input->getOption('emailTo'))) ? explode(" ", $input->getOption('emailTo')) : ['ca.ecmrshelpdesk@apprioinc.com'];	
         $container = $this->getContainer();
         $system = new System();
 		$coreName = ucfirst($container->getParameter('kernel.environment'));
         $system->bootstrap($container);
 
-        $days = intval($input->getArgument('days'));
+        $days = intval($input->getOption('days'));
 		
 		date_default_timezone_set('America/New_York');
 		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time());
@@ -43,7 +44,6 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		{
 			$days = 60;
 		}
-		
 		
 		$session = $container->get('session');
 		
@@ -164,7 +164,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		  // Give the message a subject
 		  ->setSubject($vars['title'])
 		  ->setFrom([$configService->get('email_from') => 'ECMRS Helpdesk'])
-		  ->setTo(['dstoudt@apprioinc.com'])
+		  ->setTo($emailTo)
 		  ->setBody($vars['title'])
 		  ->addPart(implode("",$list), 'text/html')
 		  ->attach(\Swift_Attachment::fromPath($zipname))
