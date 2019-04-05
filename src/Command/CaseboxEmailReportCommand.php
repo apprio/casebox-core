@@ -19,16 +19,17 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
     {
         $this
             ->setName('casebox:email:report')
-            ->setDescription('Deactivate users based on days.')
+            ->setDescription('Email report users based on days.')
 			->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'Date for action log.')
+			->addOption('emailTo', 'et', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Distribution list')		
+			->addOption('reports', 'r', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Report list')				
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output = new SymfonyStyle($input, $output);
-
-        $container = $this->getContainer();
+		$container = $this->getContainer();
         $system = new System();
 		$coreName = ucfirst($container->getParameter('kernel.environment'));
         $system->bootstrap($container);
@@ -37,29 +38,75 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
 		$date = (!empty($input->getOption('date'))) ? $input->getOption('date') : date('Y-m-d', time());
 		$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
 		$session = $container->get('session');
+		
+				$user = [
+            'id' => 1,
+            'name' => 1,
+            'first_name' => 1,
+            'last_name' => 1,
+            'sex' => 1,
+            'email' => 1,
+            'language_id' => 1,
+            'cfg' => 1,
+            'data' => 1,
+        ];
+
+		$session->set('verified',true);
+        $session->set('user', $user);
+		
+		$emailTo = (!empty($input->getOption('emailTo'))) ? explode(" ", $input->getOption('emailTo')) : [$configService->get('email_to')];
+		$reportList = (!empty($input->getOption('reports'))) ? explode(" ", $input->getOption('reports')) : explode(',',$configService->get('email_reports'));
 		$message = (new \Swift_Message())
 		  // Give the message a subject
-		  ->setSubject('ECMRS Daily Report - CONUS')
+		  ->setSubject('ECMRS Daily Report')
 		  ->setFrom([$configService->get('email_from') => 'ECMRS Helpdesk'])
-		  ->setTo(['ecmrshelpdesk@apprioinc.com'])
+		  ->setTo([$configService->get('email_to')])
 		  ->setBody('ECMRS Report')	  
 		  ;
-		  
-		$reportList = array(202888,203093);
+		
 		foreach ($reportList as $report) {
 			$reports = new Notifications();
-			$res = $reports->getReport(['reportId' => $report,'startDate'=>$date,'endDate'=>$date]);
+		
+			$res = $reports->getReport([reportId=>$report]);
+			array_unshift($res['data'], $res['colTitles']);
+			$records = $res['data'];
+       		$rez[] = implode(',', array_shift($records));
+
+        	foreach ($records as &$r) {
+            	$record = [];
+            	foreach ($res['colOrder'] as $t) {
+                	$t = strip_tags($r[$t]);
+
+                	if (!empty($t) && !is_numeric($t)) {
+                    $t = str_replace(
+                        [
+                            '"',
+                            "\n",
+                            "\r",
+                        ],
+                        [
+                            '""',
+                            '\n',
+                            '\r',
+                        ],
+                        $t
+                    );
+                    $t = '"'.$t.'"';
+                }
+                $record[] = $t;
+            }
+
+            $rez[] = implode(',', $record);
+        	}	
+			
 			date_default_timezone_set("America/New_York");
-			unset($res['columns']['total']); //remove total column
-			unset($res['columns']['areatotal']); //remove total column
+			print_r($records);
 			$vars = [
-				'title' => $res['title'] ,
+				'title' => $res['title'],
 				'columnTitle'=> $res['columns'],
-				'services'=>$res['data'],
+				'services'=>$records,
 				'currentDate'=> date("m/d/Y") .  ' ' .  date("h:i:sa")
 			];
-
-			$container = Cache::get('symfony.container');
 			$twig = $container->get('twig');
 			$html = $twig->render('CaseboxCoreBundle:email:reports.html.twig', $vars);	
 			$dompdf = new Dompdf();

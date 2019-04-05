@@ -283,6 +283,89 @@ class IndexController extends Controller
     
     }	
 
+/**
+     * @Route("/d", name="app_core_reports")
+	 * @Route("/d/", name="app_core_reports_slash")* 
+     * @param Request $request
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function reportsAction(Request $request)
+    {
+    	
+		/*$auth = $this->container->get('casebox_core.service_auth.authentication');
+        $user = $auth->isLogged(false);
+		
+		if (!$user) {
+			$vars = [
+	            'locale' => $this->container->getParameter('locale')
+	        ];
+	
+	        return $this->render('CaseboxCoreBundle::no-core-found.html.twig', $vars);
+		}*/
+		
+		return $this->redirect('/d/index.html');
+    }	
+
+
+/**
+     * @Route("/c/{coreName}/report/{id}/", name="app_core_report", requirements = {"coreName": "[a-z0-9_\-]+"})
+     * @param Request $request
+     * @param string $coreName
+     * @param string $id
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function reportAction(Request $request, $coreName, $id)
+    {
+    	
+		
+		$headers = ['Content-Type' => 'application/json', 'charset' => 'UTF-8'];		
+		$pdfParam = $request->query->get('pdf');
+		$xlsParam = $request->query->get('xls');		
+		$reportDate = empty($request->query->get('reportDateInput'))?date("Y-m-d", time() - 60 * 60 * 28):substr($request->query->get('reportDateInput'),0,10); //get report running date
+        if (empty($id)) {
+			$result['message'] = $this->trans(('Object_not_found'));
+
+            return new Response(json_encode($result), 200, $headers);
+        }
+		
+		$auth = $this->container->get('casebox_core.service_auth.authentication');
+        $user = $auth->isLogged(false);
+
+		if (!$user) {
+			return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
+		}
+		
+		$class = '\\Casebox\\CoreBundle\\Reports\\'.$id;
+        if (class_exists($class)) {
+            $class = new $class();
+			if ($pdfParam)
+			{
+				$class->run()->export($id.'Pdf')->settings(array(
+				    "phantomjs"=>"/usr/bin/phantomjs"
+				))->pdf(array(
+				    "format"=>"A4",
+				    "orientation"=>"portrait"
+				))->toBrowser($id.$reportDate.'.pdf');	
+			}
+			else if ($xlsParam)
+			{
+				$class->run()->exportToExcel($id)->toBrowser($id.$reportDate.'.xlsx');	
+			}			
+			else
+			{
+				$class->run()->render();
+			}
+			exit(0);
+        }
+		$result['message'] = $this->trans(('Object_not_found'));
+
+        return new Response(json_encode($result), 200, $headers);
+    }	
+
 	/**
 	 * @Route("/c/{coreName}/bulkupload", name="app_core_bulk_upload")
 	 * @Route("/c/{coreName}/bulkupload/", name="app_core_bulk_upload_slash")
