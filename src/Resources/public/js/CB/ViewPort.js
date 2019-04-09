@@ -207,8 +207,10 @@ Ext.define('CB.ViewPort', {
                 style:'border-top: 1px solid #aeaeae'
                 ,height: 25
                 ,trayItems: [
+                    //{xtype: 'notewindowbutton'},
+                    //'-',                
                     {xtype: 'uploadwindowbutton'},
-                    '-',
+					'-',
                     {xtype: 'prawindowbutton'}
                 ]
         });
@@ -533,6 +535,10 @@ Ext.define('CB.ViewPort', {
                     }
                     , this
                 );
+				App.windowManager.openWindow({
+                        xtype: 'CBNoteUploader'
+                        ,id: 'noteWnd'
+                });
 
             if(path[3] == 'edit') {
                 var w = App.windowManager.openObjectWindow({

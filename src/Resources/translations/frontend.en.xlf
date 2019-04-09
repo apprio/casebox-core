@@ -3632,7 +3632,11 @@
             <trans-unit id="3267">
                 <source>PRAStatement</source>
                 <target><![CDATA[OMB Control No: 0970-0461<br/>Expiration date: 05/31/2020</br></br>THE PAPERWORK REDUCTION ACT OF 1995 (Pub. L. 104-13)</br>Public reporting burden for this collection of information is estimated to average 60 minutes per response, including the time for reviewing instructions, gathering and maintaining the data needed, and reviewing the collection of information.An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number.]]></target>
-            </trans-unit>                                  
+            </trans-unit>
+            <trans-unit id="3268">
+                <source>NoteWindow</source>
+                <target>Notes</target>
+            </trans-unit>  		                                           
 		</body>
     </file>
 </xliff>
