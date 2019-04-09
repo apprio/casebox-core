@@ -273,7 +273,7 @@ class User
      */
     public function getProfileData($userId = false)
     {
-        if (!$this->isVerified()) {
+        if (!$this->isVerified() && $userId) {
             return ['success' => false, 'verify' => true];
         }
 
@@ -385,7 +385,7 @@ class User
      */
     public function saveProfileData($p)
     {
-        if (!$this->isVerified()) {
+        if (!$this->isVerified() && ($p['id'] != static::getId())) {
             return ['success' => false, 'verify' => true];
         }
 
