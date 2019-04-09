@@ -178,6 +178,7 @@ class Minify
                 // 'js/CB/favorites/Button.js',
                 'js/CB/plugin/dd/FilesDropZone.js',
                 'js/CB/CB.Uploader.js',
+                'js/CB/CB.NoteUploader.js',
                 'js/CB/CB.Security.js',
                 'js/CB/CB.UsersGroups.js',
                 'js/CB/CB.Account.js',
