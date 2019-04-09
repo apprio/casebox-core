@@ -206,8 +206,7 @@ Ext.define('CB.VerticalEditGridHelperTree', {
 						else if(!Ext.isNumber(v)) {
 							if (Ext.isDefined(App.loginData.data[v]))
 							{
-								v = App.loginData.data[v];
-								record.get('cfg').value = v;								
+								v = App.loginData.data[v];							
 							}
                         }      
                         nodeValues[0].value = v;

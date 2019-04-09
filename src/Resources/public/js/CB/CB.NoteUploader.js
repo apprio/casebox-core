@@ -166,6 +166,7 @@ Ext.define('CB.NoteForm', {
             return;
         }
         this.setDirty(false);
+        App.loginData.data = this.data.data; //add back in the note and user location
         this.fireEvent('savesuccess', this, e);
         //App.fireEvent('userprofileupdated', this.data, e);
     }
