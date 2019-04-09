@@ -281,14 +281,6 @@ class Objects
             foreach ($linearData as $f) {
                 $tf = $template->getField($f['name']);
                 if ($tf['type'] == '_objects') {
-					if (!is_numeric($field['cfg']['value']))
-					{
-						$urez = User::getPreferences(User::getId());
-						if (isset($urez['data'][$field['cfg']['value']]))
-						{
-							$field['cfg']['value'] = $urez['data'][$field['cfg']['value']];
-						}
-					}
                     $a = Util\toIntArray(@$f['value']);
                     $ids = array_merge($ids, $a);
                 }
@@ -310,6 +302,14 @@ class Objects
             $templateData = $template->getData();
             foreach ($templateData['fields'] as $field) {
                 if (!empty($field['cfg']['value'])) {
+                	if (!is_numeric($field['cfg']['value']))
+					{
+						$urez = User::getPreferences(User::getId());
+						if (isset($urez['data'][$field['cfg']['value']]))
+						{
+							$field['cfg']['value'] = $urez['data'][$field['cfg']['value']];
+						}
+					}
                     $a = Util\toIntArray($field['cfg']['value']);
                     $ids = array_merge($ids, $a);
                 }
