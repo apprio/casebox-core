@@ -22,7 +22,8 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
             ->setDescription('Email report users based on days.')
 			->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'Date for action log.')
 			->addOption('emailTo', 'et', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Distribution list')		
-			->addOption('reports', 'r', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Report list')				
+			->addOption('reports', 'r', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Report list')	
+			->addOption('subject', 's', InputArgument::IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Email subject')				
         ;
     }
 
@@ -56,18 +57,19 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
 		
 		$emailTo = (!empty($input->getOption('emailTo'))) ? explode(" ", $input->getOption('emailTo')) : [$configService->get('email_to')];
 		$reportList = (!empty($input->getOption('reports'))) ? explode(" ", $input->getOption('reports')) : explode(',',$configService->get('email_reports'));
+		$emailSubject = (!empty($input->getOption('subject'))) ? $input->getOption('subject') : 'ECMRS Daily Report';
 		$message = (new \Swift_Message())
 		  // Give the message a subject
-		  ->setSubject('ECMRS Daily Report')
+		  ->setSubject($emailSubject)
 		  ->setFrom([$configService->get('email_from') => 'ECMRS Helpdesk'])
-		  ->setTo([$configService->get('email_to')])
+		  ->setTo($emailTo)
 		  ->setBody('ECMRS Report')	  
 		  ;
 		
 		foreach ($reportList as $report) {
 			$reports = new Notifications();
 		
-			$res = $reports->getReport([reportId=>$report]);
+			$res = $reports->getReport(['reportId'=>$report]);
 			array_unshift($res['data'], $res['colTitles']);
 			$records = $res['data'];
        		$rez[] = implode(',', array_shift($records));
@@ -75,7 +77,7 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
         	foreach ($records as &$r) {
             	$record = [];
             	foreach ($res['colOrder'] as $t) {
-                	$t = strip_tags($r[$t]);
+                	$t = strip_tags(isset($r[$t])?$r[$t]:'');
 
                 	if (!empty($t) && !is_numeric($t)) {
                     $t = str_replace(
@@ -125,7 +127,7 @@ class CaseboxEmailReportCommand extends ContainerAwareCommand
 			  <title>ECMRS Daily Report Email '.$coreName.'</title>
 			</head>
 			<body>
-			  <p>Please find attached the totals for today, '.$date.'</p>
+			  <p>Please find attached the report for today, '.$date.'</p>
 			  <table><tr><td>For any issues, please contact ecmrshelpdesk@apprioinc.com</td></tr>
 		  </table>
 		</body>
