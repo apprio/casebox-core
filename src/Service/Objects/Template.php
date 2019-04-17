@@ -465,7 +465,7 @@ class Template extends CBObject
 
                 case 'time':
                     if (empty($value)) {
-                        continue;
+                        break;
                     }
 
                     $format = empty($field['format']) ? 'H:i' : $field['format'];
