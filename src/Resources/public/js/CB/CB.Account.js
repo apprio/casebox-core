@@ -1078,7 +1078,7 @@ Ext.define('CB.TSVgaForm', {
                     ,'<li> Download and install the Google Authenticator application. </li>'
                     ,'</ol>'
                     ,'<p class="fwB"> Now open and configure Google Authenticator. </p>'
-                    ,'<br /><p>Scan following Barcode to register the application automaticly:<p>'
+                    ,'<br /><p>Scan following Barcode to register the application automatically:<p>'
                     ,'<div class="taC p10">'
                     ,'    <img src="{url}" width="100" height="100" />'
                     ,'</div>'
