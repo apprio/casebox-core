@@ -130,12 +130,16 @@ class Instance
     		}
 			$rez = [];
 			$rez = $this->getCSVContent($p);
-				
-			header('Content-Type: text/csv; charset=utf-8');
-			header('Content-Disposition: attachment; filename=Exported_Results_'.date('Y-m-d_Hi').'.csv');
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			echo implode("\n", $rez);			
+
+			header('Content-Description: File Transfer');
+			header("Content-type: application/vnd.ms-excel");
+			header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+			header("Content-disposition: filename=Exported_Results_".date('Y-m-d_Hi').".csv");
+			header('Content-Transfer-Encoding: binary');
+			header('Pragma: public');
+			echo "\xEF\xBB\xBF"; // UTF-8 BOM
+			echo implode("\n", $rez);		
+			exit(0);			
     	}        
     	else
 		{
