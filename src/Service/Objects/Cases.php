@@ -29,6 +29,8 @@ class Cases extends CBObject
     public static $STATUS_CLOSED = 3;
 
     public static $STATUS_PENDING = 4;
+
+    public static $STATUS_DELETED = 99;	
 	
 	public static $STATUS_INFORMATION = 5;
 	
@@ -757,10 +759,17 @@ class Cases extends CBObject
     public function getStatus()
     {
         $d = &$this->data;
-        $sd = &$d['sys_data'];
-
-        $rez = empty($sd['task_status']) ? static::$STATUS_NONE : $sd['task_status'];
-
+		if (isset($d['did'])) //it's deleted
+		{   
+			$rez =  static::$STATUS_DELETED;
+		}
+		else
+		{
+			$sd = &$d['sys_data'];
+			
+			$rez = empty($sd['task_status']) ? static::$STATUS_NONE : $sd['task_status'];
+		}
+		
         return $rez;
     }
 
@@ -807,6 +816,10 @@ class Cases extends CBObject
             case static::$STATUS_CLOSED:
                 $rez .= ' case-status-closed';
                 break;
+				
+			case static::$STATUS_DELETED:
+				$rez .= ' case-status-closed';
+				break;
 				
             case static::$STATUS_INFORMATION:
                 $rez .= ' case-status-information';

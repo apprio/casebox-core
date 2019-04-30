@@ -1116,7 +1116,11 @@
             <trans-unit id="3212">
                 <source>hour</source>
                 <target>hour</target>
-            </trans-unit>	                                                 	                    
+            </trans-unit>
+            <trans-unit id="3213">
+                <source>caseStatus99</source>
+                <target>Deleted</target>
+            </trans-unit>            	                                                 	                    
 		</body>
     </file>
 </xliff>
