@@ -50,24 +50,11 @@ class CaseboxUserGroupsUpdatePasswordCommand extends ContainerAwareCommand
         $session->set('user', $user);
 		
 
-
-
-		
-        $res = $dbs->query(
-            'select * from casebox.users_groups where id >= 285'
-        );
-
-        while ($r = $res->fetch()) {
-	
-        $username = $r['name'];
+        $username = $input->getArgument('username');
         $password = $input->getArgument('password');
 
-        $rez = $container->get('casebox_core.service.users_groups')->updatePassword($username, $password);
+        $res = $container->get('casebox_core.service.users_groups')->updatePassword($username, $password);
 		
-		}
-
-
-
         if (!$res) {
             $output->success(sprintf('User %s not found.', $username));
         } else {
