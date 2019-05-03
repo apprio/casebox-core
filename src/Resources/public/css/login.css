@@ -97,12 +97,15 @@ display: inline-block;
 float: left;
 }
 
-
+.pull-right{
+    color:#2F546B;
+}
 
 
 .btn {
 font-size: 12px !important;
 white-space: normal;
+background: #2F546B;
 }
 
 .tal {

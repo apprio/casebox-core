@@ -19,10 +19,14 @@
 </head>
 
 <body onload="javascript: e = document.getElementById('u'); if (!e) {e = document.getElementById('c'); } e.focus(); editChanged();">
-
+<nav></nav>
 <div class="main">
     <div class="form_login tac">
+        <header>
         <a href="/" class="dib"><img alt="ACF ECMRS Logo" src="/css/i/CaseBox-Logo-medium.png" style="width: 300px"></a>
+        <h1 style="color:#2F546B">ECMRS Login</h1>
+        </header>
+        <main>
         <br>
 
         {% for label, flashes in app.session.flashbag.all %}
@@ -34,13 +38,15 @@
         {% endfor %}
 
         {% block form %}{% endblock %}
+    </main>
     </div>
 </div>
-
+<footer>
 <div class="footer" style="right: 0;">
     ECMRS V1.8.7
-    <span style="color: #AAA; padding-left: 2px; padding-right: 5px">&bull;</span>
-    <a href="mailto:ECMRSHelpdesk@apprioinc.com">Contact ECMRS Helpdesk</a>
+    <span style="padding-left: 2px; padding-right: 5px">&bull;</span>
+    <a href="mailto:ECMRSHelpdesk@apprioinc.com" style="color:#555">Contact ECMRS Helpdesk</a>
 </div>
+</footer>
 </body>
 </html>
