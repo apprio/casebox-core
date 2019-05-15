@@ -108,6 +108,10 @@ white-space: normal;
 background: #2F546B;
 }
 
+.btn:hover{
+    background: #0F243B;
+}
+    
 .tal {
 text-align: left !important;
 }
@@ -127,4 +131,8 @@ text-align: left !important;
 
 .footer a {
     color: #777;
+}
+
+.alert{
+    color: #906823;
 }
