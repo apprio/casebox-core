@@ -971,7 +971,7 @@
             </trans-unit>    
            <trans-unit id="3175">
                 <source>MyTasks</source>
-                <target>My Tasks</target>
+                <target>Tasks</target>
             </trans-unit>            
            <trans-unit id="3176">
                 <source>AssignedToMe</source>

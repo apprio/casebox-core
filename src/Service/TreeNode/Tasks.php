@@ -98,6 +98,35 @@ class Tasks extends Base
     {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
+        //$p['fq'][] = 'task_u_all:'.User::getId();
+        $p['fq'][] = 'task_status:(1 OR 2)';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+        $p['rows'] = 0;
+
+        $s = new Search();
+        $rez = $s->query($p);
+        $count = '';
+        if (!empty($rez['total'])) {
+            $count = $this->renderCount($rez['total']);
+        }
+
+        return [
+            'data' => [
+                [
+                    'name' => $this->trans('MyTasks').$count,
+                    'id' => $this->getId('tasks'),
+                    'iconCls' => 'icon-task',
+                    'cls' => 'tree-header',
+                    'has_childs' => true,
+                ],
+            ],
+        ];
+    }
+
+    protected function getMyUserNodes()
+    {
+        $p = $this->requestParams;
+        $p['fq'] = $this->fq;
         $p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2)';
 		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
@@ -122,6 +151,8 @@ class Tasks extends Base
             ],
         ];
     }
+
+
 
     /**
      *  returns a formatted total number for UI tree
@@ -154,7 +185,8 @@ class Tasks extends Base
             ];
             $sr = $s->query($p);
             $rez = ['data' => []];
-            if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
+            //if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) { 
+                //Now, will still populate if empty
                 $rez['data'][] = [
                     'name' => $this->trans('AssignedToMe').$this->renderCount(
                             $sr['facets']->facet_fields->{'1assigned'}->{$userId}
@@ -163,8 +195,9 @@ class Tasks extends Base
                     'iconCls' => 'icon-task',
                     'has_childs' => true,
                 ];
-            }
-            if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
+           // }
+           // if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
+                //Now, will still populate if empty
                 $rez['data'][] = [
                     'name' => $this->trans('CreatedByMe').$this->renderCount(
                             $sr['facets']->facet_fields->{'2cid'}->{$userId}
@@ -173,7 +206,7 @@ class Tasks extends Base
                     'iconCls' => 'icon-task',
                     'has_childs' => true,
                 ];
-            }
+            //}
 
             return $rez;
         }

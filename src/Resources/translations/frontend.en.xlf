@@ -3143,7 +3143,7 @@
             </trans-unit>
             <trans-unit id="3144">
                 <source>MyTasks</source>
-                <target>My Tasks</target>
+                <target>Tasks</target>
             </trans-unit>
             <trans-unit id="3145">
                 <source>CreatedByMe</source>
