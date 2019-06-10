@@ -213,6 +213,26 @@ class Template extends CBObject
     }
 
     /**
+     * get required fields
+     * @return array
+     */
+    public function getRequiredFields()
+    {
+        $rez = array();
+		
+		foreach ($this->data['fields'] as $fv) {
+			if (isset($fv['cfg']['required']))
+			{
+				if($fv['cfg']['required'])
+				{
+				   $rez[] = $fv['name'];	
+				}
+			}
+        }
+        return $rez;
+    }
+
+    /**
      * get field properties
      *
      * @param  int | varchar $field field id or name

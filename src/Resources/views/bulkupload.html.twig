@@ -5,6 +5,22 @@
     <title>ACF ECMRS - Electronic Case Record Management System</title>
     <link rel="stylesheet" type="text/css" href="/css/bs/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/css/bs/css/bootstrap-responsive.min.css"/>
+    <title></title>
+    <link rel="stylesheet" href="/d/css/bootstrap.light.min.css" title="Light">
+    <link rel="stylesheet" href="/d/css/timepicker.css">
+    <link rel="stylesheet" href="/d/css/animate.min.css">
+    <link rel="stylesheet" href="/d/css/normalize.min.css">
+    <link rel="stylesheet" href="/d/css/rotate.css">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <!-- load the root require context -->
+    <script src="/d/vendor/jquery/jquery-1.12.1.js"></script>
+    <style>
+    .highlight
+	{
+	   border-color : red;
+	}
+    </style>
+    
     <link type='text/css' rel="stylesheet" href="/css/login.css"/>
 	<style id="antiClickjack">body{display:none !important;}</style>
 
@@ -15,60 +31,300 @@
 	   } else {
 		   top.location = self.location;
 	   }
+       $( document ).ready(function() {
+            console.log( "ready!" );
+            if ($('#step').val() == 1)
+            {
+            	$('#step1').show();
+            	$('#step2').hide();
+            	$('#step3').hide();
+            }
+            else if ($('#step').val() == 2)
+            {
+            	$('#step1').hide();
+            	$('#step2').show();
+            	$('#step3').hide();
+            }
+            else if ($('#step').val() == 3)
+            {
+            	$('#step1').hide();
+            	$('#step2').hide();
+            	$('#step3').show();
+            }
+            $('select[name="csvHeader[]"]').bind('change', function() {
+                  var isFound = false;
+                  var selectedValue = false;
+		          var value = $(this).val();
+		          $( "[name='csvHeader[]']" ).not(this).each( function(){
+		          	   if ( this.value != "")
+		          	   {
+		          	   		selectedValue = true; //At least one value is selected
+		          	   }
+		               if ( this.value == value  && value != "")
+		               {
+		                   isFound = true;
+		               }
+		          });
+		          if (!selectedValue && this.value != "")
+		          {
+		          	selectedValue = true; //changed select list has a value
+		          }
+		          $(this).toggleClass( "highlight", isFound );
+                  if (selectedValue && !isFound)
+                  {
+                     $('#submitit2').removeAttr('disabled');
+                  }
+	              else
+	              {
+	                    $('#submitit2').attr('disabled', 'disabled');
+	              }		          
+            });
+            
+            $('#isTab').bind('change',function() {
+                if ($('#isTab').prop('checked') == true)
+                {
+                 	$('#pasteCSV').html('Paste TAB Delimited Content Here');
+					$('#importCSV').html('Upload TAB Delimited Import File');                         
+                }
+                else
+                {
+                 	$('#pasteCSV').html('Paste CSV Delimited Content Here');
+					$('#importCSV').html('Upload CSV Delimited Import File');                 	
+                }
+            });
+            
+            $('#templateId, #file, #csvContent').bind('change keyup', function() {
+                var filled = true;
+                if ($('#templateId').val() == '')
+                {
+                    filled = false;
+                }
+                if ($('#csvContent').val() == '' && $('#file').val() == '')
+                {
+                    filled = false;
+                }
+                if (filled)
+                {
+                    $('#submitit1').removeAttr('disabled');
+                }
+                else
+                {
+                    $('#submitit1').attr('disabled', 'disabled');
+                }
+               
+            });
+            $('select[name="csvHeader[]"]').first().change();
+            $('#templateId').change();
+        });
 	</script>	
 </head>
 
-<body onload="javascript: e = document.getElementById('u'); if (!e) {e = document.getElementById('c'); } e.focus(); editChanged();">
+<body>
+    <link rel="stylesheet" ng-href="/d/css/bootstrap.light.min.css">
+    <link rel="stylesheet" href="/d/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="/d/css/font-awesome.min.css">
 
-<div class="main">
-    <div class="form_login tac">
-        <a href="/" class="dib"><img alt="ACF ECMRS Logo" src="/css/i/CaseBox-Logo-medium.png" style="width: 300px"></a>
-        <br>
+<div class="navbar navbar-static-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <span class="brand">
+            <a href="#" class="pull-left"><img src="/logo.png" style="display:none"></a>{{projectName}} Admin
+          </span>
+          
+          <ul class="nav pull-right ng-scope">
+          		<li><a bs-tooltip="'Bulkupload'" data-placement="bottom" href="/c/{{coreName}}/bulkupload" class="ng-scope ng-binding" data-original-title="" title="">Bulk Upload</a></li>
+          		<li><a href="/d/index.html">Reports</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container-fluid main">
+
 
         {% for label, flashes in app.session.flashbag.all %}
             {% for flash in flashes %}
                 <div class="alert alert-{{ label }}" id="error">
-                    {{ flash }}
+                    {{ flash| raw }}
                 </div>
             {% endfor %}
         {% endfor %}
             
 <form action="/c/{{ coreName }}/bulkupload/" method="post" enctype="multipart/form-data">
-<div class="form-group">
+<input type="hidden" name="step" id="step" value="{{step}}"/>
+<div id="step3" style="display:none">
+<div style="float:left;width: 33.33%;"><input style="margin-top:20px" onclick="window.history.back();" type="button" value="Back" name="submit" class="btn btn-secondary" id="back"></div>
+<div style="float:left;width: 33.33%;text-align:center"><h2>Step 3 - Confirm Upload</h2></div>
+<div style="float:right"><input style="margin-top:20px" type="submit" value="Import" name="submit" class="btn btn-primary" id="submitit3"></div>
+  <div class="form-group" style="clear:both;text-align:center">
+    <label for="hasHeader">Process File?</label>
+    <input type="checkbox" name="processFile" class="form-control" id="processFile" checked></textarea>
+  </div>  
+ <br/><br/>
+<table class="table">
+<thead>
+<tr>
+   <th>New Value</th>
+   <th>Valid</th>
+{% for record in confirmheader %}
+   <th> {{record}}</th>
+{% endfor %}
+</tr>
+</thead>
+{% for record in confirmdata %}
+<tr>
+{% if (record.isnew) %}
+<td>
+  New
+</td>
+{% else %}
+<td class="alert alert-primary" role="alert">
+  Existing
+</td>
+{% endif %}
+{% if (record.isvalid) %}
+<td>
+Valid
+</td>
+{% else %}
+<td class="alert alert-error" role="alert" title="{{record.message| raw }}">
+  Invalid
+</td>
+{% endif %}
+{% for col in record.data %}
+<td>
+        {% if (col != attribute(record.old, header[loop.index-1]) and attribute(record.old, header[loop.index-1]) != "") %}        
+            NEW VALUE:{{col}} OLD:{{attribute(record.old, header[loop.index-1])}}
+        {% else %}
+          {{col}}
+        {% endif %}
+{% endfor %}
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<div id="step2" style="display:none">
+<div style="float:left;width: 33.33%;"><input style="margin-top:20px" onclick="window.history.back();" type="button" value="Back" name="submit" class="btn btn-secondary" id="back"></div>
+<div style="float:left;width: 33.33%;text-align:center"><h2>Step 2 - Map Headers</h2></div>
+<div style="float:right"><input style="margin-top:20px" type="submit" value="Next" name="submit" class="btn btn-primary" id="submitit2" disabled="disabled"></div>
+ {% if parentName == "" %}
+ <div class="form-group" style="clear:both">
+    <label for="pid" style="font-weight:bold">Parent:</label>
+    <input type="hidden" id="pid" name="pid" value="{{pid}}"/>
+   {% for obj in pids.data %}
+        {% set selected = false %}
+            {% if obj.id == pid %}
+                {% set selected = true %}
+            {% endif %}
+<div class="radio">
+  <label>
+    <option value="{{ obj.id }}" {% if selected %}selected{% endif %}>
+    {{ obj.id }} - {{ obj.name }}
+         {% endfor %}
+  
+    </select>
+  </div>
+{% else %}
+<div class="form-group" style="clear:both">
+   <b>Parent:
+  {{parentName}}</b>
+<input type="hidden" id="pid" name="pid" value="{{pid}}"/>
+</div>
+{% endif %}
+<br/>
+<div class="form-group" style="clear:both">
+   <b>Data:
+</div>
+<table class="table">
+<thead>
+<tr>
+{% for record in header %}
+   <th> {{record}}<br/>
+    <select name="csvHeader[]">
+        <option value=""></option>
+    	{% set colIndex = 0 %}
+    	{% for td in templateFields %}
+    	{% set selected = false %}
+    	{% set colIndex = colIndex + 1 %}
+    	{{colIndex}}
+            {% if (td.name == record or td.title == record or colIndex in record) %}
+                {% set selected = true %}
+            {% endif %}
+			<option value={{ td.name}} {% if selected %}selected{% endif %}>{{td.title}}</option>
+		{% endfor %}
+    </select>
+    </th>
+{% endfor %}
+</tr>
+</thead>
+{% for record in data %}
+<tr>
+{% for col in record.data %}
+    <td>{{col}}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+</div>
+<div id="step1">
+<div style="float:left;width: 33.33%;">&nbsp;</div>
+<div style="float:left;width: 33.33%;text-align:center"><h2>Step 1 - Select Source</h2></div>
+<div style="float:right"><input style="margin-top:20px" type="submit" value="Next" name="submit" class="btn btn-primary" id="submitit1" disabled="disabled"></div>
+<fieldset style="clear:both">
+<legend>Content Information</legend>
+  <div class="form-group">
     <label for="templateId" style="font-weight:bold">Template</label>
-
-  {% for template in templates %}
+    <select class="form-control" name="templateId" id="templateId">
+    	<option value=""></option>
+   {% for template in templates %}
         {% set selected = false %}
             {% if template.id == templateId %}
                 {% set selected = true %}
             {% endif %}
 <div class="radio">
   <label>
-    <input type="radio" name="templateId" id="templateId" value="{{ template.id }}" {% if selected %}checked{% endif %}>
+    <option value="{{ template.id }}" {% if selected %}selected{% endif %}>
     {{ template.name }}
-  </label>
-</div>            
-            
          {% endfor %}
   
-  
-  
-    <label for="file" style="font-weight:bold">CSV Import File</label>
-    <input type="file" id="file" name="file">
-    <p class="help-block">File should be CSV with header names to match that of the object uploading.</p>
+    </select>
   </div>
-<input type="submit" value="Upload File" name="submit" class="btn btn-primary">
-
+<br/>
+  <div class="form-group">
+    <label for="isTab">Tab Delimited?</label>
+    <input type="checkbox" name="isTab" class="form-control" id="isTab"></textarea>
+  </div>  
+  <br/>
+  <div class="form-group">
+    <label for="hasHeader">Has Header?</label>
+    <input type="checkbox" name="hasHeader" class="form-control" id="hasHeader" checked></textarea>
+  </div>   
+</fieldset>  
+  <br/>
+<fieldset style="clear:both">
+<legend>Upload Content</legend>  
+ <div class="form-group">
+    <label for="file" style="font-weight:bold" id="importCSV">Upload CSV Import File</label>
+    <input type="file" class="form-control-file" id="file" name="file" accept=".xlsx, .xls, .csv, .txt, .pc*">
+    <p class="help-block" style="display:none">File should be CSV with header names to match that of the object uploading.</p>
+  </div>
+  <div style="text-align:center">--or--</div>
+  <div class="form-group">
+    <label for="csvContent" id="pasteCSV">Paste CSV Content Here</label>
+    <textarea class="form-control" id="csvContent" rows="3" name="csvContent"></textarea>
+  </div>
+</fieldset>    
+ <br/><br/> 
+</div>
 </form>		
     	
        {% block form %}{% endblock %}
-    </div>
+
 </div>
 
 <div class="footer" style="right: 0;">
-    ECMRS V1.5
-    <span style="color: #AAA; padding-left: 2px; padding-right: 5px">&bull;</span>
-    <a href="mailto:ECMRSHelpdesk@apprioinc.com">Contact ECMRS Helpdesk</a>
+
 </div>
 </body>
 </html>

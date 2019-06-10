@@ -386,132 +386,321 @@ class IndexController extends Controller
 					'coreName' => $coreName 
 			] );
 		}
-		
-		$this->get('translator')->setLocale($vars['locale']);
-		
+		$this->get('translator')->setLocale(isset($vars['locale'])?isset($vars['locale']):'en');
+		$templateId = $request->get('templateId');
 		$vars = [
-				'templateId' => $request->get('templateId'),
+				'templateId' => $templateId,
 				'projectName' => $configService->getProjectName(),
 				'templates' => json_decode($configService->get('bulkupload'),true),
 				'coreName' => $request->attributes->get('coreName'),
-				'message' => $message,
 				'rtl' => $configService->get('rtl') ? '-rtl' : '',
 				'styles' => $this->container->get('casebox_core.service.styles_service')->getRendered(),
 				'locale' => $request->getLocale(),
-		];
-		$vars['javascript'] = $this->container->get('casebox_core.service.javascript_service')->getRendered($vars);
+				'step' => 1
+				];
 		$message = '';
-		if ($request->isMethod ( Request::METHOD_POST )) {
-			
-		if (empty($request->get('templateId'))) {
-			$this->addFlash('notice', 'Please select a template ID');
-		
-			return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
-		}	
-		
-			
-			// validate whether uploaded file is a csv file
-			$csvMimes = array (
-					'text/x-comma-separated-values',
-					'text/comma-separated-values',
-					'application/octet-stream',
-					'application/vnd.ms-excel',
-					'application/x-csv',
-					'text/x-csv',
-					'text/csv',
-					'application/csv',
-					'application/excel',
-					'application/vnd.msexcel',
-					'text/plain' 
-			);
-			if (! empty ( $_FILES ['file'] ['name'] ) && in_array ( $_FILES ['file'] ['type'], $csvMimes )) {
-				if (is_uploaded_file ( $_FILES ['file'] ['tmp_name'] )) {
-					ini_set('auto_detect_line_endings', true);
-					// open uploaded csv file with read only mode
-					$csvFile = fopen ( $_FILES ['file'] ['tmp_name'], 'r' );
+		$step = $request->get('step');
+		switch ($step) {
+           case '1':
+				if (empty($templateId)) {
+					$this->addFlash('notice', 'Please select a template ID');
+				
+					return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+				}
+				$csvContent = $request->get('csvContent');
+				if (!empty($csvContent))
+				{
+					$_FILES ['file'] ['name'] = 'csvContent';
+					$_FILES ['file'] ['type'] = 'text/csv';
+					$file = tmpfile();
+					fwrite($file, $csvContent);
+					$path = stream_get_meta_data($file)['uri']; // eg: /tmp/phpFx0513a					
+					$_FILES ['file'] ['tmp_name'] = stream_get_meta_data($file)['uri'];
+				}
 					
-					// get titles
-					$titles = fgetcsv ( $csvFile );
-					$objService = new Objects ();
-					//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'suptestssss', (array) $titles);
-					$templates = json_decode($configService->get('bulkupload'),true);
-					$template = $templates[$request->get('templateId')];
-					
-					$template = SingletonCollection::getInstance()->getTemplate($request->get('templateId'));
-					
-					foreach($titles as $title => $fieldName){
-						$bom = pack('H*','EFBBBF');
-						$titles[$title] = preg_replace("/^$bom/", '', $fieldName);
-						//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'herenow', ( array ) $titles );
-					}
-					
-					// Check if there is defaultPid specified in template config
-					if (!empty($template)) {
-						$templateData = $template->getData();
-					
-						if (!empty($templateData['cfg']['defaultPid'])) {
-							$pid = $templateData['cfg']['defaultPid'];
-						}
-						
-					foreach($titles as $fieldName)
-					{
-						if (!$template->getField($fieldName) && $fieldName !== "id")
+				// validate whether uploaded file is a csv file
+				$csvMimes = array ('text/x-comma-separated-values','text/comma-separated-values','application/octet-stream','application/vnd.ms-excel','application/x-csv',
+									'text/x-csv','text/csv','application/csv','application/excel','application/vnd.msexcel','text/plain','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+				if (! empty ( $_FILES ['file'] ['name'] ) && in_array ( $_FILES ['file'] ['type'], $csvMimes )) {
+					if (is_uploaded_file ( $_FILES ['file'] ['tmp_name'] ) || !empty($csvContent)) {
+						$bulkupload = json_decode($configService->get('bulkupload'),true);
+						$uploadTemplate = $bulkupload[$templateId];
+						if (isset($uploadTemplate['filepath'])) // path to move file to is set
 						{
-							//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'doenstmatch'.$obj.'and'.$pid, ( array ) $templateData );	
-							$this->addFlash('notice', 'Template Field '.$fieldName.' doesnt match any fields in template ' . $templateData['name']);
-							
-							return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+							$message = 'Success - moved to ' . $uploadTemplate['filepath'].DIRECTORY_SEPARATOR.$_FILES ['file'] ['name'];
+				            if(!is_dir($uploadTemplate['filepath']))
+				            {
+				                mkdir($uploadTemplate['filepath']);
+				            }
+							move_uploaded_file($_FILES ['file'] ['tmp_name'], $uploadTemplate['filepath'].DIRECTORY_SEPARATOR.$_FILES ['file'] ['name']);
 						}
-						
-					}					
+						else {  //parse it as a comma delimited and add it as a template value
+							$template = SingletonCollection::getInstance()->getTemplate($templateId);
+							$templateData = $template->getData();
+							$delimiter = !empty($request->get('isTab')) ? "\t" : ",";
+							// Check if there is defaultPid specified in template config
+							if (!empty($template)) {
+								ini_set('auto_detect_line_endings', true);
+								$csvFile = fopen ( $_FILES ['file'] ['tmp_name'], 'r' );
+								// get titles
+								if (!empty($request->get('hasHeader')))
+								{
+									$titles = fgetcsv ( $csvFile );								
+								}
+								// parse data from csv file line by line
+								while ( ($line = fgetcsv ( $csvFile,0,$delimiter )) !== FALSE ) {
+									$results = [];		
+									$id = null;
+									foreach ( $line as $k => $value ) {
+										if (!isset($titles))
+										{
+											$titles = $line;
+											$count = 1;
+											foreach($titles as $title => $fieldName){
+												$titles[$title] = 'Column ' . $count++;
+											}										
+										}
+										$results [$titles [$k]] = $value;
+									}
+									$data[] = [
+										'data' => $results 
+									];																						
+								}
+								}
+								
+								if (!empty($templateData['cfg']['defaultPid'])) {
+									$pid = $templateData['cfg']['defaultPid'];
+								}
+								
+								if (isset($uploadTemplate['pid'])) 
+								{
+									$pid = $uploadTemplate['pid'];
+								}
+								
+								$parent =  Objects::getCachedObject(isset($pid)?$pid:1);		
+								if (!isset($parent))
+								{
+									$pid = 1;
+								}
+								
+								// close opened csv file
+								//move_uploaded_file($_FILES ['file'] ['tmp_name'],$_FILES ['file'] ['tmp_name']); //maybe should think about temp variables instead
+								fclose ( $csvFile );
+								$browser = new Browser(); //getchildobjects
+								$pids = $browser->getObjectsForField(['scope' => 1]);
+								$vars['header'] = array_filter($titles);
+								$vars['data'] = $data;
+								$vars['pid'] = isset($pid)?$pid:1;
+								$vars['parentName'] = (isset($parent))?$parent->getHtmlSafeName():'';
+								$vars['templateFields'] = $templateData['fields'];
+								$vars['templateFields'][] = ["name"=>"id","title"=>"<<OBJECT ID>>"];
+								$vars['pids'] = $pids;
+								$vars['templateId'] = $templateId;
+								$vars['step'] = 2;
+								$_SESSION['csvData'] = $data;
+							} //end else of not providing an uploaded file
+						} else {
+						$message = 'Error uploading';
+					}
+				} else {
+					$this->addFlash('notice', 'Invalid File');
+					return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+				}
+			break;	
+		case '2':
+				$csvData = $_SESSION['csvData'];
+				$csvHeaders =$request->get('csvHeader'); 
+				$pid =$request->get('pid');
+				if (!isset($csvData))
+				{
+					$vars['step'] = 2;
+					break;
+				}
+				$vars['step'] = 3;
+				$template = SingletonCollection::getInstance()->getTemplate($templateId);
+				if (!empty($template)) {
+					$templateData = $template->getData();
+					$requiredFields = $template->getRequiredFields();
+					$parent =  Objects::getCachedObject(isset($pid)?$pid:1);		
+					$parentName =$parent->getHtmlSafeName();
+					
+					//* old info */			
+					$newObjects = 0;
+					$existingObjects = 0;
 					
 					// parse data from csv file line by line
-					while ( ($line = fgetcsv ( $csvFile )) !== FALSE ) {
-						$id = null;
-						foreach ( $line as $k => $value ) {
-							if ($titles[$k] === "id") {
-								$obj = Objects::getTemplateId($value);
-								if ($templateData['id'] === $obj)
-								{
-									$id = $value;
-									if (!is_null($id))
+					$objService = new Objects ();
+					//print_r($csvData);		
+					foreach ( $csvData as &$line ) {
+						$i = 0;
+						$oldValue = false;
+						$line['message'] = '';
+						$templateRequiredFields = $requiredFields;
+						foreach ( $line['data'] as $key => $value ) {
+							$columnHeader = isset($csvHeaders[$i])?$csvHeaders[$i]:''; 	
+							if (empty($columnHeader)) //not mapped
+							{
+								unset($line['data'][$key]);
+								unset($csvHeaders[$i]);
+							}
+							else 
+							{
+								$value = $line['data'][$key]; //line value
+								$line['data'][$columnHeader] = $value;
+								unset($line['data'][$key]);
+								if ($columnHeader === "id") {
+									$obj = Objects::getTemplateId($value);
+									if ($templateData['id'] === $obj)
 									{
-										$obj = $objService->load(['id' => $id]);
-										$results = array_merge($obj['data']['data'], $results);
-										//print_r($r);
+										$id = $value;
+										if (!is_null($id))
+										{
+											$obj = $objService->load(['id' => $id]);
+											$line['old'] = $obj['data']['data'];
+											$oldValue = true;
+											$line['pid'] = $obj['data']['pid'];
+										}
+									}
+									else
+									{
+										$line['pid'] = $pid;										
+										$line['data'][$key]="";
+										$line['message'] = $line['message'] . '&#013;ID was invalid - blanking';											
 									}
 								}
-							} else {
-								$results [$titles [$k]] = $value;
 							}
+							$i++;					
 						}
-						$data = [
-								'id' => !is_null($id)?$id:null,
-								'pid' => $pid,
-								'title' => 'New Location',
-								'template_id' => $templateData['id'],
-								'path' => '/Test Event/Locations',
-								'view' => 'edit',
-								'name' => 'New Location',
-								'data' => $results 
-						];
+						
+						$browser = new Browser(); //getchildobjects
+						$templateColumnObjects = [];
+						foreach ( $csvHeaders as $csvHeader ) {
+							$templateColumn = $template->getField($csvHeader);
+							if ($templateColumn['type'] == '_objects') {
+									if (isset($templateColumn['cfg']['scope']))
+									{
+										$result = $browser->getObjectsForField(['fieldId' => $templateColumn['id']]);	
+										$templateColumnObjects[$templateColumn['id']] = $result['data'];									
+									}
+				            }
+						}
+						
+						$i = 0;
+						$hasError = false;
+						foreach ( $line['data'] as $key => $value ) {
+							$columnHeader = isset($csvHeaders[$i])?$csvHeaders[$i]:''; 	
+							$value = $line['data'][$key]; //line value
+							$line['template_id'] = $templateId;
+							$line['pid'] = $pid; //set the default one here
+							if ($columnHeader !== "id") {
+								$templateColumn = $template->getField($columnHeader);
+								if ($templateColumn['type'] == '_objects') { //try to see if object is there
+									if (isset($templateColumn['cfg']['scope']))
+									{
+										foreach ( $templateColumnObjects[$templateColumn['id']] as $g => $s ) {
+											if (str_replace(' ','',strtolower($value)) == str_replace(' ','',strtolower($s['name'])))
+											{
+												$line['data'][$key] = $s['id'];
+												$value = $s['id'];
+											}
+										}
+										if (!is_numeric($value))
+										{
+											$line['data'][$key] = '';
+											$line['message'] = $line['message'] . '&#013;'. $columnHeader . ' was invalid - blanking';
+										}		
+									}	
+				                }	
+								if (empty($value) && isset($templateColumn['cfg']['required']))
+								{
+									$line['message'] = $line['message'] . '&#013;'.$templateColumn['name'] . ' is blank';
+									$hasError=true;		
+								}
+								else
+								{
+									$templateRequiredFields = array_diff($templateRequiredFields,array($columnHeader));
+									if (isset($templateColumn['cfg']['validationRe']))
+									{
+										if (!preg_match('/'.$templateColumn['cfg']['validationRe'].'/', $value))
+										{
+											$line['message'] = $line['message'] . '&#013;'.$templateColumn['name'] . ' does not match regular expression rules' . $templateColumn['cfg']['validationRe'];
+											$hasError=true;											
+										}
+									}									
+								}
+								//print_r($templateColumn);
+							}
+							$i++;
+						}
+						if (sizeof($templateRequiredFields) > 0 && !$oldValue) //not all required items filled
+						{
+							$hasError = true;
+							$line['message'] = $line['message'] . '&#013;Required Fields not set: '.implode($templateRequiredFields,', ');
+						}
+						$line['isvalid'] = !$hasError && (sizeof($templateRequiredFields) === 0 || $oldValue);	
+						$line['isnew'] = !$oldValue;	
+					}			
+					
+					$vars['confirmdata'] = $csvData;
+					$vars['templateId'] = $templateId;
+					$vars['step'] = 3;
+					$vars['confirmheader'] = $csvHeaders;
+					$_SESSION['confirmCsvData'] = $csvData;							
+					}		
+			break;	
+		case '3':
+			$csvData = $_SESSION['confirmCsvData'];
+			$results = [];
+			$processFile =$request->get('processFile');
+			$updated = 0;
+			$created = 0;
+			if (empty($processFile))
+			{
+				$message = 'Not Processing<br>Dump<br>';
+			}
+			else {
+				unset($_SESSION['confirmCsvData']);				
+				$message = 'Processing';
+			}
+			$objService = new Objects ();
+			foreach ( $csvData as $k => $result ) 
+			{
+				if ($result['isvalid'])
+				{
+					unset($result['isvalid']);
+					unset($result['message']);
+					unset($result['isnew']);					
+					if (isset($result['data']['id']))
+					{
+						$result['id'] = $result['data']['id'];
+						unset ($result['data']['id']);
+						if (isset($result['old']))
+						{
+							$result['data'] = array_merge($result['old'], $result['data']);
+							unset($result['old']);	
+						}
+						$updated++;						
+					}
+					else
+					{
+						$created++;
+					}
+					//print_r($result);
+					//exit;
+					if (!empty($processFile))
+					{
 						$newReferral = $objService->save ( [ 
-								'data' => $data 
+								'data' => $result 
 						] );
 					}
+					else {
+						$message = $message . ' <br>' . print_r($result, true);
 					}
-					// close opened csv file
-					fclose ( $csvFile );
-					$vars['templateId'] = null;
-					$message = 'Success';
-				} else {
-					$message = 'Error uploading';
-				}
-			} else {
-						$this->addFlash('notice', 'Invalid File');
-					
-						return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
+				}			
 			}
+			$message = $message . ' <br><br>' . $updated . ' record(s) updated';
+			$message = $message . ' <br>' . $created . ' record(s) created';	
+			break;
 		}
 		
     	if ($message)
