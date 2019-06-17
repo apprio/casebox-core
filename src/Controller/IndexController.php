@@ -445,7 +445,12 @@ class IndexController extends Controller
 								// get titles
 								if (!empty($request->get('hasHeader')))
 								{
-									$titles = fgetcsv ( $csvFile );								
+									$titles = fgetcsv ( $csvFile );		
+									foreach($titles as $title => $fieldName){
+										$bom = pack('H*','EFBBBF');
+										$titles[$title] = preg_replace("/^$bom/", '', $fieldName);
+										//Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'herenow', ( array ) $titles );
+									}																
 								}
 								// parse data from csv file line by line
 								while ( ($line = fgetcsv ( $csvFile,0,$delimiter )) !== FALSE ) {
@@ -545,9 +550,12 @@ class IndexController extends Controller
 							}
 							else 
 							{
-								$value = $line['data'][$key]; //line value
-								$line['data'][$columnHeader] = $value;
-								unset($line['data'][$key]);
+								if ($key !== $columnHeader)
+								{
+									$value = $line['data'][$key]; //line value
+									$line['data'][$columnHeader] = $value;
+									unset($line['data'][$key]);									
+								}		
 								if ($columnHeader === "id") {
 									$obj = Objects::getTemplateId($value);
 									if ($templateData['id'] === $obj)
