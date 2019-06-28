@@ -98,9 +98,9 @@ class Tasks extends Base
     {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-        //$p['fq'][] = 'task_u_all:'.User::getId();
+        $p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2)';
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+        $p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         $p['rows'] = 0;
 
         $s = new Search();
@@ -195,8 +195,8 @@ class Tasks extends Base
                     'iconCls' => 'icon-task',
                     'has_childs' => true,
                 ];
-           // }
-           // if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
+            //}
+            //if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
                 //Now, will still populate if empty
                 $rez['data'][] = [
                     'name' => $this->trans('CreatedByMe').$this->renderCount(
