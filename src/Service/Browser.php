@@ -129,7 +129,7 @@ class Browser
         //      invoke a search that will use last node to get facets and DC
         $lastNode = null;
         if (!empty($this->path)) {
-            $lastNode = $this->path[sizeof($path) - 1];
+            $lastNode = $this->path[(is_array($path)?sizeof($path):1) - 1];
             $lastNode->path = $this->path;
             $lastNode->requestParams = $this->requestParams;
         }
