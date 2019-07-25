@@ -839,7 +839,7 @@ Ext.define('CB.VerticalEditGrid', {
 
         var r = this.store.findExact('title', 'Time Expended');
         if(r != -1){
-            var n = this.helperTree.getNode(r.get('id'));
+            var n = this.helperTree.getNode(r);
             n.data.templateRecord.get('cfg').required = !open;
         }
 
