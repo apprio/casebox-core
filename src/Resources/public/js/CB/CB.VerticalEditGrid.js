@@ -830,19 +830,19 @@ Ext.define('CB.VerticalEditGrid', {
             ,node = this.helperTree.getNode(nodeId)
             ,tr = node.data.templateRecord;
 
-        var open;
-        if(context.value == 1907){
-            open = false;
-        } else if(context.value == 1906){
-            open = true;
-        }
+        if(tr.data.name == "status"){
+            var open;
+            if(context.value == 1907){
+                open = false;
+            } else if(context.value == 1906){
+                open = true;
+            }
 
-        var r = this.store.findExact('title', 'Time Expended');
-        if(r != -1){
-            var n = this.helperTree.getNode(r);
+            var r = this.store.getAt(2);
+            var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
         }
-
+    
         if(context.field === 'value'){
             /* post process value */
             if(!Ext.isEmpty(context.value) && context.fieldRecord) {
