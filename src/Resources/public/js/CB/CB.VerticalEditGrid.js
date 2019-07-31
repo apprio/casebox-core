@@ -830,7 +830,7 @@ Ext.define('CB.VerticalEditGrid', {
             ,node = this.helperTree.getNode(nodeId)
             ,tr = node.data.templateRecord;
 
-        if(tr.data.name == "status"){
+        if(tr.data.name == "task_status"){
             var open;
             if(context.value == 1907){
                 open = false;
