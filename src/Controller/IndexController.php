@@ -552,9 +552,11 @@ class IndexController extends Controller
 							{
 								if ($key !== $columnHeader)
 								{
-									$value = $line['data'][$key]; //line value
-									$line['data'][$columnHeader] = $value;
-									unset($line['data'][$key]);									
+									if(array_key_exists( $key, $line['data'])) {
+										 $keys = array_keys($line['data']);
+										 $keys[array_search($key, $keys)] = $columnHeader;
+										 $line['data'] = array_combine($keys, $line['data']); 
+									 }								
 								}		
 								if ($columnHeader === "id") {
 									$obj = Objects::getTemplateId($value);
