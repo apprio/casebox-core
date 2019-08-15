@@ -830,6 +830,7 @@ Ext.define('CB.VerticalEditGrid', {
             ,node = this.helperTree.getNode(nodeId)
             ,tr = node.data.templateRecord;
 
+            //When the Status of this task is switched to Closed, Time Expended becomes required.
         if(tr.data.name == "task_status"){
             var open;
             if(context.value == 1907){
@@ -841,6 +842,23 @@ Ext.define('CB.VerticalEditGrid', {
             var r = this.store.getAt(2);
             var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
+        }
+
+        if(tr.data.name == "_clientstatus"){
+            var infoOnly;
+            if(context.value == 1578){
+                infoOnly = false;
+            } else if(context.value == 1577){
+                infoOnly = true;
+            }
+            var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29];
+
+            for(var i = 0; i < reqEntries.length; i++){
+                var r = this.store.getAt(reqEntries[i]);
+                var n = this.helperTree.getNode(r.get('id'));
+                n.data.templateRecord.get('cfg').required = !infoOnly;
+            }
+            
         }
     
         if(context.field === 'value'){
@@ -939,22 +957,8 @@ Ext.define('CB.VerticalEditGrid', {
 								n.data.templateRecord.get('cfg').readOnly = !femaRequired;
 								r.set('value', femaValue);
                     		}
-                    	} else if(tr.get('title') === 'Status'){
-                            switch(context.value){
-                                case 1905: //Task Open
-                                    femaRequired = false;
-                                    break;
-                                case 1906: //Task Closed
-                                    femaRequired = true;
-                                    break;
-                            }
-                            var r = this.store.getAt(recordIndex);
-                            var n = this.helperTree.getNode(r.get(''));
-                            n.data.templateRecord.get('cfg').required = femaRequired;
-                            n.data.templateRecord.get('cfg').readOnly = !femaRequired;
-                            r.set('value', femaValue);
-                        }
-                    	
+                    	} 
+                        
                         if(Ext.isArray(context.value)) {
                             context.value = context.value.join(',');
                             context.record.set('value', context.value);
