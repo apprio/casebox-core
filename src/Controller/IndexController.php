@@ -4,6 +4,7 @@ namespace Casebox\CoreBundle\Controller;
 use Casebox\CoreBundle\Entity\UsersGroups;
 use Casebox\CoreBundle\Service\Auth\CaseboxAuth;
 use Casebox\CoreBundle\Service\Browser;
+use Casebox\CoreBundle\Service\BrowserView;
 use Casebox\CoreBundle\Service\Cache;
 use Casebox\CoreBundle\Service\Config;
 use Casebox\CoreBundle\Service\Files;
@@ -310,6 +311,40 @@ class IndexController extends Controller
 
 
 /**
+     * @Route("/c/{coreName}/reports/", name="app_core_reports", requirements = {"coreName": "[a-z0-9_\-]+"})
+     * @param Request $request
+     * @param string $coreName
+     * @param string $id
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function coreReportsAction(Request $request, $coreName)
+    {
+    	
+		$auth = $this->container->get('casebox_core.service_auth.authentication');
+        $user = $auth->isLogged(false);
+		$configService = $this->get('casebox_core.service.config');
+		$vars = [
+	            'locale' => $this->container->getParameter('locale'),
+	            'coreName' => $coreName,
+				'projectName' => $configService->getProjectName()
+	        ];
+		if (!$user) {
+			$this->get('session')->set('redirectUrl', 'app_core_reports');
+			$this->get('session')->set('redirectId', $id);
+			return $this->redirectToRoute('app_core_login', $vars);
+		}
+		//$configuration = \GuzzleHttp\json_decode($objData['data']['value'], true);
+		//$vars['reports'] = $configService->get('Reports');
+		$sr = new BrowserView();
+		$configService = $this->get('casebox_core.service.config');
+		//$configuration = \GuzzleHttp\json_decode($objData['data']['value'], true);
+		$vars['reports'] = $configService->get('Reports');
+		return $this->render('CaseboxCoreBundle::reports.html.twig', $vars);
+    }	
+	
+/**
      * @Route("/c/{coreName}/report/{id}/", name="app_core_report", requirements = {"coreName": "[a-z0-9_\-]+"})
      * @param Request $request
      * @param string $coreName
@@ -321,42 +356,62 @@ class IndexController extends Controller
     public function reportAction(Request $request, $coreName, $id)
     {
     	
-		
+		$configService = $this->get('casebox_core.service.config');
 		$headers = ['Content-Type' => 'application/json', 'charset' => 'UTF-8'];		
 		$pdfParam = $request->query->get('pdf');
-		$xlsParam = $request->query->get('xls');		
+		$xlsParam = $request->query->get('xls');
 		$reportDate = empty($request->query->get('reportDateInput'))?date("Y-m-d", time() - 60 * 60 * 28):substr($request->query->get('reportDateInput'),0,10); //get report running date
-        if (empty($id)) {
+
+		$auth = $this->container->get('casebox_core.service_auth.authentication');
+        $user = $auth->isLogged(false);
+		
+		/* Check if user is logged in */
+		if (!$user) {
+			$this->get('session')->set('redirectUrl', 'app_core_report');
+			$this->get('session')->set('redirectId', $id);
+			return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
+		}
+		
+		/* Get reports config */
+        $reports = $configService->get('Reports');
+        if (empty($id) || (!isset($reports[$id]) && !is_numeric($id))) {
 			$result['message'] = $this->trans(('Object_not_found'));
 
             return new Response(json_encode($result), 200, $headers);
         }
-		
-		$auth = $this->container->get('casebox_core.service_auth.authentication');
-        $user = $auth->isLogged(false);
-
-		if (!$user) {
-			return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
+		if (is_numeric($id))
+		{
+			$obj = Objects::getCachedObject($id);		
+			$objData = $obj->getData();
+			$reportConfig = \GuzzleHttp\json_decode($objData['data']['value'], true);	
 		}
-		
-		$class = '\\Casebox\\CoreBundle\\Reports\\'.$id;
+		else {
+			$reportConfig = $reports[$id];
+		}
+		$reportConfig['reportId'] = $id;	
+		$reportConfig['core_name'] = $coreName;	
+		$reportConfig['reports'] = $reports;
+		$class = '\\Casebox\\CoreBundle\\Reports\\'.$reportConfig['reportClass'];
         if (class_exists($class)) {
-            $class = new $class();
+            $class = new $class($reportConfig); //send the report config in
+			//exit;
 			if ($pdfParam)
 			{
-				$class->run()->export($id.'Pdf')->settings(array(
+				$class->run()->export($reportConfig['reportClass'].'Pdf')->settings(array(
 				    "phantomjs"=>"/usr/bin/phantomjs"
 				))->pdf(array(
 				    "format"=>"A4",
 				    "orientation"=>"portrait"
-				))->toBrowser($id.$reportDate.'.pdf');	
+				))->toBrowser($reportConfig['reportClass'].$reportDate.'.pdf');
+				exit(0);
 			}
 			else if ($xlsParam)
 			{
-				$class->run()->exportToExcel($id)->toBrowser($id.$reportDate.'.xlsx');	
+				$class->run()->exportToExcel()->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');	
 			}			
 			else
 			{
+				//$class->run()->render('CaseboxCoreBundle::reports.html.twig');
 				$class->run()->render();
 			}
 			exit(0);
