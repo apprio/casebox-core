@@ -839,7 +839,7 @@ Ext.define('CB.VerticalEditGrid', {
                 open = true;
             }
 
-            var r = this.store.getAt(2);
+            var r = this.store.getAt(3);//HARDCODED
             var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
         }
@@ -851,16 +851,34 @@ Ext.define('CB.VerticalEditGrid', {
             } else if(context.value == 1577){
                 infoOnly = true;
             }
-            var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29];
+            var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; //HARDCODED
 
             for(var i = 0; i < reqEntries.length; i++){
                 var r = this.store.getAt(reqEntries[i]);
                 var n = this.helperTree.getNode(r.get('id'));
                 n.data.templateRecord.get('cfg').required = !infoOnly;
             }
-            
+        } else {
+            var onCorrectPage = false;
+            var infoOnly;
+            var survivorStatus = this.store.getAt(0);
+            if(csurvivorStatus.get('value') == 1578){
+                infoOnly = false;
+                onCorrectPage = true;
+            } else if(csurvivorStatus.get('value') == 1577){
+                infoOnly = true;
+                onCorrectPage = true;
+            }
+            if(onCorrectPage){
+                var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; //HARDCODED
+
+                for(var i = 0; i < reqEntries.length; i++){
+                    var r = this.store.getAt(reqEntries[i]);
+                    var n = this.helperTree.getNode(r.get('id'));
+                    n.data.templateRecord.get('cfg').required = !infoOnly;
+                }
+            }
         }
-    
         if(context.field === 'value'){
             /* post process value */
             if(!Ext.isEmpty(context.value) && context.fieldRecord) {
