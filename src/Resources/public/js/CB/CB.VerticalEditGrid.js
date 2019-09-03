@@ -862,10 +862,10 @@ Ext.define('CB.VerticalEditGrid', {
             var onCorrectPage = false;
             var infoOnly;
             var survivorStatus = this.store.getAt(0);
-            if(csurvivorStatus.get('value') == 1578){
+            if(survivorStatus.get('value') == 1578){
                 infoOnly = false;
                 onCorrectPage = true;
-            } else if(csurvivorStatus.get('value') == 1577){
+            } else if(survivorStatus.get('value') == 1577){
                 infoOnly = true;
                 onCorrectPage = true;
             }
