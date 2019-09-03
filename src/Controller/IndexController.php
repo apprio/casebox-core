@@ -407,11 +407,17 @@ class IndexController extends Controller
 			}
 			else if ($xlsParam)
 			{
-				$class->run()->exportToExcel()->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');	
+				if (is_string($reportConfig['excel']))
+				{
+					$class->run()->exportToExcel($reportConfig['excel'])->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');		
+				}
+				else
+				{
+					$class->run()->exportToExcel()->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');
+				}
 			}			
 			else
 			{
-				//$class->run()->render('CaseboxCoreBundle::reports.html.twig');
 				$class->run()->render();
 			}
 			exit(0);
