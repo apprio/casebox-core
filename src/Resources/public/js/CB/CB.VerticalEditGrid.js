@@ -626,6 +626,31 @@ Ext.define('CB.VerticalEditGrid', {
 
         delete context.grid.pressedSpecialKey;
 
+       //iterating over the store to see if the 'task_status' variable is there. 
+        //If it is, and the value is Open[1906], then make Time Expended not required; else required.
+
+        var open;
+        for(int i = 0; i < this.store.data.length; i++){
+        	if(this.store.getAt(i).id == "ext-826"){ // ext-826 is the id for task status
+        		if(this.store.getAt(i).data.value == 1906){//open
+        			open = true;
+        		} else if(this.store.getAt(i).data.value == 1907){//closed
+        			open = false;
+        		}
+	        	break;
+        	}
+        }
+        var r;
+        for(int i = 0; i < this.store.data.length; i++){
+        	if(this.store.getAt(i).id == "ext-859"){
+        		r = this.store.getAt(i); 
+        		break;
+        	}
+        }
+        var n = this.helperTree.getNode(r.get('id'));
+        n.data.templateRecord.get('cfg').required = !open;
+        
+
         var pw = this.findParentByType(CB.GenericForm, false)
             || this.refOwner
         ; //CB.Objects & CB.TemplateEditWindow
@@ -700,6 +725,9 @@ Ext.define('CB.VerticalEditGrid', {
         if(previousEditor && (previousEditor != currentEditor)) {
             Ext.destroy(previousEditor);
         }
+    
+
+ 
     }
 
     ,gainFocus: function(position){
@@ -839,8 +867,14 @@ Ext.define('CB.VerticalEditGrid', {
                 open = true;
             }
 
-            var r = this.store.getAt(3);//HARDCODED
-            var n = this.helperTree.getNode(r.get('id'));
+            var r;
+	        for(int i = 0; i < this.store.data.length; i++){
+	        	if(this.store.getAt(i).id == "ext-859"){
+	        		r = this.store.getAt(i); 
+	        		break;
+	        	}
+	        }
+	        var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
         }
 
@@ -934,7 +968,7 @@ Ext.define('CB.VerticalEditGrid', {
 						break;						
 						
                     case '_objects': // FIRST START FEMA NUMBER CUSTOM CODE
-                    	if (tr.get('title') === "Does disaster survivor have a FEMA registration number?") //HARDCODED!
+                    	if (tr.get('cfg').scope == 1544) //Does disaster survivor have FEMA registration number?
                     	{
                     		 //1547 = DECLINED, 1548 = DOESNT KNOW,1546 = WOULD LIKE TO REGISTER,1549 - DECLINED REGISTER
 	            			 var femaValue = "";
@@ -966,7 +1000,14 @@ Ext.define('CB.VerticalEditGrid', {
 						            	);
 						        }
                     		}
-                    		var recordIndex = this.store.findExact('title', 'FEMA Registration Number'); //HARDCODED!
+
+                    		var recordIndex = -1;
+                    		for(int i = 0; i < this.store.data.length; i++){
+                    			if(tr.data.id == 3079){ //FEMA Registration Number
+                    				recordIndex = i;
+                    				break;
+                    			}
+                    		}
                     		if(recordIndex >= 0) //FEMA REGISTRATION NUMBER FIELD 
 							{
 								var r = this.store.getAt(recordIndex);
