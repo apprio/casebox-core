@@ -13,7 +13,7 @@ Ext.define('CB.VerticalEditGrid', {
     ,scrollable: true
     ,autoHeight: true
     ,plugins: []
-	//,hideHeaders: true
+    //,hideHeaders: true
     ,initComponent: function() {
 
         // define helperTree if owner does not have already defined one
@@ -32,7 +32,7 @@ Ext.define('CB.VerticalEditGrid', {
             ,deferInitialRefresh: false
             ,stripeRows: true
             ,markDirty: false
-			//,hideHeaders: true			
+            //,hideHeaders: true            
             ,getRowClass: function( record, index, rowParams, store ){
                 var rez = '';
                 if(record.get('type') === 'H'){
@@ -99,21 +99,21 @@ Ext.define('CB.VerticalEditGrid', {
                         this.onFieldTitleDblClick();
                     }
                 }
-				,cellkeydown: function(cell, td, cellIndex, record, tr, rowIndex, e, eOpts ) {
-					if (e.getKey() == e.TAB)
-					{
-						var pos = this.gainFocus((e.shiftKey)? 'previous' : 'next');
+                ,cellkeydown: function(cell, td, cellIndex, record, tr, rowIndex, e, eOpts ) {
+                    if (e.getKey() == e.TAB)
+                    {
+                        var pos = this.gainFocus((e.shiftKey)? 'previous' : 'next');
 
-						if(pos) {
-							e.stopEvent();
+                        if(pos) {
+                            e.stopEvent();
 
-							cell.editingPlugin.startEditByPosition({
-								row: pos
-								,column: 1
-							});
-						}
-					}
-				 }				
+                            cell.editingPlugin.startEditByPosition({
+                                row: pos
+                                ,column: 1
+                            });
+                        }
+                    }
+                 }              
                 ,celldblclick:  this.onFieldTitleDblClick
                 ,cellclick:  this.onCellClick
             }
@@ -190,12 +190,12 @@ Ext.define('CB.VerticalEditGrid', {
                         meta.css += ' cRequired';
                         v += ' *';
                     } else if(tr.get('cfg').validationRe) {
-                    	var regEx = new RegExp(tr.get('cfg').validationRe);
-                    	if (!regEx.test(record.data.value))
-                    	{
-							meta.css += ' cRequired';
-                        	v += ' *';
-                    	}
+                        var regEx = new RegExp(tr.get('cfg').validationRe);
+                        if (!regEx.test(record.data.value))
+                        {
+                            meta.css += ' cRequired';
+                            v += ' *';
+                        }
                     }     
 
                 }
@@ -288,7 +288,7 @@ Ext.define('CB.VerticalEditGrid', {
                 ,hideable: false
                 ,scope: this
                 ,size: 250
-				,width: 250
+                ,width: 250
                 ,renderer: this.renderers.title
             },{
                 header: L.Value
@@ -631,21 +631,22 @@ Ext.define('CB.VerticalEditGrid', {
 
         var open;
         for(int i = 0; i < this.store.data.length; i++){
-        	if(this.store.getAt(i).id == "ext-826"){ // ext-826 is the id for task status
-        		if(this.store.getAt(i).data.value == 1906){//open
-        			open = true;
-        		} else if(this.store.getAt(i).data.value == 1907){//closed
-        			open = false;
-        		}
-	        	break;
-        	}
+            var curr = this.store.getAt(i); 
+            if(curr.data.title == "Status"){ 
+                if(this.store.getAt(i).data.value == 1906){//open
+                    open = true;
+                } else if(this.store.getAt(i).data.value == 1907){//closed
+                    open = false;
+                }
+                break;
+            }
         }
         var r;
         for(int i = 0; i < this.store.data.length; i++){
-        	if(this.store.getAt(i).id == "ext-859"){
-        		r = this.store.getAt(i); 
-        		break;
-        	}
+            if(this.store.getAt(i).data.title == "Time Expended"){
+                r = this.store.getAt(i); 
+                break;
+            }
         }
         var n = this.helperTree.getNode(r.get('id'));
         n.data.templateRecord.get('cfg').required = !open;
@@ -708,14 +709,14 @@ Ext.define('CB.VerticalEditGrid', {
 
             this.attachKeyListeners(te);
             if(te) {
-            	if (Ext.isDefined(tr.get('cfg').maskRe))
-	            {
-	            	te.maskRe = new RegExp(tr.get('cfg').maskRe);
-	            }
-            	if (Ext.isDefined(tr.get('cfg').emptyText))
-	            {
-					te.emptyText = tr.get('cfg').emptyText;
-	            }
+                if (Ext.isDefined(tr.get('cfg').maskRe))
+                {
+                    te.maskRe = new RegExp(tr.get('cfg').maskRe);
+                }
+                if (Ext.isDefined(tr.get('cfg').emptyText))
+                {
+                    te.emptyText = tr.get('cfg').emptyText;
+                }
                 col.setEditor(te);
             }
         }
@@ -725,9 +726,6 @@ Ext.define('CB.VerticalEditGrid', {
         if(previousEditor && (previousEditor != currentEditor)) {
             Ext.destroy(previousEditor);
         }
-    
-
- 
     }
 
     ,gainFocus: function(position){
@@ -744,11 +742,11 @@ Ext.define('CB.VerticalEditGrid', {
                 } else {
                     if(lastFocused.rowIdx < (this.store.getCount() -1)) {
                         rez.rowIdx++;
-						var fieldType = this.store.getAt(rez.rowIdx).get('type');
-						if (fieldType === 'H')
-						{
-							rez.rowIdx++;									   
-						}						
+                        var fieldType = this.store.getAt(rez.rowIdx).get('type');
+                        if (fieldType === 'H')
+                        {
+                            rez.rowIdx++;                                      
+                        }                       
                         rez.colIdx = 1;
                     } else {
                         rez = null;
@@ -756,16 +754,16 @@ Ext.define('CB.VerticalEditGrid', {
                 }
             }else if(position === 'previous') {
                   if(rez.rowIdx > 1) {
-					rez.rowIdx--;
-					var fieldType = this.store.getAt(rez.rowIdx).get('type');
-					if (fieldType === 'H' && rez.rowIdx > 2)
-					{
-						rez.rowIdx--;									   
-					}
-						rez.colIdx = 1;
-					} else {
-					 rez = null;
-					}
+                    rez.rowIdx--;
+                    var fieldType = this.store.getAt(rez.rowIdx).get('type');
+                    if (fieldType === 'H' && rez.rowIdx > 2)
+                    {
+                        rez.rowIdx--;                                      
+                    }
+                        rez.colIdx = 1;
+                    } else {
+                     rez = null;
+                    }
                  }
             var cell = Ext.isEmpty(rez)
                 ? lastFocused
@@ -780,16 +778,16 @@ Ext.define('CB.VerticalEditGrid', {
 
             navModel.focusPosition(cell);
         }
-		else
-		{
-			if(position === 'next') {
-				sm.select({row: this.store.getCount() -1, column: 1});
-				navModel.setPosition(this.store.getCount()-1, 1);
-			}else if(position === 'previous') {
-				sm.select({row: 0, column: 1});
-				navModel.setPosition(0, 1);			
-			}
-		}
+        else
+        {
+            if(position === 'next') {
+                sm.select({row: this.store.getCount() -1, column: 1});
+                navModel.setPosition(this.store.getCount()-1, 1);
+            }else if(position === 'previous') {
+                sm.select({row: 0, column: 1});
+                navModel.setPosition(0, 1);         
+            }
+        }
 
         return rez;
     }
@@ -822,8 +820,8 @@ Ext.define('CB.VerticalEditGrid', {
         var key = e.getKey();
         switch(key) {
             //case e.ENTER:
-			case e.TAB:
-		    ed.grid.pressedSpecialKey = key;				
+            case e.TAB:
+            ed.grid.pressedSpecialKey = key;                
                 ed.completeEdit();
 
                 var pos = ed.grid.gainFocus((e.shiftKey)? 'previous' : 'next');
@@ -868,13 +866,13 @@ Ext.define('CB.VerticalEditGrid', {
             }
 
             var r;
-	        for(int i = 0; i < this.store.data.length; i++){
-	        	if(this.store.getAt(i).id == "ext-859"){
-	        		r = this.store.getAt(i); 
-	        		break;
-	        	}
-	        }
-	        var n = this.helperTree.getNode(r.get('id'));
+            for(int i = 0; i < this.store.data.length; i++){
+            if(this.store.getAt(i).data.title == "Time Expended"){
+                    r = this.store.getAt(i); 
+                    break;
+                }
+            }
+            var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
         }
 
@@ -885,14 +883,19 @@ Ext.define('CB.VerticalEditGrid', {
             } else if(context.value == 1577){
                 infoOnly = true;
             }
-            var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; //HARDCODED
+            var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; 
+            var reqEntryTitles = ["_firstname", "_lastname", "_clientage", "_gender", "_marriagestatus", "_ethnicity", "_race", "_englishspeaker", "_primarylanguage", "_fulladdress", "_addresstype", "_headofhousehold", "_phonenumber", "at_risk_population", "identified_unmet_needs", "_fematier", "_femanumber", "_location_type"]
 
-            for(var i = 0; i < reqEntries.length; i++){
-                var r = this.store.getAt(reqEntries[i]);
-                var n = this.helperTree.getNode(r.get('id'));
-                n.data.templateRecord.get('cfg').required = !infoOnly;
+            for(var i = 0; i < reqEntryTitles.length; i++){
+                var curr = reqEntryTitles[i];
+        
+                if(curr == tr.data.name){
+                    var r = this.store.getAt(reqEntries[i]);
+                    var n = this.helperTree.getNode(r.get('id'));
+                    n.data.templateRecord.get('cfg').required = !infoOnly;  
+                }
             }
-        } else {
+      } else {
             var onCorrectPage = false;
             var infoOnly;
             var survivorStatus = this.store.getAt(0);
@@ -904,12 +907,17 @@ Ext.define('CB.VerticalEditGrid', {
                 onCorrectPage = true;
             }
             if(onCorrectPage){
-                var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; //HARDCODED
+                var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; 
+                var reqEntryTitles = ["_firstname", "_lastname", "_clientage", "_gender", "_marriagestatus", "_ethnicity", "_race", "_englishspeaker", "_primarylanguage", "_fulladdress", "_addresstype", "_headofhousehold", "_phonenumber", "at_risk_population", "identified_unmet_needs", "_fematier", "_femanumber", "_location_type"]
 
-                for(var i = 0; i < reqEntries.length; i++){
-                    var r = this.store.getAt(reqEntries[i]);
-                    var n = this.helperTree.getNode(r.get('id'));
-                    n.data.templateRecord.get('cfg').required = !infoOnly;
+                for(var i = 0; i < reqEntryTitles.length; i++){
+                    var curr = reqEntryTitles[i];
+            
+                    if(curr == tr.data.name){
+                        var r = this.store.getAt(reqEntries[i]);
+                        var n = this.helperTree.getNode(r.get('id'));
+                        n.data.templateRecord.get('cfg').required = !infoOnly;
+                    }
                 }
             }
         }
@@ -926,97 +934,97 @@ Ext.define('CB.VerticalEditGrid', {
                         context.value = Ext.Date.format(context.value, 'H:i:s');
                         context.record.set('value', context.value);
                         break;
-					case 'xdate':
-					case 'date':
-						if (tr.get('cfg').generateAge != null) //Check if config "generateAge" is there
-						{
-							var recordIndex = this.store.findExact('title', tr.get('cfg').generateAge);
-							if(recordIndex >= 0) 
-							{
-								var today = new Date();
-								var birthDate = new Date(context.value);
-								var age = today.getFullYear() - birthDate.getFullYear();
-								var m = today.getMonth() - birthDate.getMonth();
-								if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-									age--;
-								}
-								this.store.getAt(recordIndex).set('value', age);
-							}
-						}
-                        break;									  					
-					case 'float': case 'int':
-						if(tr.get('cfg').totalValue != null) {
-							var recordIndex = this.store.findExact('title', tr.get('cfg').totalValue);
-							if(recordIndex >= 0) 
-							{
-								var currentTotal = this.store.getAt(recordIndex).get('value');
-								if (currentTotal == null || isNaN(currentTotal))
-								{
-									currentTotal = 0;
-								}
-								if (context.originalValue != null && !isNaN(context.originalValue))
-								{
-									currentTotal = (+currentTotal) - (+context.originalValue);
-								}
-								if (context.value != null && !isNaN(context.value))
-								{
-									currentTotal = (+currentTotal) + (+context.value);
-								}
-								this.store.getAt(recordIndex).set('value', currentTotal);
-							}
-						}
-						break;						
-						
+                    case 'xdate':
+                    case 'date':
+                        if (tr.get('cfg').generateAge != null) //Check if config "generateAge" is there
+                        {
+                            var recordIndex = this.store.findExact('title', tr.get('cfg').generateAge);
+                            if(recordIndex >= 0) 
+                            {
+                                var today = new Date();
+                                var birthDate = new Date(context.value);
+                                var age = today.getFullYear() - birthDate.getFullYear();
+                                var m = today.getMonth() - birthDate.getMonth();
+                                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                    age--;
+                                }
+                                this.store.getAt(recordIndex).set('value', age);
+                            }
+                        }
+                        break;                                                      
+                    case 'float': case 'int':
+                        if(tr.get('cfg').totalValue != null) {
+                            var recordIndex = this.store.findExact('title', tr.get('cfg').totalValue);
+                            if(recordIndex >= 0) 
+                            {
+                                var currentTotal = this.store.getAt(recordIndex).get('value');
+                                if (currentTotal == null || isNaN(currentTotal))
+                                {
+                                    currentTotal = 0;
+                                }
+                                if (context.originalValue != null && !isNaN(context.originalValue))
+                                {
+                                    currentTotal = (+currentTotal) - (+context.originalValue);
+                                }
+                                if (context.value != null && !isNaN(context.value))
+                                {
+                                    currentTotal = (+currentTotal) + (+context.value);
+                                }
+                                this.store.getAt(recordIndex).set('value', currentTotal);
+                            }
+                        }
+                        break;                      
+                        
                     case '_objects': // FIRST START FEMA NUMBER CUSTOM CODE
-                    	if (tr.get('cfg').scope == 1544) //Does disaster survivor have FEMA registration number?
-                    	{
-                    		 //1547 = DECLINED, 1548 = DOESNT KNOW,1546 = WOULD LIKE TO REGISTER,1549 - DECLINED REGISTER
-	            			 var femaValue = "";
-	            			 var femaRequired = false;
-	            			 switch (context.value) {
-								  case 1547:
-								    femaValue = "DECLINED";
-								    break;
-								  case 1548:
-								    femaValue = "FOLLOWUP";
-								    break;
-								  case 1546:
-								     femaValue = "REGISTER";
-								    break;
-								  case 1549:
-								    femaValue = "DECLINEDREGISTER";
-								    break;
-								  case 1545:
-								  	femaValue = "";
-								  	femaRequired = true;
-								}
-                    		if (femaValue != "") //THEY DON'T HAVE #
-                    		{
-		                	 	if (femaValue == "FOLLOWUP" || femaValue == "REGISTER") //They are going to followup or register
-		          				{
-		      				            Ext.Msg.alert(
-						                'Notice',
-						                'You have selected a ' + femaValue.toLowerCase() + ' action and agree to ' + femaValue.toLowerCase() + ' with the client.  If this is not what was meant, please select another option.'
-						            	);
-						        }
-                    		}
+                        if (tr.get('cfg').scope == 1544) //Does disaster survivor have FEMA registration number?
+                        {
+                             //1547 = DECLINED, 1548 = DOESNT KNOW,1546 = WOULD LIKE TO REGISTER,1549 - DECLINED REGISTER
+                             var femaValue = "";
+                             var femaRequired = false;
+                             switch (context.value) {
+                                  case 1547:
+                                    femaValue = "DECLINED";
+                                    break;
+                                  case 1548:
+                                    femaValue = "FOLLOWUP";
+                                    break;
+                                  case 1546:
+                                     femaValue = "REGISTER";
+                                    break;
+                                  case 1549:
+                                    femaValue = "DECLINEDREGISTER";
+                                    break;
+                                  case 1545:
+                                    femaValue = "";
+                                    femaRequired = true;
+                                }
+                            if (femaValue != "") //THEY DON'T HAVE #
+                            {
+                                if (femaValue == "FOLLOWUP" || femaValue == "REGISTER") //They are going to followup or register
+                                {
+                                        Ext.Msg.alert(
+                                        'Notice',
+                                        'You have selected a ' + femaValue.toLowerCase() + ' action and agree to ' + femaValue.toLowerCase() + ' with the client.  If this is not what was meant, please select another option.'
+                                        );
+                                }
+                            }
 
-                    		var recordIndex = -1;
-                    		for(int i = 0; i < this.store.data.length; i++){
-                    			if(tr.data.id == 3079){ //FEMA Registration Number
-                    				recordIndex = i;
-                    				break;
-                    			}
-                    		}
-                    		if(recordIndex >= 0) //FEMA REGISTRATION NUMBER FIELD 
-							{
-								var r = this.store.getAt(recordIndex);
-								var n = this.helperTree.getNode(r.get('id'));
-								n.data.templateRecord.get('cfg').required = femaRequired;
-								n.data.templateRecord.get('cfg').readOnly = !femaRequired;
-								r.set('value', femaValue);
-                    		}
-                    	} 
+                            var recordIndex = -1;
+                            for(int i = 0; i < this.store.data.length; i++){
+                                if(tr.data.id == 3079){ //FEMA Registration Number
+                                    recordIndex = i;
+                                    break;
+                                }
+                            }
+                            if(recordIndex >= 0) //FEMA REGISTRATION NUMBER FIELD 
+                            {
+                                var r = this.store.getAt(recordIndex);
+                                var n = this.helperTree.getNode(r.get('id'));
+                                n.data.templateRecord.get('cfg').required = femaRequired;
+                                n.data.templateRecord.get('cfg').readOnly = !femaRequired;
+                                r.set('value', femaValue);
+                            }
+                        } 
                         
                         if(Ext.isArray(context.value)) {
                             context.value = context.value.join(',');
@@ -1042,8 +1050,8 @@ Ext.define('CB.VerticalEditGrid', {
 
             if (Ext.isDefined(tr.get('cfg').validationRe))
             {
-            	var regEx = new RegExp(tr.get('cfg').validationRe);
-            	context.record.set('valid',regEx.test(context.value));
+                var regEx = new RegExp(tr.get('cfg').validationRe);
+                context.record.set('valid',regEx.test(context.value));
             }
 
             if(context.value != context.originalValue){
@@ -1075,10 +1083,10 @@ Ext.define('CB.VerticalEditGrid', {
         if(!this.syncRecordsWithHelper()) {
             this.getView().refresh();
         } else {
-	   if (!this.pressedSpecialKey)
-	   {
-		   this.gainFocus('next');	
-	   }	
+       if (!this.pressedSpecialKey)
+       {
+           this.gainFocus('next');  
+       }    
             this.fireEvent('restorescroll', this);
         }
 
