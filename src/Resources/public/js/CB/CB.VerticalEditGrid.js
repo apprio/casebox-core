@@ -630,7 +630,7 @@ Ext.define('CB.VerticalEditGrid', {
         //If it is, and the value is Open[1906], then make Time Expended not required; else required.
 
         var open;
-        for(int i = 0; i < this.store.data.length; i++){
+        for(var i = 0; i < this.store.data.length; i++){
             var curr = this.store.getAt(i); 
             if(curr.data.title == "Status"){ 
                 if(this.store.getAt(i).data.value == 1906){//open
@@ -642,7 +642,7 @@ Ext.define('CB.VerticalEditGrid', {
             }
         }
         var r;
-        for(int i = 0; i < this.store.data.length; i++){
+        for(var i = 0; i < this.store.data.length; i++){
             if(this.store.getAt(i).data.title == "Time Expended"){
                 r = this.store.getAt(i); 
                 break;
@@ -866,7 +866,7 @@ Ext.define('CB.VerticalEditGrid', {
             }
 
             var r;
-            for(int i = 0; i < this.store.data.length; i++){
+            for(var i = 0; i < this.store.data.length; i++){
             if(this.store.getAt(i).data.title == "Time Expended"){
                     r = this.store.getAt(i); 
                     break;
@@ -1010,7 +1010,7 @@ Ext.define('CB.VerticalEditGrid', {
                             }
 
                             var recordIndex = -1;
-                            for(int i = 0; i < this.store.data.length; i++){
+                            for(var i = 0; i < this.store.data.length; i++){
                                 if(tr.data.id == 3079){ //FEMA Registration Number
                                     recordIndex = i;
                                     break;
