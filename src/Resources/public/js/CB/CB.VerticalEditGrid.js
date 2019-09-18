@@ -641,16 +641,17 @@ Ext.define('CB.VerticalEditGrid', {
                 break;
             }
         }
-        var r;
+       var r = null;
         for(var i = 0; i < this.store.data.length; i++){
             if(this.store.getAt(i).data.title == "Time Expended"){
                 r = this.store.getAt(i); 
                 break;
             }
         }
-        var n = this.helperTree.getNode(r.get('id'));
-        n.data.templateRecord.get('cfg').required = !open;
-        
+        if(r){
+            var n = this.helperTree.getNode(r.get('id'));
+            n.data.templateRecord.get('cfg').required = !open;
+        }
 
         var pw = this.findParentByType(CB.GenericForm, false)
             || this.refOwner
