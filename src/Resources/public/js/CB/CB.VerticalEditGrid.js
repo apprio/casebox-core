@@ -884,16 +884,17 @@ Ext.define('CB.VerticalEditGrid', {
             } else if(context.value == 1577){
                 infoOnly = true;
             }
-            var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; 
-            var reqEntryTitles = ["_firstname", "_lastname", "_clientage", "_gender", "_marriagestatus", "_ethnicity", "_race", "_englishspeaker", "_primarylanguage", "_fulladdress", "_addresstype", "_headofhousehold", "_phonenumber", "at_risk_population", "identified_unmet_needs", "_fematier", "_femanumber", "_location_type"]
+            var reqEntryTitles = ["First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Best", "Self-Reported Specal/At-Risk Populations", "Self-identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
 
             for(var i = 0; i < reqEntryTitles.length; i++){
                 var curr = reqEntryTitles[i];
-        
-                if(curr == tr.data.name){
-                    var r = this.store.getAt(reqEntries[i]);
-                    var n = this.helperTree.getNode(r.get('id'));
-                    n.data.templateRecord.get('cfg').required = !infoOnly;  
+                for(var j = 0; j < this.store.length; j++){
+                    var dataName = this.store.getAt(j); 
+                    if(curr.data.name == dataName.data.name){
+                        var r = this.store.getAt(reqEntries[i]);
+                        var n = this.helperTree.getNode(r.get('id'));
+                        n.data.templateRecord.get('cfg').required = !infoOnly;
+                    }
                 }
             }
       } else {
@@ -908,16 +909,17 @@ Ext.define('CB.VerticalEditGrid', {
                 onCorrectPage = true;
             }
             if(onCorrectPage){
-                var reqEntries = [2, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 21, 25, 26, 27, 29]; 
-                var reqEntryTitles = ["_firstname", "_lastname", "_clientage", "_gender", "_marriagestatus", "_ethnicity", "_race", "_englishspeaker", "_primarylanguage", "_fulladdress", "_addresstype", "_headofhousehold", "_phonenumber", "at_risk_population", "identified_unmet_needs", "_fematier", "_femanumber", "_location_type"]
+                var reqEntryTitles = ["First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Best", "Self-Reported Specal/At-Risk Populations", "Self-identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
 
                 for(var i = 0; i < reqEntryTitles.length; i++){
                     var curr = reqEntryTitles[i];
-            
-                    if(curr == tr.data.name){
-                        var r = this.store.getAt(reqEntries[i]);
-                        var n = this.helperTree.getNode(r.get('id'));
-                        n.data.templateRecord.get('cfg').required = !infoOnly;
+                    for(var j = 0; j < this.store.length; j++){
+                        var dataName = this.store.getAt(j); 
+                        if(curr.data.name == dataName.data.name){
+                            var r = this.store.getAt(reqEntries[i]);
+                            var n = this.helperTree.getNode(r.get('id'));
+                            n.data.templateRecord.get('cfg').required = !infoOnly;
+                        }
                     }
                 }
             }
