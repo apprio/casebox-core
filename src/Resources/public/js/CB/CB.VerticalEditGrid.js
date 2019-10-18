@@ -1,3 +1,4 @@
+
 Ext.namespace('CB');
 
 Ext.define('CB.VerticalEditGrid', {
@@ -616,6 +617,7 @@ Ext.define('CB.VerticalEditGrid', {
         if(!node) {
             return false;
         }
+        //New Comment
         var tr = node.data.templateRecord;
         if((tr.get('type') === 'H') || (tr.get('cfg').readOnly == 1) ){
             return false;
@@ -884,7 +886,7 @@ Ext.define('CB.VerticalEditGrid', {
             } else if(context.value == 1577){
                 infoOnly = true;
             }
-            var reqEntryTitles = ["First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Best", "Self-Reported Specal/At-Risk Populations", "Self-identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
+                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number","Other Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
 
             for(var i = 0; i < reqEntryTitles.length; i++){
                 var curr = reqEntryTitles[i];
@@ -1013,7 +1015,7 @@ Ext.define('CB.VerticalEditGrid', {
                             //Checking if the page is the new disaster survivor entry form
                             var recordIndex = -1;
                             for(var i = 0; i < this.store.data.length; i++){
-                                if(this.store.getAt(i).title == "FEMA Registration Number"){ 
+                                if(this.store.getAt(i).data.title == "FEMA Registration Number"){ 
                                     recordIndex = i;
                                     break;
                                 }
