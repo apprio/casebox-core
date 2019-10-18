@@ -888,10 +888,9 @@ Ext.define('CB.VerticalEditGrid', {
 
             for(var i = 0; i < reqEntryTitles.length; i++){
                 var curr = reqEntryTitles[i];
-                for(var j = 0; j < this.store.length; j++){
-                    var dataName = this.store.getAt(j); 
-                    if(curr.data.name == dataName.data.name){
-                        var r = this.store.getAt(reqEntries[i]);
+                for(var j = 0; j < this.store.data.length; j++){
+                    var r = this.store.getAt(j); 
+                    if(curr == r.data.title){
                         var n = this.helperTree.getNode(r.get('id'));
                         n.data.templateRecord.get('cfg').required = !infoOnly;
                     }
@@ -909,14 +908,13 @@ Ext.define('CB.VerticalEditGrid', {
                 onCorrectPage = true;
             }
             if(onCorrectPage){
-                var reqEntryTitles = ["First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Best", "Self-Reported Specal/At-Risk Populations", "Self-identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
+                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number","Other Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
 
                 for(var i = 0; i < reqEntryTitles.length; i++){
                     var curr = reqEntryTitles[i];
-                    for(var j = 0; j < this.store.length; j++){
-                        var dataName = this.store.getAt(j); 
-                        if(curr.data.name == dataName.data.name){
-                            var r = this.store.getAt(reqEntries[i]);
+                    for(var j = 0; j < this.store.data.length; j++){
+                        var r = this.store.getAt(j); 
+                        if(curr == r.data.title){
                             var n = this.helperTree.getNode(r.get('id'));
                             n.data.templateRecord.get('cfg').required = !infoOnly;
                         }
@@ -1012,9 +1010,10 @@ Ext.define('CB.VerticalEditGrid', {
                                 }
                             }
 
+                            //Checking if the page is the new disaster survivor entry form
                             var recordIndex = -1;
                             for(var i = 0; i < this.store.data.length; i++){
-                                if(tr.data.id == 3079){ //FEMA Registration Number
+                                if(this.store.getAt(i).title == "FEMA Registration Number"){ 
                                     recordIndex = i;
                                     break;
                                 }
