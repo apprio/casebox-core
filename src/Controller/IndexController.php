@@ -163,7 +163,6 @@ class IndexController extends Controller
 
         return new Response($result, 200, ['Content-Type' => 'application/json', 'charset' => 'UTF-8']);
     }
-
     /**
      * @Route("/c/{coreName}/export", name="app_core_export_upload")
      * @Route("/c/{coreName}/export/", name="app_core_export_slash")
@@ -460,6 +459,7 @@ class IndexController extends Controller
                 'step' => 1
                 ];
         $message = '';
+        $errorMessage = '';
         $step = $request->get('step');
         switch ($step) {
            case '1':
@@ -566,7 +566,7 @@ class IndexController extends Controller
                                 $_SESSION['csvData'] = $data;
                             } //end else of not providing an uploaded file
                         } else {
-                        $message = 'Error uploading';
+                            $message = 'Error uploading';
                     }
                 } else {
                     $this->addFlash('notice', 'Invalid File');
@@ -577,6 +577,7 @@ class IndexController extends Controller
                 $csvData = $_SESSION['csvData'];
                 $csvHeaders =$request->get('csvHeader'); 
                 $pid =$request->get('pid');
+                $errorMessage = '';
                 if (!isset($csvData))
                 {
                     $vars['step'] = 2;
@@ -686,6 +687,7 @@ class IndexController extends Controller
                                 {
                                     $line['message'] = $line['message'] . '&#013;'.$templateColumn['name'] . ' is blank';
                                     $hasError=true;     
+                                    $errorMessage = $errorMessage . $line['message'] . '<br>';
                                 }
                                 else
                                 {
@@ -695,7 +697,9 @@ class IndexController extends Controller
                                         if (!preg_match('/'.$templateColumn['cfg']['validationRe'].'/', $value))
                                         {
                                             $line['message'] = $line['message'] . '&#013;'.$templateColumn['name'] . ' does not match regular expression rules' . $templateColumn['cfg']['validationRe'];
-                                            $hasError=true;                                         
+                                            $hasError=true; 
+                                            $errorMessage = $errorMessage . $line['message'] . '<br>';
+                                        
                                         }
                                     }                                   
                                 }
@@ -707,6 +711,7 @@ class IndexController extends Controller
                         {
                             $hasError = true;
                             $line['message'] = $line['message'] . '&#013;Required Fields not set: '.implode($templateRequiredFields,', ');
+                            $errorMessage = $errorMessage . $line['message'] . '<br>';
                         }
                         $line['isvalid'] = !$hasError && (sizeof($templateRequiredFields) === 0 || $oldValue);  
                         $line['isnew'] = !$oldValue;    
@@ -718,6 +723,9 @@ class IndexController extends Controller
                     $vars['confirmheader'] = $csvHeaders;
                     $_SESSION['confirmCsvData'] = $csvData;                         
                     }       
+                   // if(hasError){
+                   //       $this->addFlash('notice', $errorMessage);
+                   // }
             break;  
         case '3':
             $csvData = $_SESSION['confirmCsvData'];
@@ -725,6 +733,7 @@ class IndexController extends Controller
             $processFile =$request->get('processFile');
             $updated = 0;
             $created = 0;
+            $errorMessage = '';
             if (empty($processFile))
             {
                 $message = 'Not Processing<br>Dump<br>';
@@ -767,15 +776,19 @@ class IndexController extends Controller
                     else {
                         $message = $message . ' <br>' . print_r($result, true);
                     }
-                }           
+                } else {
+                    $errorMessage = $errorMessage . ' <br>Problem with entry ' . $k . ": " . print_r($result['message'], true) .  ' <br>'; 
+                }   
             }
             $message = $message . ' <br><br>' . $updated . ' record(s) updated';
             $message = $message . ' <br>' . $created . ' record(s) created';    
             break;
         }
         
-        if ($message)
-        {
+        if($errorMessage){
+            $errorMessage = "Entries not uploaded: " . $errorMessage;
+            $this->addFlash('notice', $errorMessage);
+        } elseif ($message) {
             $this->addFlash('notice', $message);
         }
     
