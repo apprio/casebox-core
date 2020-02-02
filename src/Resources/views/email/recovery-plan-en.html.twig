@@ -242,9 +242,9 @@ tr.aBorder th {
             </td>
         </tr>
     </table>
-    
+
     <br/>
-    
+
 	  <table width="100%" cellpadding="0" cellspacing="0" border="1"
 	           style="color:000;border-collapse: collapse;border-spacing: 0;padding: 0;text-align: left;vertical-align: top;">
 	        <tr style="padding: 0;font-weight:normal;text-align: left;vertical-align: top;background: #deecfd;">
@@ -252,8 +252,8 @@ tr.aBorder th {
 	                        <th>{{ 'Address' | trans({}, "frontend", "en") }}</th>
 	                        <th>{{ 'EmailAddress' | trans({}, "frontend", "en") }}</th>
 	                        <th>{{ 'PhoneNumber' | trans({}, "frontend", "en") }}</th>
-	                        <th>{{ 'SecondaryPhoneNumber' | trans({}, "frontend", "en") }}</th>	
- 	                    	<th>{{ 'FEMARegistrationNumber' | trans({}, "frontend", "en") }}</th>                             
+	                        <th>{{ 'SecondaryPhoneNumber' | trans({}, "frontend", "en") }}</th>
+ 	                    	<th>{{ 'FEMARegistrationNumber' | trans({}, "frontend", "en") }}</th>
 	            </tr>
 	        	<tr style="color: #000000;padding: 0;text-align: left;vertical-align: top;">
 	         				<td>{{client_name}}</td>
@@ -261,8 +261,8 @@ tr.aBorder th {
 	                        <td>{{client_email}}</td>
 	                        <td>{{client_phonenumber}}</td>
 	                        <td>{{client_secondaryphonenumber}}</td>
- 	                    	<td>{{fema_registration_number}}</td>  
-	            </tr>                 
+ 	                    	<td>{{fema_registration_number}}</td>
+	            </tr>
 	    </table>
     <br/>
         <table width="100%" cellpadding="0" cellspacing="0" border="1"
@@ -273,7 +273,7 @@ tr.aBorder th {
                         <th>{{ 'ClientID' | trans({}, "frontend", "en") }}</th>
                         <th>{{ 'CMTelephoneNumber' | trans({}, "frontend", "en") }}</th>
                         <th>{{ 'ClientPlanCreationDate' | trans({}, "frontend", "en") }}</th>
-                        <th>{{ 'IDCMSiteAddress' | trans({}, "frontend", "en") }}</th>                  
+                        <th>{{ 'RepatriationSiteAddress' | trans({}, "frontend", "en") }}</th>                  
             </tr>
         	<tr style="color: #000000;padding: 0;text-align: left;vertical-align: top;">
          				<td>{{cm_assigned}}</td>
@@ -281,64 +281,64 @@ tr.aBorder th {
                        	<td>{{client_id}}</td>
                         <td>{{cm_phone}}</td>
                         <td>{{plan_creation_date}}</td>
-                        <td>{{disaster_site_address}}</td>                     
-            </tr>                 
+                        <td>{{disaster_site_address}}</td>
+            </tr>
     </table>
          <br/>
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
-           style="color:000;border-collapse: collapse;border-spacing: 0;padding: 0;text-align: left;vertical-align: top;">   
+           style="color:000;border-collapse: collapse;border-spacing: 0;padding: 0;text-align: left;vertical-align: top;">
     {% for service in services %}
         <tr class="aBorder" style="padding: 0;font-weight:normal;text-align: left;vertical-align: top;background: #deecfd;font-family: 'Source Sans Pro', sans-serif;">
          <th colspan="2">{{ 'RecoveryPlanDevelopment' | trans({}, "frontend", "en") }}</th>
-            </tr>	
+            </tr>
             <tr class="aBorder">
          				<th style="background: #deecfd;" width="30%">{{ 'ReferralType' | trans({}, "frontend", "en") }}</th>
-                        <td width="70%">{{service.referraltype}}</td>      
-            </tr>             
+                        <td width="70%">{{service.referraltype}}</td>
+            </tr>
       	    <tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'ReferralSubType' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.referralsubtype}}</td>      
-            </tr>       						
+                        <td>{{service.referralsubtype}}</td>
+            </tr>
             <tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'ResourceAgencyName' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.resourceagencyname}}</td>      
-            </tr>   
+                        <td>{{service.resourceagencyname}}</td>
+            </tr>
             <tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'ResourceAgencyContactInformation' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.resourceagencycontactinformation}}</td>      
-            </tr>               
+                        <td>{{service.resourceagencycontactinformation}}</td>
+            </tr>
         	<tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'PointOfContact' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.pointofcontact}}</td>      
-            </tr>     
+                        <td>{{service.pointofcontact}}</td>
+            </tr>
      		<tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'ReferralAppointmentDateTime' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.referralappointmentdatetime}}</td>      
-            </tr> 
+                        <td>{{service.referralappointmentdatetime}}</td>
+            </tr>
      		<tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'TargetCompletionDate' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.targetcompletiondate}}</td>      
-            </tr>         
+                        <td>{{service.targetcompletiondate}}</td>
+            </tr>
      		<tr class="aBorder">
          				<th style="background: #deecfd;">{{ 'Comments' | trans({}, "frontend", "en") }}</th>
-                        <td>{{service.comments}}</td>      
-            </tr>        
-           <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>			
+                        <td>{{service.comments}}</td>
+            </tr>
+           <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>
     {% endfor %}
-    <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>		<tr class="noBorder"><td colspan="2">&nbsp;</td></tr>		<tr class="noBorder"><td colspan="2">&nbsp;</td></tr>		
+    <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>		<tr class="noBorder"><td colspan="2">&nbsp;</td></tr>		<tr class="noBorder"><td colspan="2">&nbsp;</td></tr>
 
         <tr class="noBorder" style="padding: 0;font-weight:normal;text-align: left;vertical-align: top;font-family: 'Source Sans Pro', sans-serif;">
                   <td width="48%">_____________________________________________________________</td><td>______________________</td>
-            </tr>  
+            </tr>
         <tr class="noBorder" style="padding: 0;font-weight:normal;text-align: left;vertical-align: top;font-family: 'Source Sans Pro', sans-serif;">
          <td>{{ 'CaseManagerSignature' | trans({}, "frontend", "en") }}</td><td>{{ 'DateTime' | trans({}, "frontend", "en") }}</td>
-            </tr>   
+            </tr>
             <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>
                              <tr class="noBorder" style="padding: 0;font-weight:normal;text-align: left;vertical-align: top;font-family: 'Source Sans Pro', sans-serif;">
                   <td width="48%">_____________________________________________________________<br/>{{ 'ClientSignature' | trans({}, "frontend", "en") }}</td><td>______________________<br/>{{ 'DateTime' | trans({}, "frontend", "en") }}</td>
-            </tr>          
-            <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>		
- <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>			
+            </tr>
+            <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>
+ <tr class="noBorder"><td colspan="2">&nbsp;</td></tr>
     </table>
     <br/>
 <table width="100%" cellpadding="0" cellspacing="0" border="1"
@@ -351,8 +351,8 @@ Expiration date: 05/31/2020</th>
          				<td>
 THE PAPERWORK REDUCTION ACT OF 1995 (Pub. L. 104-13)
 Public reporting burden for this collection of information is estimated to average 60 minutes per response, including the time for reviewing instructions, gathering and maintaining the data needed, and reviewing the collection of information.An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number.</td>
-            </tr>                 
-    </table>	    
+            </tr>
+    </table>
 </div>
 </body>
 </html>
