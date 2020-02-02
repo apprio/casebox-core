@@ -1,3 +1,4 @@
+
 Ext.namespace('CB');
 
 Ext.define('CB.VerticalEditGrid', {
@@ -13,7 +14,7 @@ Ext.define('CB.VerticalEditGrid', {
     ,scrollable: true
     ,autoHeight: true
     ,plugins: []
-	//,hideHeaders: true
+    //,hideHeaders: true
     ,initComponent: function() {
 
         // define helperTree if owner does not have already defined one
@@ -32,7 +33,7 @@ Ext.define('CB.VerticalEditGrid', {
             ,deferInitialRefresh: false
             ,stripeRows: true
             ,markDirty: false
-			//,hideHeaders: true			
+            //,hideHeaders: true            
             ,getRowClass: function( record, index, rowParams, store ){
                 var rez = '';
                 if(record.get('type') === 'H'){
@@ -99,21 +100,21 @@ Ext.define('CB.VerticalEditGrid', {
                         this.onFieldTitleDblClick();
                     }
                 }
-				,cellkeydown: function(cell, td, cellIndex, record, tr, rowIndex, e, eOpts ) {
-					if (e.getKey() == e.TAB)
-					{
-						var pos = this.gainFocus((e.shiftKey)? 'previous' : 'next');
+                ,cellkeydown: function(cell, td, cellIndex, record, tr, rowIndex, e, eOpts ) {
+                    if (e.getKey() == e.TAB)
+                    {
+                        var pos = this.gainFocus((e.shiftKey)? 'previous' : 'next');
 
-						if(pos) {
-							e.stopEvent();
+                        if(pos) {
+                            e.stopEvent();
 
-							cell.editingPlugin.startEditByPosition({
-								row: pos
-								,column: 1
-							});
-						}
-					}
-				 }				
+                            cell.editingPlugin.startEditByPosition({
+                                row: pos
+                                ,column: 1
+                            });
+                        }
+                    }
+                 }              
                 ,celldblclick:  this.onFieldTitleDblClick
                 ,cellclick:  this.onCellClick
             }
@@ -190,12 +191,12 @@ Ext.define('CB.VerticalEditGrid', {
                         meta.css += ' cRequired';
                         v += ' *';
                     } else if(tr.get('cfg').validationRe) {
-                    	var regEx = new RegExp(tr.get('cfg').validationRe);
-                    	if (!regEx.test(record.data.value))
-                    	{
-							meta.css += ' cRequired';
-                        	v += ' *';
-                    	}
+                        var regEx = new RegExp(tr.get('cfg').validationRe);
+                        if (!regEx.test(record.data.value))
+                        {
+                            meta.css += ' cRequired';
+                            v += ' *';
+                        }
                     }     
 
                 }
@@ -288,7 +289,7 @@ Ext.define('CB.VerticalEditGrid', {
                 ,hideable: false
                 ,scope: this
                 ,size: 250
-				,width: 250
+                ,width: 250
                 ,renderer: this.renderers.title
             },{
                 header: L.Value
@@ -616,6 +617,7 @@ Ext.define('CB.VerticalEditGrid', {
         if(!node) {
             return false;
         }
+        //New Comment
         var tr = node.data.templateRecord;
         if((tr.get('type') === 'H') || (tr.get('cfg').readOnly == 1) ){
             return false;
@@ -625,6 +627,33 @@ Ext.define('CB.VerticalEditGrid', {
         }
 
         delete context.grid.pressedSpecialKey;
+
+       //iterating over the store to see if the 'task_status' variable is there. 
+        //If it is, and the value is Open[1906], then make Time Expended not required; else required.
+
+        var open;
+        for(var i = 0; i < this.store.data.length; i++){
+            var curr = this.store.getAt(i); 
+            if(curr.data.title == "Status"){ 
+                if(this.store.getAt(i).data.value == 1906){//open
+                    open = true;
+                } else if(this.store.getAt(i).data.value == 1907){//closed
+                    open = false;
+                }
+                break;
+            }
+        }
+       var r = null;
+        for(var i = 0; i < this.store.data.length; i++){
+            if(this.store.getAt(i).data.title == "Time Expended"){
+                r = this.store.getAt(i); 
+                break;
+            }
+        }
+        if(r){
+            var n = this.helperTree.getNode(r.get('id'));
+            n.data.templateRecord.get('cfg').required = !open;
+        }
 
         var pw = this.findParentByType(CB.GenericForm, false)
             || this.refOwner
@@ -683,14 +712,14 @@ Ext.define('CB.VerticalEditGrid', {
 
             this.attachKeyListeners(te);
             if(te) {
-            	if (Ext.isDefined(tr.get('cfg').maskRe))
-	            {
-	            	te.maskRe = new RegExp(tr.get('cfg').maskRe);
-	            }
-            	if (Ext.isDefined(tr.get('cfg').emptyText))
-	            {
-					te.emptyText = tr.get('cfg').emptyText;
-	            }
+                if (Ext.isDefined(tr.get('cfg').maskRe))
+                {
+                    te.maskRe = new RegExp(tr.get('cfg').maskRe);
+                }
+                if (Ext.isDefined(tr.get('cfg').emptyText))
+                {
+                    te.emptyText = tr.get('cfg').emptyText;
+                }
                 col.setEditor(te);
             }
         }
@@ -716,11 +745,11 @@ Ext.define('CB.VerticalEditGrid', {
                 } else {
                     if(lastFocused.rowIdx < (this.store.getCount() -1)) {
                         rez.rowIdx++;
-						var fieldType = this.store.getAt(rez.rowIdx).get('type');
-						if (fieldType === 'H')
-						{
-							rez.rowIdx++;									   
-						}						
+                        var fieldType = this.store.getAt(rez.rowIdx).get('type');
+                        if (fieldType === 'H')
+                        {
+                            rez.rowIdx++;                                      
+                        }                       
                         rez.colIdx = 1;
                     } else {
                         rez = null;
@@ -728,16 +757,16 @@ Ext.define('CB.VerticalEditGrid', {
                 }
             }else if(position === 'previous') {
                   if(rez.rowIdx > 1) {
-					rez.rowIdx--;
-					var fieldType = this.store.getAt(rez.rowIdx).get('type');
-					if (fieldType === 'H' && rez.rowIdx > 2)
-					{
-						rez.rowIdx--;									   
-					}
-						rez.colIdx = 1;
-					} else {
-					 rez = null;
-					}
+                    rez.rowIdx--;
+                    var fieldType = this.store.getAt(rez.rowIdx).get('type');
+                    if (fieldType === 'H' && rez.rowIdx > 2)
+                    {
+                        rez.rowIdx--;                                      
+                    }
+                        rez.colIdx = 1;
+                    } else {
+                     rez = null;
+                    }
                  }
             var cell = Ext.isEmpty(rez)
                 ? lastFocused
@@ -752,16 +781,16 @@ Ext.define('CB.VerticalEditGrid', {
 
             navModel.focusPosition(cell);
         }
-		else
-		{
-			if(position === 'next') {
-				sm.select({row: this.store.getCount() -1, column: 1});
-				navModel.setPosition(this.store.getCount()-1, 1);
-			}else if(position === 'previous') {
-				sm.select({row: 0, column: 1});
-				navModel.setPosition(0, 1);			
-			}
-		}
+        else
+        {
+            if(position === 'next') {
+                sm.select({row: this.store.getCount() -1, column: 1});
+                navModel.setPosition(this.store.getCount()-1, 1);
+            }else if(position === 'previous') {
+                sm.select({row: 0, column: 1});
+                navModel.setPosition(0, 1);         
+            }
+        }
 
         return rez;
     }
@@ -794,8 +823,8 @@ Ext.define('CB.VerticalEditGrid', {
         var key = e.getKey();
         switch(key) {
             //case e.ENTER:
-			case e.TAB:
-		    ed.grid.pressedSpecialKey = key;				
+            case e.TAB:
+            ed.grid.pressedSpecialKey = key;                
                 ed.completeEdit();
 
                 var pos = ed.grid.gainFocus((e.shiftKey)? 'previous' : 'next');
@@ -830,7 +859,8 @@ Ext.define('CB.VerticalEditGrid', {
             ,node = this.helperTree.getNode(nodeId)
             ,tr = node.data.templateRecord;
 
-        if(tr.data.name == "status"){
+            //When the Status of this task is switched to Closed, Time Expended becomes required.
+        if(tr.data.name == "task_status"){
             var open;
             if(context.value == 1907){
                 open = false;
@@ -838,11 +868,62 @@ Ext.define('CB.VerticalEditGrid', {
                 open = true;
             }
 
-            var r = this.store.getAt(2);
+            var r;
+            for(var i = 0; i < this.store.data.length; i++){
+            if(this.store.getAt(i).data.title == "Time Expended"){
+                    r = this.store.getAt(i); 
+                    break;
+                }
+            }
             var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
         }
-    
+
+        if(tr.data.name == "_clientstatus"){
+            var infoOnly;
+            if(context.value == 1578){
+                infoOnly = false;
+            } else if(context.value == 1577){
+                infoOnly = true;
+            }
+                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number","Other Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
+
+            for(var i = 0; i < reqEntryTitles.length; i++){
+                var curr = reqEntryTitles[i];
+                for(var j = 0; j < this.store.data.length; j++){
+                    var r = this.store.getAt(j); 
+                    if(curr == r.data.title){
+                        var n = this.helperTree.getNode(r.get('id'));
+                        n.data.templateRecord.get('cfg').required = !infoOnly;
+                    }
+                }
+            }
+      } else {
+            var onCorrectPage = false;
+            var infoOnly;
+            var survivorStatus = this.store.getAt(0);
+            if(survivorStatus.get('value') == 1578){
+                infoOnly = false;
+                onCorrectPage = true;
+            } else if(survivorStatus.get('value') == 1577){
+                infoOnly = true;
+                onCorrectPage = true;
+            }
+            if(onCorrectPage){
+                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number","Other Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
+
+                for(var i = 0; i < reqEntryTitles.length; i++){
+                    var curr = reqEntryTitles[i];
+                    for(var j = 0; j < this.store.data.length; j++){
+                        var r = this.store.getAt(j); 
+                        if(curr == r.data.title){
+                            var n = this.helperTree.getNode(r.get('id'));
+                            n.data.templateRecord.get('cfg').required = !infoOnly;
+                        }
+                    }
+                }
+            }
+        }
         if(context.field === 'value'){
             /* post process value */
             if(!Ext.isEmpty(context.value) && context.fieldRecord) {
@@ -856,105 +937,99 @@ Ext.define('CB.VerticalEditGrid', {
                         context.value = Ext.Date.format(context.value, 'H:i:s');
                         context.record.set('value', context.value);
                         break;
-					case 'xdate':
-					case 'date':
-						if (tr.get('cfg').generateAge != null) //Check if config "generateAge" is there
-						{
-							var recordIndex = this.store.findExact('title', tr.get('cfg').generateAge);
-							if(recordIndex >= 0) 
-							{
-								var today = new Date();
-								var birthDate = new Date(context.value);
-								var age = today.getFullYear() - birthDate.getFullYear();
-								var m = today.getMonth() - birthDate.getMonth();
-								if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-									age--;
-								}
-								this.store.getAt(recordIndex).set('value', age);
-							}
-						}
-                        break;									  					
-					case 'float': case 'int':
-						if(tr.get('cfg').totalValue != null) {
-							var recordIndex = this.store.findExact('title', tr.get('cfg').totalValue);
-							if(recordIndex >= 0) 
-							{
-								var currentTotal = this.store.getAt(recordIndex).get('value');
-								if (currentTotal == null || isNaN(currentTotal))
-								{
-									currentTotal = 0;
-								}
-								if (context.originalValue != null && !isNaN(context.originalValue))
-								{
-									currentTotal = (+currentTotal) - (+context.originalValue);
-								}
-								if (context.value != null && !isNaN(context.value))
-								{
-									currentTotal = (+currentTotal) + (+context.value);
-								}
-								this.store.getAt(recordIndex).set('value', currentTotal);
-							}
-						}
-						break;						
-						
-                    case '_objects': // FIRST START FEMA NUMBER CUSTOM CODE
-                    	if (tr.get('title') === "Does disaster survivor have a FEMA registration number?") //HARDCODED!
-                    	{
-                    		 //1547 = DECLINED, 1548 = DOESNT KNOW,1546 = WOULD LIKE TO REGISTER,1549 - DECLINED REGISTER
-	            			 var femaValue = "";
-	            			 var femaRequired = false;
-	            			 switch (context.value) {
-								  case 1547:
-								    femaValue = "DECLINED";
-								    break;
-								  case 1548:
-								    femaValue = "FOLLOWUP";
-								    break;
-								  case 1546:
-								     femaValue = "REGISTER";
-								    break;
-								  case 1549:
-								    femaValue = "DECLINEDREGISTER";
-								    break;
-								  case 1545:
-								  	femaValue = "";
-								  	femaRequired = true;
-								}
-                    		if (femaValue != "") //THEY DON'T HAVE #
-                    		{
-		                	 	if (femaValue == "FOLLOWUP" || femaValue == "REGISTER") //They are going to followup or register
-		          				{
-		      				            Ext.Msg.alert(
-						                'Notice',
-						                'You have selected a ' + femaValue.toLowerCase() + ' action and agree to ' + femaValue.toLowerCase() + ' with the client.  If this is not what was meant, please select another option.'
-						            	);
-						        }
-                    		}
-                    		var recordIndex = this.store.findExact('title', 'FEMA Registration Number'); //HARDCODED!
-                    		if(recordIndex >= 0) //FEMA REGISTRATION NUMBER FIELD 
-							{
-								var r = this.store.getAt(recordIndex);
-								var n = this.helperTree.getNode(r.get('id'));
-								n.data.templateRecord.get('cfg').required = femaRequired;
-								n.data.templateRecord.get('cfg').readOnly = !femaRequired;
-								r.set('value', femaValue);
-                    		}
-                    	} else if(tr.get('title') === 'Status'){
-                            switch(context.value){
-                                case 1905: //Task Open
-                                    femaRequired = false;
-                                    break;
-                                case 1906: //Task Closed
-                                    femaRequired = true;
-                                    break;
+                    case 'xdate':
+                    case 'date':
+                        if (tr.get('cfg').generateAge != null) //Check if config "generateAge" is there
+                        {
+                            var recordIndex = this.store.findExact('title', tr.get('cfg').generateAge);
+                            if(recordIndex >= 0) 
+                            {
+                                var today = new Date();
+                                var birthDate = new Date(context.value);
+                                var age = today.getFullYear() - birthDate.getFullYear();
+                                var m = today.getMonth() - birthDate.getMonth();
+                                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                    age--;
+                                }
+                                this.store.getAt(recordIndex).set('value', age);
                             }
-                            var r = this.store.getAt(recordIndex);
-                            var n = this.helperTree.getNode(r.get(''));
-                            n.data.templateRecord.get('cfg').required = femaRequired;
-                            n.data.templateRecord.get('cfg').readOnly = !femaRequired;
-                            r.set('value', femaValue);
                         }
-                    	
+                        break;                                                      
+                    case 'float': case 'int':
+                        if(tr.get('cfg').totalValue != null) {
+                            var recordIndex = this.store.findExact('title', tr.get('cfg').totalValue);
+                            if(recordIndex >= 0) 
+                            {
+                                var currentTotal = this.store.getAt(recordIndex).get('value');
+                                if (currentTotal == null || isNaN(currentTotal))
+                                {
+                                    currentTotal = 0;
+                                }
+                                if (context.originalValue != null && !isNaN(context.originalValue))
+                                {
+                                    currentTotal = (+currentTotal) - (+context.originalValue);
+                                }
+                                if (context.value != null && !isNaN(context.value))
+                                {
+                                    currentTotal = (+currentTotal) + (+context.value);
+                                }
+                                this.store.getAt(recordIndex).set('value', currentTotal);
+                            }
+                        }
+                        break;                      
+                        
+                    case '_objects': // FIRST START FEMA NUMBER CUSTOM CODE
+                        if (tr.get('cfg').scope == 1544) //Does disaster survivor have FEMA registration number?
+                        {
+                             //1547 = DECLINED, 1548 = DOESNT KNOW,1546 = WOULD LIKE TO REGISTER,1549 - DECLINED REGISTER
+                             var femaValue = "";
+                             var femaRequired = false;
+                             switch (context.value) {
+                                  case 1547:
+                                    femaValue = "DECLINED";
+                                    break;
+                                  case 1548:
+                                    femaValue = "FOLLOWUP";
+                                    break;
+                                  case 1546:
+                                     femaValue = "REGISTER";
+                                    break;
+                                  case 1549:
+                                    femaValue = "DECLINEDREGISTER";
+                                    break;
+                                  case 1545:
+                                    femaValue = "";
+                                    femaRequired = true;
+                                }
+                            if (femaValue != "") //THEY DON'T HAVE #
+                            {
+                                if (femaValue == "FOLLOWUP" || femaValue == "REGISTER") //They are going to followup or register
+                                {
+                                        Ext.Msg.alert(
+                                        'Notice',
+                                        'You have selected a ' + femaValue.toLowerCase() + ' action and agree to ' + femaValue.toLowerCase() + ' with the client.  If this is not what was meant, please select another option.'
+                                        );
+                                }
+                            }
+
+                            //Checking if the page is the new disaster survivor entry form
+                            var recordIndex = -1;
+                            for(var i = 0; i < this.store.data.length; i++){
+                                if(this.store.getAt(i).data.title == "FEMA Registration Number"){ 
+                                    recordIndex = i;
+                                    break;
+                                }
+                            }
+                            if(recordIndex >= 0) //FEMA REGISTRATION NUMBER FIELD 
+                            {
+                                var r = this.store.getAt(recordIndex);
+                                var n = this.helperTree.getNode(r.get('id'));
+                                n.data.templateRecord.get('cfg').required = femaRequired;
+                                n.data.templateRecord.get('cfg').readOnly = !femaRequired;
+                                r.set('value', femaValue);
+                            }
+                        } 
+                        
                         if(Ext.isArray(context.value)) {
                             context.value = context.value.join(',');
                             context.record.set('value', context.value);
@@ -979,8 +1054,8 @@ Ext.define('CB.VerticalEditGrid', {
 
             if (Ext.isDefined(tr.get('cfg').validationRe))
             {
-            	var regEx = new RegExp(tr.get('cfg').validationRe);
-            	context.record.set('valid',regEx.test(context.value));
+                var regEx = new RegExp(tr.get('cfg').validationRe);
+                context.record.set('valid',regEx.test(context.value));
             }
 
             if(context.value != context.originalValue){
@@ -1012,10 +1087,10 @@ Ext.define('CB.VerticalEditGrid', {
         if(!this.syncRecordsWithHelper()) {
             this.getView().refresh();
         } else {
-	   if (!this.pressedSpecialKey)
-	   {
-		   this.gainFocus('next');	
-	   }	
+       if (!this.pressedSpecialKey)
+       {
+           this.gainFocus('next');  
+       }    
             this.fireEvent('restorescroll', this);
         }
 
