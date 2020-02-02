@@ -185,7 +185,7 @@ class Tasks extends Base
             ];
             $sr = $s->query($p);
             $rez = ['data' => []];
-            //if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) { 
+            if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
                 //Now, will still populate if empty
                 $rez['data'][] = [
                     'name' => $this->trans('AssignedToMe').$this->renderCount(
@@ -195,8 +195,17 @@ class Tasks extends Base
                     'iconCls' => 'icon-task',
                     'has_childs' => true,
                 ];
-            //}
-            //if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
+            }
+            else {
+              // code...
+              $rez['data'][] = [
+                  'name' => $this->trans('AssignedToMe'), //this is necessary to not throw an error
+                  'id' => $this->getId(2),
+                  'iconCls' => 'icon-task',
+                  'has_childs' => true,
+              ];
+            }
+            if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
                 //Now, will still populate if empty
                 $rez['data'][] = [
                     'name' => $this->trans('CreatedByMe').$this->renderCount(
@@ -206,7 +215,15 @@ class Tasks extends Base
                     'iconCls' => 'icon-task',
                     'has_childs' => true,
                 ];
-            //}
+            }
+            else {
+              $rez['data'][] = [
+                  'name' => $this->trans('CreatedByMe'),
+                  'id' => $this->getId(3),
+                  'iconCls' => 'icon-task',
+                  'has_childs' => true,
+              ];
+            }
 
             return $rez;
         }
