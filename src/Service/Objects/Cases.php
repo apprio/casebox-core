@@ -646,6 +646,7 @@ class Cases extends CBObject
         unset($sd['task_d_closed']);
 		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_ACTIVE, '');
 		$d['data']['_clientstatus'] = 1578;
+		$d['data']['_openstatus'] = 246933;
         $this->updateCustomData();
 		$this->updateSysData();
     }
@@ -681,7 +682,7 @@ class Cases extends CBObject
         $sd['task_status'] = static::$STATUS_CLOSED;
         $sd['task_d_closed'] = date('Y-m-d\TH:i:s\Z');
 		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_CLOSED, '');
-		$d['data']['_clientstatus'] = 1579;
+		$d['data']['_openstatus'] = 1579;
 		$this->updateCustomData();
 		$this->updateSysData();
     }
@@ -699,6 +700,7 @@ class Cases extends CBObject
     	$sd['transferred_dt'] = date('Y-m-d\TH:i:s\Z');
     	$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_TRANSFERRED, '');
     	$d['data']['_clientstatus'] = 604;
+		$d['data']['_openstatus'] = 1579;
     	$this->updateCustomData();
     	$this->updateSysData();
     }    

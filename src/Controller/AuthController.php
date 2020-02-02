@@ -92,8 +92,16 @@ class AuthController extends Controller
                         	return $this->render('CaseboxCoreBundle:forms:authenticatorsetup.html.twig', $vars);                    	
                     	}
         			}
-		    $this->get('session')->remove('auth'); //remove user switch after two factor problem DS 9/16/17
-                    return $this->redirectToRoute('app_core', $vars);
+		    		$this->get('session')->remove('auth'); //remove user switch after two factor problem DS 9/16/17
+					if (!empty($this->get('session')->get('redirectUrl')))
+					{
+						$vars['id'] = $this->get('session')->get('redirectId');
+						return $this->redirectToRoute($this->get('session')->get('redirectUrl'), $vars);
+					}
+					else
+					{
+                    	return $this->redirectToRoute('app_core', $vars);
+					}
                 } else {
                     $this->addFlash('notice', $user);
 

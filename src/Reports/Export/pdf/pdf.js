@@ -272,6 +272,7 @@ function run()
     expectedContent = expectedContent.replace("<###begin###>","<style type='text/css'>"+embeded_css+"</style><###begin###>");
     expectedContent = expectedContent.replace("<###begin###>","<script type='text/javascript'>"+embeded_js+"</script>");
 
+
     page.setContent(expectedContent,expectedLocation);
 
     function renderAndExit()

@@ -133,7 +133,8 @@ class Notifications
 			{
 				$p['fq'] = ['report_dt:[NOW-7DAY/DAY TO NOW]'];	
 				$begin = new \DateTime( date("Y-m-d") );
-				$end = new \Datetime( strtotime("-1 week +1 day") );
+				$end = new \DateTime(date("Y-m-d")  );
+				$end->setTimestamp(strtotime("-1 week +1 day"));
 			}
 			else
 			{
@@ -196,22 +197,20 @@ class Notifications
 			$records = [];
 			$res = [];
 
-			$newcolumns['number'] = ["solr_column_name"=>'number',"title"=>'#',"width"=>100];
-			$newcolumns['title'] = ["solr_column_name"=>'title',"title"=>'Title',"width"=>200];
-			//$begin = new \DateTime( '2010-05-01' );
-			//$end = new \Datetime( '2010-05-10' );
+			$newcolumns['number'] = ["solr_column_name"=>'number',"title"=>'#',"label"=>'#',"width"=>100];
+			$newcolumns['title'] = ["solr_column_name"=>'title',"title"=>'Title',"label"=>'Title',"width"=>200];
 
 			$interval = \DateInterval::createFromDateString('1 day');
 			$end->modify( '+1 day' ); 
 			$period = new \DatePeriod($begin, $interval, $end);
 			foreach ( $period as $dt )
 			{
-				$newcolumns[$dt->format( "Y-m-d" ).'T00:00:00Z'] = ["solr_column_name"=>$dt->format( "Y-m-d" ).'T00:00:00Z',"title"=>substr($dt->format( "Y-m-d" ),0,10),"width"=>100];						
+				$newcolumns[$dt->format( "Y-m-d" ).'T00:00:00Z'] = ["solr_column_name"=>$dt->format( "Y-m-d" ).'T00:00:00Z',"title"=>substr($dt->format( "Y-m-d" ),0,10),"label"=>substr($dt->format( "Y-m-d" ),0,10),"width"=>100];						
 			}
 						
 			if(isset($configuration['groupField']))
 			{
-				$newcolumns['area_s'] = ["solr_column_name"=>'area_s',"title"=>'Area',"width"=>200];	
+				$newcolumns['area_s'] = ["solr_column_name"=>'area_s',"title"=>'Area',"label"=>'Area',"width"=>200];	
 					$out = array();
 					foreach ($rez['data'] as $row) {
 						$out[$row['area_s']] = $row;
@@ -259,9 +258,9 @@ class Notifications
 			}
 			if ($area != "All")
 			{
-				$newcolumns['areatotal'] = ["solr_column_name"=>'areatotal',"title"=>'Area Total',"width"=>100];
+				$newcolumns['areatotal'] = ["solr_column_name"=>'areatotal',"label"=>'Area Total',"title"=>'Area Total',"width"=>100];
 			}
-			$newcolumns['total'] = ["solr_column_name"=>'total',"title"=>'Total',"width"=>100];
+			$newcolumns['total'] = ["solr_column_name"=>'total',"title"=>'Total',"label"=>'Total',"width"=>100];
 			unset($rez['data']);
 			$rez['data'] = $records;		
 			$columns = $newcolumns;

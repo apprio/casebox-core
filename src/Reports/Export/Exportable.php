@@ -21,7 +21,11 @@
  * 
  * $report = new MyReport;
  * $report->run();
- * $report->export()->pdf()->toBrowser('file.pdf');
+ * $report->export()->pdf(array(
+        "chromeBinary" => "C:\Program Files (x86)\Google\Chrome\Application\chrome",
+        "format"=>"A4",
+        "orientation"=>"portrait"
+    ))->toBrowser('file.pdf');
  * 
  * 
  */

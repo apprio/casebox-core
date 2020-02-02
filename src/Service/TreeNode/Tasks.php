@@ -98,7 +98,7 @@ class Tasks extends Base
     {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-        $p['fq'][] = 'task_u_all:'.User::getId();
+        //$p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2)';
         $p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         $p['rows'] = 0;
@@ -123,7 +123,7 @@ class Tasks extends Base
         ];
     }
 
-    protected function getMyUserNodes()
+   /* protected function getMyUserNodes()
     {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
@@ -150,7 +150,7 @@ class Tasks extends Base
                 ],
             ],
         ];
-    }
+    }*/
 
 
 
@@ -172,7 +172,7 @@ class Tasks extends Base
         $p = $this->requestParams;
 		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
         $p['fq'] = $this->fq;
-        $p['fq'][] = 'task_u_all:'.$userId;
+        //$p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2)';
 
         if (@$this->requestParams['from'] == 'tree') {
