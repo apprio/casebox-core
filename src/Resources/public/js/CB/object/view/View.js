@@ -1,5 +1,5 @@
 	Ext.namespace('CB.object.view');
- 
+
 	Ext.define('CB.object.view.View', {
     extend: 'Ext.Panel'
 	,alias: 'widget.CBObjectViewView'
@@ -33,7 +33,7 @@
 
         this.delayLoadTask = new Ext.util.DelayedTask(this.doLoad, this);
 		//CB_Objects.getPluginsData
-	
+
         this.enableBubble(['changeparams', 'filedownload', 'createobject']);
 
         App.mainViewPort.on('objectsdeleted', this.onObjectsDeleted, this);
@@ -181,13 +181,13 @@
 			/*var vxTabs = Ext.getCmp('vxTabs');
 			if(vxTabs){
 				vxTabs.destroy();
-			}*/			
+			}*/
 			var tabPanel = Ext.create('Ext.tab.Panel', {
 				stateEvents: ['tabchange'],
 				stateful:true,
-				autoScroll: false, 
+				autoScroll: false,
 				itemId:'vxTabs',
-				listeners: { 
+				listeners: {
 				'tabchange': function(){
 					var a = this.getActiveTab();
 					var idx = this.items.indexOf(a);
@@ -198,7 +198,7 @@
 			//527,289,311,607,61,510,533,553,482,1120,455,505,559,489,440,656,1175,651,172
 			var addressesMenu = '311';
 			var familymembersMenu = '289';
-			var assessmentMenu = '510,533,553,482,1120,455,505,559,489,440,656,1175,651,172,3114';
+			var assessmentMenu = '510,533,553,482,455,505,559,489,440,656,1175,651,172,3114'; //removed 1120 FEMA
 			var taskMenu = '7';
 			var recoveryMenu = '527'
 			var referralMenu = '607';
@@ -208,21 +208,21 @@
 			var addressesData=[];
 			addressesData.data = [];
 			addressesData.limit = 100;
-			var assessmentData=[];		
-			assessmentData.data = [];	
+			var assessmentData=[];
+			assessmentData.data = [];
 			assessmentData.limit = 100;
-			var referralData=[];		
+			var referralData=[];
 			referralData.data = [];
 			referralData.limit = 100;
-			var recoveryReferralData=[];		
+			var recoveryReferralData=[];
 			recoveryReferralData.data = [];
 			recoveryReferralData.limit = 100;
-			var recoveryCompletedData=[];		
+			var recoveryCompletedData=[];
 			recoveryCompletedData.data = [];
-			recoveryCompletedData.limit = 100;			
-			var recoveryData=[];		
-			recoveryData.data = [];		
-			recoveryData.limit = 100;			
+			recoveryCompletedData.limit = 100;
+			var recoveryData=[];
+			recoveryData.data = [];
+			recoveryData.limit = 100;
 			if (Ext.isDefined(r.data.contentItems))
 			{
 				Ext.iterate(
@@ -235,19 +235,19 @@
 					   if (addressesMenu.indexOf(k.template_id) >=  0)
 					   {
 						   addressesData.data.push(k);
-					   }					   
+					   }
 					   if (assessmentMenu.indexOf(k.template_id) >=  0 && k.template_id != 311)
 					   {
 						   assessmentData.data.push(k);
 						   assessmentMenu = assessmentMenu.replace(k.template_id + ',','');
-						   assessmentMenu = assessmentMenu.replace(","+k.template_id,'');								   
-						   assessmentMenu = assessmentMenu.replace(k.template_id,'');						   
+						   assessmentMenu = assessmentMenu.replace(","+k.template_id,'');
+						   assessmentMenu = assessmentMenu.replace(k.template_id,'');
 					   }
 					   if (referralMenu.indexOf(k.template_id) >=  0)
 					   {
 		 				if (k.name.indexOf(' -  [') >= 0)
 		 				{
-		 					referralData.data.push(k);   
+		 					referralData.data.push(k);
 		 				}
 						else if (k.name.indexOf(' []') >= 0)
 						{
@@ -259,38 +259,38 @@
 		 				}
 					   }
 					   if (recoveryMenu.indexOf(k.template_id) >=  0)
-					   {						   
+					   {
 							recoveryData.data.push(k);
-					   }					   
+					   }
 				}
 					,this
 				);
-			}			
-			
+			}
+
 			var c= Ext.create('Ext.panel.Panel', {
 				title: L.Facesheet,
 				layout: {
 					align: 'stretch',
 					type: 'vbox'
-				},				
+				},
 			});
-			
+
 			var content = Ext.create('CBObjectPluginObjectProperties',{params:params});
 			r.data.objectProperties.data.preview[0] = r.data.objectProperties.data.preview[2];
 			content.onLoadData(r.data.objectProperties);
-			c.add(content);			
-			
+			c.add(content);
+
 			/*if (Ext.isDefined(r.data.comments))
-			{			
+			{
 			content.title = 'Comments' + ' [' +r.data.comments.data.length+']';
 			content.onLoadData(r.data.comments);
 			}
 			c.add(content);
 			content.updateTitle('Notes');*/
 			items.push(c);
-			
-			
-			
+
+
+
 			// Assessments
 
 			c= Ext.create('Ext.panel.Panel', {
@@ -298,15 +298,15 @@
 				layout: {
 					align: 'stretch',
 					type: 'vbox'
-				},				
+				},
 			});
-			
+
 			content = Ext.create('CBObjectPluginObjectProperties',{params:params});
 			r.data.objectProperties.data.preview[0] = r.data.objectProperties.data.preview[3];
 			content.onLoadData(r.data.objectProperties);
 			c.add(content);
 
-			
+
 			if(!Ext.isEmpty(r.data.objectProperties.data.can.assessments)) {
 				//assessmentMenu = r.data.objectProperties.data.can.assessments;
 				var templatesStore = CB.DB.templates;
@@ -316,7 +316,7 @@
 					tbdAssessmentData[a] = {};
 					var templateId = r.data.objectProperties.data.can.assessments[a];
 					var templateName = templatesStore.getProperty(templateId,'title');
-					var iconCls = CB.DB.templates.getIcon(templateId);					
+					var iconCls = CB.DB.templates.getIcon(templateId);
 					tbdAssessmentData[a].template_id = templateId;
 					tbdAssessmentData[a].name = templateName;
 					tbdAssessmentData[a].pid = r.data.objectProperties.data.id;
@@ -326,19 +326,19 @@
 					//rez += '<img class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
 				}
 				tbdAssessments.data =tbdAssessmentData;
-				tbdAssessments.limit = 100;			
-				content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-				content.createMenu = assessmentMenu;	
+				tbdAssessments.limit = 100;
+				content  = Ext.create('CBObjectPluginContentItems',{params: params})
+				content.createMenu = assessmentMenu;
 				content.updateTitle(L.ClientAssessmentsNeeded);
-				content.onLoadData(tbdAssessments);			
+				content.onLoadData(tbdAssessments);
 				c.add(content);
-			}			
-			content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-			content.createMenu = assessmentMenu;	
+			}
+			content  = Ext.create('CBObjectPluginContentItems',{params: params})
+			content.createMenu = assessmentMenu;
 			content.updateTitle(L.ClientAssessmentsCompleted);
 			content.onLoadData(assessmentData);
 			c.add(content);
-			items.push(c);			
+			items.push(c);
 
 			// Recovery
 
@@ -347,14 +347,14 @@
 				layout: {
 					align: 'stretch',
 					type: 'vbox'
-				},				
+				},
 			});
-			
+
 			content = Ext.create('CBObjectPluginObjectProperties',{params:params});
 			r.data.objectProperties.data.preview[0] = r.data.objectProperties.data.preview[5];
 			content.onLoadData(r.data.objectProperties);
 			c.add(content);
-			
+
 			if(!Ext.isEmpty(r.data.objectProperties.data.can.recovery)) {
 				var templatesStore = CB.DB.templates;
 				var tbdRecoveryData = [];
@@ -363,7 +363,7 @@
 					tbdRecoveryData[a] = {};
 					var templateId = r.data.objectProperties.data.can.recovery[a];
 					var templateName = templatesStore.getProperty(templateId,'title');
-					var iconCls = CB.DB.templates.getIcon(templateId);					
+					var iconCls = CB.DB.templates.getIcon(templateId);
 					tbdRecoveryData[a].template_id = templateId;
 					tbdRecoveryData[a].name = templateName;
 					tbdRecoveryData[a].pid = r.data.objectProperties.data.id;
@@ -373,47 +373,47 @@
 					//rez += '<img class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
 				}
 				tbdRecovery.data =tbdRecoveryData;
-				content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-				content.createMenu = recoveryMenu;				
+				content  = Ext.create('CBObjectPluginContentItems',{params: params})
+				content.createMenu = recoveryMenu;
 				content.updateTitle(L.ClientRecoveryNeeded);
-				content.onLoadData(tbdRecovery);			
+				content.onLoadData(tbdRecovery);
 				c.add(content);
-			}			
+			}
 
-			content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-			content.createMenu = referralMenu;	
-			//content.actions.add.setHidden(true);			
+			content  = Ext.create('CBObjectPluginContentItems',{params: params})
+			content.createMenu = referralMenu;
+			//content.actions.add.setHidden(true);
 			content.updateTitle(L.ClientReferrals);
 			content.onLoadData(referralData);
 			c.add(content);
-			
-			content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-			content.createMenu = referralMenu;	
-			//content.actions.add.setHidden(true);			
+
+			content  = Ext.create('CBObjectPluginContentItems',{params: params})
+			content.createMenu = referralMenu;
+			//content.actions.add.setHidden(true);
 			content.updateTitle(L.ReferralsMade);
 			content.onLoadData(recoveryReferralData);
 			c.add(content);
-		
-		 	content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-			content.createMenu = referralMenu;	
-		 	//content.actions.add.setHidden(true);			
+
+		 	content  = Ext.create('CBObjectPluginContentItems',{params: params})
+			content.createMenu = referralMenu;
+		 	//content.actions.add.setHidden(true);
 		 	content.updateTitle(L.CompletedReferrals);
 		 	content.onLoadData(recoveryCompletedData);
-		 	c.add(content);		
+		 	c.add(content);
 
-			content  = Ext.create('CBObjectPluginContentItems',{params: params})		
-			content.createMenu = recoveryMenu;	
+			content  = Ext.create('CBObjectPluginContentItems',{params: params})
+			content.createMenu = recoveryMenu;
 			content.updateTitle(L.RecoveryNotes);
 			content.onLoadData(recoveryData);
-			
+
  			c.add(content);
- 			content  = Ext.create('CBObjectPluginContentItems',{params: params})		
- 			content.createMenu = taskMenu;	
+ 			content  = Ext.create('CBObjectPluginContentItems',{params: params})
+ 			content.createMenu = taskMenu;
  			content.updateTitle(L.ClientTasks);
 
  			content.onLoadData(r.data.tasks);
  			c.add(content);
- 			items.push(c);	
+ 			items.push(c);
 
 
 			// Timeline
@@ -423,10 +423,10 @@
 				layout: {
 					align: 'stretch',
 					type: 'vbox'
-				},				
+				},
 			});
-			
-         this.store = new Ext.data.DirectStore({	
+
+         this.store = new Ext.data.DirectStore({
              autoLoad: true
              ,autoDestroy: true
              ,remoteSort: true
@@ -456,34 +456,34 @@
                      ,rootProperty: 'data'
                      ,messageProperty: 'msg'
                  }
-             })	
+             })
          });
-			
+
 			content = Ext.create('CBBrowserViewActivityStream',{store: this.store});
 			c.add(content);
 			items.push(c);
 
-			
-			
+
+
             if(!Ext.isEmpty(items)) {
                 tabPanel.add(items);
             }
-			
+
 			var activeTab =0;
 			if (Ext.isDefined(Ext.state.Manager.get('active_tab')) && !isNaN(Ext.state.Manager.get('active_tab')))
 			{
 				activeTab = Ext.state.Manager.get('active_tab', 0);
 			}
-			
+
 			tabPanel.setActiveTab(activeTab);
-			
+
 			 //tabPanel.tabBar.items.each(function(card){
              //           card.setDisabled(true);
              //       });
-			
+
 			this.add(tabPanel);
 
-			
+
             /**
              * we make this check for title after all plugins have been added
              * because objectProperties plugin applies loaded data (including object name)
@@ -494,7 +494,7 @@
                 (params.from !== 'window') &&
                 !Ext.isEmpty(params.name)
             ){
-			
+
 				if (r.data.objectProperties.data.preview[1] != null) {
 					Ext.apply(params, r.data.objectProperties.data);
 					var previewHtml = r.data.objectProperties.data.preview[1];
@@ -504,19 +504,19 @@
 				{
 					params.preview = "None";
 				}
-				
+
 				var data = Ext.copyTo(
                     {}
                     ,params
                     ,'id,pids,path,name,template_id,status,statusCls,cid,cdate_ago_text,uid,udate_ago_text,preview,can'
                 );
-				
+
 					var titleView =  new Ext.panel.Panel({
 					width: 300,
 					margin: 0,
 					bodyPadding: 0,
 					border: false,
-					header: false,				
+					header: false,
 					tpl: [
 						,'<div class="obj-header" style="text-align:left"><b class="{titleCls}">{[ Ext.String.htmlEncode(Ext.valueFrom(values.name, \'\')) ]}</b> &nbsp;'
 							,'{[ this.getStatusInfo(values) ]}'
@@ -547,7 +547,7 @@
 							var iconCls = CB.DB.templates.getIcon(templateId);
 							rez += '<img alt="Template" class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
 						}
-						
+
 						return rez;
 					}
                 ,getTitleInfo: function (values) {
@@ -582,7 +582,7 @@
 					],
 					html: ''
 				});
-				
+
 				titleView.update(Ext.valueFrom(data, {}));
                 this.insert(0, titleView);
             }
@@ -628,9 +628,9 @@
      */
     ,getContainerToolbarItems: function() {
 
-    }	
-	
-	
+    }
+
+
     ,onPluginsContainerLoaded: function(cmp, params) {
         this.loadedData.subscription = params.subscription;
         this.onCardItemLoaded(cmp);
