@@ -997,6 +997,9 @@ Ext.define('CB.VerticalEditGrid', {
                                   case 1549:
                                     femaValue = "DECLINEDREGISTER";
                                     break;
+                                  case 247073:
+                                    femaValue = "NOTUSCITIZEN"
+                                    break;
                                   case 1545:
                                     femaValue = "";
                                     femaRequired = true;
@@ -1008,6 +1011,13 @@ Ext.define('CB.VerticalEditGrid', {
                                         Ext.Msg.alert(
                                         'Notice',
                                         'You have selected a ' + femaValue.toLowerCase() + ' action and agree to ' + femaValue.toLowerCase() + ' with the client.  If this is not what was meant, please select another option.'
+                                        );
+                                }
+                                else if (femaValue == "NOTUSCITIZEN") //They are going to followup or register
+                                {
+                                        Ext.Msg.alert(
+                                        'Notice',
+                                        'You have selected that the person requesting assistance is NOT a U.S. citizen or dependent.  Please speak with an ERC staff before continuing with this form.  If this is not what was meant, please select another option.'
                                         );
                                 }
                             }
