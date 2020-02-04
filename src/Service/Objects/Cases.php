@@ -528,8 +528,8 @@ class Cases extends CBObject
 
 		$ASSESSMENT_MAP = array(
 		   1511=>510, //behavioral
-		   1497=>533,//child
-		   1507=>553,//clothing
+		   1497=>533,//child and emergency group processing
+		   1507=>553,//clothing and rr01
 		   1508=>482, //employment
 		   1506=>1120,//fema
 		   1515=>455,//finance
@@ -538,7 +538,7 @@ class Cases extends CBObject
 		   1512=>489,//health
 		   1514=>440, //housing
 		   1501=>656,//language
-		   1505=>1175,//legal
+		   1505=>1175,//legal and Privacy Repayment
 		   1498=>651, //senior
 		   1513=>172, //transportation
 		   3151=>3114 //shelterassessment
@@ -546,8 +546,9 @@ class Cases extends CBObject
 
 		$identified_unmet_needs = Util\toNumericArray($this->getFieldValue('identified_unmet_needs', 0)['value']);
 		$at_risk_population = Util\toNumericArray($this->getFieldValue('at_risk_population', 0)['value']);
+		$documents_filled_out = Util\toNumericArray($this->getFieldValue('documents_filled_out', 0)['value']); //MAY BREAK REPAIT IDE!
 		foreach($ASSESSMENT_MAP as $identified=>$assessment){
-			if (in_array($identified,$identified_unmet_needs)||in_array($identified,$at_risk_population))
+			if (in_array($identified,$identified_unmet_needs)||in_array($identified,$at_risk_population)||in_array($identified,$documents_filled_out))
 			{
 				$assessments_reported[] = $assessment;
 			}
@@ -1113,14 +1114,15 @@ class Cases extends CBObject
 			}
 		*/
 
-
+      $fileCount = 0;
 			$filePlugin = new Files();
 			$files = $filePlugin->getData($data['id']);
 
-			$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' ' . $this->trans('ConsentForm') .'</a>';
-
+			//$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' Form</a>'; //need to change this to be parameterized - multiple forms vs one
+      $fileInfo = '';
 			foreach ($files['data'] as $file) {
-				$fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr><tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr></table>';
+				$fileInfo = $fileInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr>';
+        $fileCount++;
 			}
 			$contentItems = new ContentItems();
 			$items = $contentItems->getData($data['id']);
@@ -1169,6 +1171,16 @@ class Cases extends CBObject
 				}
 			}
 
+      if ($fileCount ==0)
+			{
+				$fileInfo = $fileInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '</a></td></tr>'; //need to change this to be parameterized - multiple forms vs one
+			}
+			else
+			{
+				$fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$fileInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a '. (($fileCount > 4)?'style="display:none"':'') .' class="bt item-action click" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" action="upload" uid="'.User::getId().'"">   <img alt="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" class="i16u icon-plus"  action="upload" id="'.User::getId().'" src="/css/i/s.gif"> </a></td></tr>';
+			}
+
+
       if ($emergencyContactCount ==0)
 			{
 				$emergencyContactInfo = $emergencyContactInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="247090" myPid="'.$data['id'].'">Add Emergency Contact/Next of Kin</a></td></tr>';
@@ -1196,6 +1208,7 @@ class Cases extends CBObject
 			}
 			$emergencyContactInfo = $emergencyContactInfo . '</table>';
 			$familyMemberInfo = $familyMemberInfo . '</table>';
+      $fileInfo = $fileInfo.'</table>';
 			$addressInfo = $addressInfo . '</table>';
         $userService = Cache::get('symfony.container')->get('casebox_core.service.user');
 
