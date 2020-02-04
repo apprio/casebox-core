@@ -125,7 +125,7 @@ class Instance
     			header("Pragma: no-cache");
     			header("Expires: 0");
     			echo implode("\n", $rez);
-    	
+
     			exit(0);
     		}
 			$rez = [];
@@ -138,9 +138,9 @@ class Instance
 			header('Content-Transfer-Encoding: binary');
 			header('Pragma: public');
 			echo "\xEF\xBB\xBF"; // UTF-8 BOM
-			echo implode("\n", $rez);		
-			exit(0);			
-    	}        
+			echo implode("\n", $rez);
+			exit(0);
+    	}
     	else
 		{
 			echo ('Export functionality has been disabled.  Please contact the ECMRS Helpdesk for reports or exports.');
@@ -169,7 +169,7 @@ class Instance
     		$items = $contentItems->getData($clientId);
     		$filePlugin = new \Casebox\CoreBundle\Service\Objects\Plugins\Files();
     		$files = $filePlugin->getData($clientId);
-    		
+
     		// Select only required properties for result
     		$properties = [
     				'primarylanguage',
@@ -183,8 +183,8 @@ class Instance
     				$r[$property] = empty($objn ) ? '' : $objn ->getHtmlSafeName();
     			}
     		}
-    		 
-			 
+
+
 			if (!empty($obj['data']['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($obj['data']['data']['_location_type']) ? $obj['data']['data']['_location_type']['value'] : $obj['data']['data']['_location_type'])))
 			{
 				$location = $objService->load(['id' => is_array($obj['data']['data']['_location_type']) ? $obj['data']['data']['_location_type']['value'] : $obj['data']['data']['_location_type']]);
@@ -195,8 +195,8 @@ class Instance
 				$r['_locationzipcode'] = isset($location['data']['data']['_locationzipcode'])?$location['data']['data']['_locationzipcode']:'';
 				$r['_locationcounty'] = $location['data']['data']['_locationcounty'];
 				$r['_locationregion'] = $location['data']['data']['_locationregion'];
-			} 
-			 
+			}
+
     		$caseManagerId = !empty($obj['data']['data']['assigned'])?$obj['data']['data']['assigned']:$obj['data']['cid'];
     		$r['casemanagerid'] = $caseManagerId;
     		$r['task_u_assignee'] = User::getDisplayName($caseManagerId);
@@ -207,7 +207,7 @@ class Instance
     		foreach ($files['data'] as $file) { //consent form signed
     			$r['datereleasesigned'] = substr($file['cdate'],0,10);
     		}
-    		
+
     		$r['casenote'] = '';
     		$familyMemberCount=1;
     		$referralCount=1;
@@ -253,8 +253,8 @@ class Instance
     							$r['fm_'.$property.$familyMemberCount] = empty($objn ) ? '' : $objn ->getHtmlSafeName();
     						}
     					}
-    					
-    					
+
+
     					$r['fm_firstname'.$familyMemberCount] = $fm['data']['data']['_firstname'];
     					$r['fm_lastname'.$familyMemberCount] = isset($fm['data']['data']['_lastname'])?$fm['data']['data']['_lastname']:'';
     					$r['fm_middlename'.$familyMemberCount] = isset($fm['data']['data']['_middlename'])?$fm['data']['data']['_middlename']:'';
@@ -263,10 +263,10 @@ class Instance
     					//$r['fm_gender'.$familyMemberCount] = $fm['data']['data']['_gender'];
     					//$r['fm_race'.$familyMemberCount] = $fm['data']['data']['_race'];
     					//$r['fm_ethnicity'.$familyMemberCount] = $fm['data']['data']['_ethnicity'];
-    					
+
     					//$r['fm_alternatecontact'.$familyMemberCount] = $fm['data']['data']['_alternatecontact'];
-    					
-    					
+
+
     					if (isset($fm['data']['data']['_alternatecontact']['childs']['_bestphonenumber']))
     					{
     						$r['fm_alternatecontactbestphonenumber'.$familyMemberCount] = $fm['data']['data']['_alternatecontact']['childs']['_bestphonenumber'];
@@ -346,7 +346,7 @@ class Instance
     						if ($fm['data']['data']['_' . $property] != null) {
     							$objn = Objects::getCachedObject((is_array($fm['data']['data']['_' . $property])?$fm['data']['data']['_' . $property]['value']:$fm['data']['data']['_' . $property]));
     							$obj['data'][$property] = empty($objn ) ? '' :  str_replace('Room Apartment','Room, Apartment',$objn ->getHtmlSafeName());
-    						}    							
+    						}
     						}
     					}
     					if (isset($fm['data']['data']['_clientdamagerating']['childs']['_otherdamageassessment']))
@@ -364,7 +364,7 @@ class Instance
     														str_replace('<ul class="clean"><li class="icon-padding fa fa-sticky-note fa-fl">','',
     																str_replace('</li></ul>','',str_replace('<tr><td class="prop-key">','',
     																		str_replace('<table class="obj-preview"><tbody>','',$assessmentData[0])))))))));
-    		
+
     			}
     		}
     	}
@@ -386,7 +386,7 @@ class Instance
     				{
     					$t = '';
     				}
-    		
+
     				if (!empty($t) && !is_numeric($t)) {
     					$t = str_replace(
     							[
@@ -405,15 +405,15 @@ class Instance
     				}
     				$record[] = $t;
     			}
-    		
+
     			$rez[] = implode(',', $record);
     		}
     	return $rez;
-    }    
-    
-    
-    
-    
+    }
+
+
+
+
     public function getXML($p)
     {
     	$container = Cache::get('symfony.container');
@@ -435,16 +435,16 @@ class Instance
     		$items = $contentItems->getData($clientId);
     		$filePlugin = new \Casebox\CoreBundle\Service\Objects\Plugins\Files();
     		$files = $filePlugin->getData($clientId);
-    
+
     		$femaNumber = isset($obj['data']['data']['_femanumber'])?str_replace('-','',$obj['data']['data']['_femanumber']):null;
-    			
+
     		if (!empty($femaNumber)) {
     			if(!preg_match('/^[1-9]\d{9}$/', $femaNumber))
     				$femaNumber = null;
     		}
     		$obj['data']['femanumber'] = $femaNumber;
-    
-    
+
+
     		// Select only required properties for result
     		$properties = [
     				'race',
@@ -468,7 +468,7 @@ class Instance
     		if ($obj['data']['data']['_birthdate'] != null) {
     			$obj['data']['birthdate'] = substr($obj['data']['data']['_birthdate'],0,10);
     		}
-    			
+
     		$arrayproperties = [
     				'at_risk_population',
     				'identified_unmet_needs'
@@ -490,7 +490,7 @@ class Instance
     		$obj['data']['casemanageremail'] = User::getEmail($caseManagerId);
     		$obj['data']['identified_unmet_needs'] = trim($obj['data']['identified_unmet_needs'],',');
     		$obj['data']['disastername'] = $configService->get('disaster_declaration_number');
-    			
+
     		//$location = isset($obj['data']['data']['_location_type'])?$obj['data']['data']['_femanumber']:null;
     		if (!empty($obj['data']['data']['_fulladdress']))
     		{
@@ -507,11 +507,11 @@ class Instance
     			$obj['data']['addresses'][] = $address['data'];
     		}
     		$obj['data']['narrative'] = '';
-    
+
     		foreach ($files['data'] as $file) { //consent form signed
     			$obj['data']['datereleasesigned'] = substr($file['cdate'],0,10);
     		}
-    			
+
     		foreach ($items['data'] as $item) {
     			if ($item['template_id'] == 311) //address
     			{
@@ -588,8 +588,8 @@ class Instance
     	];
     	$html = $twig->render('CaseboxCoreBundle:email:dcds_1_1.xml.twig', $vars);
     	return $html;
-    }    
-    
+    }
+
   public function getExport($p)
     {
     	$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
@@ -633,29 +633,29 @@ class Instance
         $clientId = $r['id'];
     	$filePlugin = new \Casebox\CoreBundle\Service\Objects\Plugins\Files();
 		$files = $filePlugin->getData($clientId);
-			
+
 		foreach ($files['data'] as $file) {
 			$fileId = $file['id'];
-		}		
-		
+		}
+
 		$fid = Files::read($fileId);
 		if (!empty($fid)) {
             $content = FilesContent::read($fid['content_id']);
 			$file = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
 			$zip->addFile($file, $clientId.'consentform.pdf');
-		}			
-		
+		}
+
 		$export = new Instance();
-		
+
 		$html = $export->getPDFContent($clientId,$r['zipcode_s']);
 		//echo($html);
-		
+
 		$dompdf = new Dompdf();
 		$dompdf->loadHtml($html);
 		$dompdf->setPaper('A4', 'landscape');
 		$dompdf->render();
 		$recoveryPlan = $dompdf->output();
-		
+
 		$zip->addFromString($clientId.'recoveryplan.pdf',$recoveryPlan);
 		$data = [
 				'pid' => $clientId,
@@ -689,15 +689,15 @@ class Instance
         readfile($zipname);
         exit(0);
     }
-	
+
 	public function getPDF($p)
 	{
-		
+
 		$container = Cache::get('symfony.container');
 		$twig = $container->get('twig');
 		$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
         // Check if object id is numeric
-        if (is_numeric($p)) {		
+        if (is_numeric($p)) {
         	$html = $this->getPDFContent($p);
         }
 		else
@@ -707,7 +707,7 @@ class Instance
 			if ($p['reportId'] === 2727)
 			{
 				$this->getExport($p);
-			} 
+			}
 			}
 			$reports = new Notifications();
 			$res = $reports->getReport($p);
@@ -740,8 +740,8 @@ class Instance
             }
 
             $rez[] = implode(',', $record);
-        	}	
-			
+        	}
+
 			date_default_timezone_set("America/New_York");
 
 			$vars = [
@@ -750,7 +750,7 @@ class Instance
 				'services'=>$records,
 				'currentDate'=> date("m/d/Y") .  ' ' .  date("h:i:sa")
 			];
-			$html = $twig->render('CaseboxCoreBundle:email:reports.html.twig', $vars);		
+			$html = $twig->render('CaseboxCoreBundle:email:reports.html.twig', $vars);
 		}
 		$dompdf = new Dompdf();
 		$dompdf->loadHtml($html);
@@ -796,7 +796,7 @@ class Instance
         echo implode("</tr>\n<tr>", $rez);
         echo '</tr></table></body></html>';
     }
-    
+
     public function getCSVContent($p)
     {
     	$rez = [];
@@ -877,21 +877,21 @@ class Instance
 		}
 		return $rez;
     }
-    
+
         public function getPDFContent($p, $zipcode="", $language="")
     {
     	$container = Cache::get('symfony.container');
 		$twig = $container->get('twig');
-		$configService = Cache::get('symfony.container')->get('casebox_core.service.config');	
+		$configService = Cache::get('symfony.container')->get('casebox_core.service.config');
         	$services = null;
 			$objService = new Objects();
 			$obj = $objService->load(['id' => $p]);
 			//print_r($obj['data']['data']['sys_data']);
-			
+
 			$contentItems = new ContentItems();
 			$items = $contentItems->getData($p);
 			$femaNumber = isset($obj['data']['data']['_femanumber'])?$obj['data']['data']['_femanumber']:null;
-			
+
 			if (empty($femaNumber)) {
 				$femaNumber = 'N/A';
 			}
@@ -904,18 +904,18 @@ class Instance
 					{
 						 $comments = '';
 						 $service = $objService->load($item);
-						 $referralType = Objects::getCachedObject($service['data']['data']['_referraltype']['value']);	
+						 $referralType = Objects::getCachedObject($service['data']['data']['_referraltype']['value']);
 						 $refferalTypeValue = empty($referralType) ? 'N/A' : $referralType->getHtmlSafeName();
-						 $referralSubType = Objects::getCachedObject($service['data']['data']['_referraltype']['childs']['_referralservice']);						 
+						 $referralSubType = Objects::getCachedObject($service['data']['data']['_referraltype']['childs']['_referralservice']);
 						 $refferalSubTypeValue = empty($referralSubType) ? 'N/A' : $referralSubType->getHtmlSafeName();
 						 if (!empty($service['data']['data']['_provider']) && !empty(Objects::getCachedObject($service['data']['data']['_provider'])))
 						 {
-						    $resource = $objService->load(['id' => $service['data']['data']['_provider']]);		
-						 }				
+						    $resource = $objService->load(['id' => $service['data']['data']['_provider']]);
+						 }
 						 else
 						 {
 							unset($resource);
-						 }	 
+						 }
 						 //$resourceValue = empty($resource) ? 'N/A' : $resource->getHtmlSafeName();
 						 //print_r($service);
 						 if (!empty($service['data']['data']['_commentgroup']))
@@ -937,27 +937,27 @@ class Instance
 							'referralappointmentdatetime' =>(!empty($service['data']['data']['_appointmentdate'])?Util\formatMysqlDate($service['data']['data']['_appointmentdate'], Util\getOption('short_date_format')):''). ' ' . (!empty($service['data']['data']['_appointmenttime'])?$service['data']['data']['_appointmenttime']:''),
 							'targetcompletiondate' =>  !empty($service['data']['data']['_targetcompletiondate'])?Util\formatMysqlDate($service['data']['data']['_targetcompletiondate'], Util\getOption('short_date_format')):null,
 							'comments' => str_replace('()','',trim($comments,','))
-						];	
+						];
 					}
 				}
 			$v = isset($obj['data']['data']['assigned'])?$obj['data']['data']['assigned']:null;
-			
+
 			if (empty($v)) {
 				$assigned = 'N/A';
-			}else 
+			}else
 			{
 				 $assigned = User::getDisplayName($v);
 				 //echo(User::getUserData($v)['phone']);
 			}
-			
+
 			$vars = [
-				'client_name' => $obj['data']['data']['_firstname'] . ' ' . $obj['data']['data']['_lastname'],
+				'client_name' => empty($obj['data']['data']['_firstname'])?'No First Name':$obj['data']['data']['_firstname'] . ' ' . empty($obj['data']['data']['_lastname'])?'No Last Name':$obj['data']['data']['_lastname'],
 				'client_address' => (!empty($obj['data']['data']['_fulladdress'])?str_replace(", United States","",$obj['data']['data']['_fulladdress']):''). ' ' . $zipcode, //will replace with real zipcode after refactor
 				'client_email' =>!empty($obj['data']['data']['_emailaddress'])?$obj['data']['data']['_emailaddress']:'',
 				'client_phonenumber' =>!empty($obj['data']['data']['_phonenumber'])?$obj['data']['data']['_phonenumber']:'',
 				'client_secondaryphonenumber' => !empty($obj['data']['data']['_otherphonenumber'])?$obj['data']['data']['_otherphonenumber']:'',
-				'client_lastname' => $obj['data']['data']['_lastname'],
-				'client_firstname' => $obj['data']['data']['_firstname'],			
+				'client_lastname' => empty($obj['data']['data']['_lastname'])?'No Last Name':$obj['data']['data']['_lastname'],
+				'client_firstname' => empty($obj['data']['data']['_firstname'])?'No First Name':$obj['data']['data']['_firstname'],
 				'disaster_declaration_number' => $configService->get('disaster_declaration_number'),
 				'disaster_site_address' => empty($location)?'N/A': $location['data']['data']['_locationname'] .' - '.empty($location['data']['data']['_locationaddress'])?'':$location['data']['data']['_locationaddress'].' '.$location['data']['data']['_locationcity'] ,
 				'cm_phone' => $configService->get('disaster_phone_number'),
@@ -972,5 +972,5 @@ class Instance
 			$html = $twig->render('CaseboxCoreBundle:email:recovery-plan'.$language.'.html.twig', $vars);
 		return $html;
     }
-    
+
 }

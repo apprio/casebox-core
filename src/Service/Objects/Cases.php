@@ -30,11 +30,11 @@ class Cases extends CBObject
 
     public static $STATUS_PENDING = 4;
 
-    public static $STATUS_DELETED = 99;	
-	
+    public static $STATUS_DELETED = 99;
+
 	public static $STATUS_INFORMATION = 5;
-	
-	public static $STATUS_TRANSFERRED = 6;	
+
+	public static $STATUS_TRANSFERRED = 6;
 
     public static $USERSTATUS_NONE = 0;
 
@@ -59,7 +59,7 @@ class Cases extends CBObject
 
         $this->setParamsFromData($p);
 		$createResult = parent::create($p);
-		
+
 		if (!empty($p['data']['_numberinhousehold']))
 		{
 			$householdMembers = $p['data']['_numberinhousehold'];
@@ -82,7 +82,7 @@ class Cases extends CBObject
 				}
 			}
 		}
-		
+
         return $createResult;
     }
 
@@ -177,7 +177,7 @@ class Cases extends CBObject
      * and store it in sys_data under "solr" property
      */
     protected function collectSolrData()
-    {    
+    {
         parent::collectSolrData();
 
         $d = &$this->data;
@@ -189,7 +189,7 @@ class Cases extends CBObject
         $solrData['task_status'] = @$sd['task_status'];
 
 		$solrData['case_status'] = @$sd['case_status'];
-		
+
 		$assessments_reported = Util\toNumericArray($this->getFieldValue('assessments_reported', 0)['value']);
         if (!empty($assessments_reported)) {
             $solrData['assessments_reported'] = $assessments_reported;
@@ -199,7 +199,7 @@ class Cases extends CBObject
         if (!empty($assessments_needed)) {
             $solrData['assessments_needed'] = $assessments_needed;
         }
-		
+
         $user_ids = Util\toNumericArray($this->getFieldValue('assigned', 0)['value']);
         if (!empty($user_ids)) {
             $solrData['task_u_assignee'] = $user_ids;
@@ -213,8 +213,8 @@ class Cases extends CBObject
         $user_ids[] = @Util\coalesce($d['oid'], $d['cid']);
 
         $solrData['task_u_all'] = array_unique($user_ids);
-		
-		
+
+
 		// Select only required properties for result
         $properties = [
             'race',
@@ -223,7 +223,7 @@ class Cases extends CBObject
             'ethnicity',
             'language',
             'headofhousehold',
-            'fematier',			
+            'fematier',
 			'full_address',
 			'task_d_closed',
         	'transferred_dt',
@@ -242,10 +242,10 @@ class Cases extends CBObject
 			'county_s',
 			'street_s',
 			'city_s',
-			'zipcode_s',		
+			'zipcode_s',
 			'state_s',
 			'location_type',
-			'location_type_s',			
+			'location_type_s',
             'at_risk_population_ss',
             'identified_unmet_needs_ss'
         ];
@@ -263,19 +263,19 @@ class Cases extends CBObject
 				$solrData[$key] = $value;
 			}
 		}
-		
+
 		/* Can safely delete after synced up */
 		$objService = new Objects();
 		$myloc = Objects::getCachedObject($this->getFieldValue('_location_type', 0)['value']);
 		if (!empty($myloc))
 		{
-		$location = $objService->load(['id' => $this->getFieldValue('_location_type', 0)['value']]);		
+		$location = $objService->load(['id' => $this->getFieldValue('_location_type', 0)['value']]);
 		$solrData['county'] = empty($location)?'N/A': $location['data']['data']['_locationcounty'];
 		$solrData['location_type_s'] = empty($location)?'N/A': $location['data']['data']['_locationtype'];
-		}		
+		}
 		/* End safe delete */
-		
-		
+
+
         if (!empty($sd['task_d_closed'])) {
             $solrData['task_ym_closed'] = str_replace('-', '', substr($sd['task_d_closed'], 2, 5));
         }
@@ -287,30 +287,30 @@ class Cases extends CBObject
             false
         );
     }
-	
+
     /**
-     * 
+     *
      * http://www.andrew-kirkpatrick.com/2011/10/google-geocoding-api-with-php/
 	 *
-     */	
+     */
 	protected function lookup($string){
- 
+
 	   $string = str_replace (" ", "+", urlencode($string));
 	   $details_url = "http://maps.googleapis.com/maps/api/geocode/json?address=".$string."&sensor=false";
-	 
+
 	   $ch = curl_init();
 	   curl_setopt($ch, CURLOPT_URL, $details_url);
 	   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	   $response = json_decode(curl_exec($ch), true);
-	 
+
 	   // If Status Code is ZERO_RESULTS, OVER_QUERY_LIMIT, REQUEST_DENIED or INVALID_REQUEST
 	   if ($response['status'] != 'OK') {
 		return null;
 	   }
-	 
+
 	   //print_r($response);
 	   $geometry = $response['results'][0]['geometry'];
-	   
+
 	   $location = array();
 
   foreach ($response['results'][0]['address_components'] as $component) {
@@ -334,23 +334,23 @@ class Cases extends CBObject
     }
 
   }
-	   
+
 		$array = array(
 			'longitude' => $geometry['location']['lng'],
 			'latitude' => $geometry['location']['lat'],
 			'street_number' => isset($location['street_number'])?$location['street_number']:'',
 			'street' => isset($location['street'])?$location['street']:'',
-			'city' => isset($location['locality'])?$location['locality']:'',	
-			'state' => isset($location['admin_1'])?$location['admin_1']:'',				
+			'city' => isset($location['locality'])?$location['locality']:'',
+			'state' => isset($location['admin_1'])?$location['admin_1']:'',
 			'full_address' => $response['results'][0]['formatted_address'],
 			'county' => isset($location['admin_2'])?$location['admin_2']:'',
-			'postal_code' => isset($location['postal_code'])?$location['postal_code']:''			
+			'postal_code' => isset($location['postal_code'])?$location['postal_code']:''
 		);
-	 
+
 		return $array;
-	 
+
 	}
-		
+
     /**
      * Set "sys_data" params from object data
      *
@@ -365,12 +365,12 @@ class Cases extends CBObject
         }
 
         $sd = &$p['sys_data'];
-		
+
 		if (!isset($sd['has_document_s']))
 		{
 			$sd['has_document_s'] = 'No';
 		}
-		
+
 		// Select only required properties for result
         $properties = [
             'race',
@@ -397,18 +397,18 @@ class Cases extends CBObject
 				elseif ($property == 'addresstype')
 				{
 					$sd[$property.'primary_s'] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
-				}				
+				}
 				elseif ($property == 'location_type')
 				{
 				    if (!empty($obj))
 					{
 						$objService = new Objects();
-						$location = $objService->load(['id' => $this->getFieldValue('_' . $property, 0)['value']]);		
+						$location = $objService->load(['id' => $this->getFieldValue('_' . $property, 0)['value']]);
 						$sd['county'] = empty($location)?'N/A': $location['data']['data']['_locationcounty'];
 						$sd['location_type_s'] = empty($location)?'N/A': $location['data']['data']['_locationtype'];
-					}	
+					}
 					$sd[$property] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
-				}								
+				}
 				else
 				{
 					$sd[$property] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
@@ -427,19 +427,19 @@ class Cases extends CBObject
 					$v = is_array($v) ? @$v['value'] : $v;
 					$v = Util\toNumericArray($v);
 					foreach ($v as $id) {
-						$obj = Objects::getCachedObject($id);	
+						$obj = Objects::getCachedObject($id);
 						$sd[$property.'_ss'][] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
 					}
 				}
 			}
         }
-		
+
 		if (!isset($sd['full_address']))
 		{
 			$sd['full_address'] = null;
 		}
-		
-		if (isset($this->getFieldValue('_city', 0)['value']) || isset($this->getFieldValue('_state', 0)['value']) 
+
+		if (isset($this->getFieldValue('_city', 0)['value']) || isset($this->getFieldValue('_state', 0)['value'])
 			|| isset($this->getFieldValue('_zip', 0)['value'])|| isset($this->getFieldValue('_addressone', 0)['value']))
 		{
 					$d['_fulladdress'] = (isset($this->getFieldValue('_addressone', 0)['value'])?
@@ -452,7 +452,7 @@ class Cases extends CBObject
 					$this->getFieldValue('_state', 0)['value'].' ':'') .
 					(isset($this->getFieldValue('_zip', 0)['value'])?
 					$this->getFieldValue('_zip', 0)['value'].' ':'');
-					
+
 					/*Cache::get('symfony.container')->get('logger')->error(
 							$sd['full_address'],
 							$sd
@@ -477,12 +477,12 @@ class Cases extends CBObject
 				unset($sd['street_s']);
 				unset($sd['city_s']);
 				unset($sd['state_s']);
-				unset($sd['zipcode_s']);		
+				unset($sd['zipcode_s']);
 				unset($sd['full_address']);
 				$sd['full_address'] = $this->getFieldValue('_fulladdress', 0)['value'];
 			}
 		}
-		
+
 		if (!empty($sd['full_address']) && empty($sd['lat_lon']))
 		{
 			$results = $this->lookup($sd['full_address']);
@@ -493,11 +493,11 @@ class Cases extends CBObject
 				$sd['county_s'] = $results['county'];
 				$sd['street_s'] = $results['street_number']. ' ' . $results['street'];
 				$sd['city_s'] = $results['city'];
-				$sd['zipcode_s'] = $results['postal_code'];				
-				$sd['state_s'] = $results['state'];			
-			}	
-		}		
-		
+				$sd['zipcode_s'] = $results['postal_code'];
+				$sd['state_s'] = $results['state'];
+			}
+		}
+
         $sd['task_due_date'] = $this->getFieldValue('due_date', 0)['value'];
         $sd['task_due_time'] = $this->getFieldValue('due_time', 0)['value'];
 
@@ -521,11 +521,11 @@ class Cases extends CBObject
 		if (empty($sd['assessments_completed'])) {
             $sd['assessments_completed'] = [];
         }
-		
+
 		if (empty($sd['assessments_reported'])) {
             $sd['assessments_reported'] = [];
         }
-		
+
 		$ASSESSMENT_MAP = array(
 		   1511=>510, //behavioral
 		   1497=>533,//child
@@ -541,9 +541,9 @@ class Cases extends CBObject
 		   1505=>1175,//legal
 		   1498=>651, //senior
 		   1513=>172, //transportation
-		   3151=>3114 //shelterassessment		   
+		   3151=>3114 //shelterassessment
 		);
-		
+
 		$identified_unmet_needs = Util\toNumericArray($this->getFieldValue('identified_unmet_needs', 0)['value']);
 		$at_risk_population = Util\toNumericArray($this->getFieldValue('at_risk_population', 0)['value']);
 		foreach($ASSESSMENT_MAP as $identified=>$assessment){
@@ -551,15 +551,15 @@ class Cases extends CBObject
 			{
 				$assessments_reported[] = $assessment;
 			}
-		 }		
-		
+		 }
+
 		//Start Checks for null
 		if (!empty($assessments_reported))
-		{			
+		{
 			$sd['assessments_reported'] = $assessments_reported;
-			
+
 			//$sd['assessments_completed'] = array_intersect($assessments_reported, $sd['assessments_completed']);
-			
+
 			$sd['assessments_needed'] = array_diff($assessments_reported, $sd['assessments_completed']);
 		}
 		else
@@ -568,31 +568,31 @@ class Cases extends CBObject
 			$sd['assessments_needed'] = null;
 		}
 		//End Checks for Null
-		
+
         $assigned = Util\toNumericArray($this->getFieldValue('assigned', 0)['value']);
-	
+
 		if (!empty($assigned)) {
 			$d['oid'] = $assigned[0];
 		}
-		
+
         $sd['task_u_ongoing'] = array_diff($assigned, $sd['task_u_done']);
 
         // Set status
         $dateEnd = empty($p['date_end']) ? null : Util\dateISOToMysql($p['date_end']);
-		
+
 		if ($this->getFieldValue('_clientstatus', 0)['value'] != null) {
          $clientStatus = $this->getFieldValue('_clientstatus', 0)['value'];
 		 if ($clientStatus == 1578)
 		 {
 			 unset($sd['task_d_closed']);
 			 unset($sd['transferred_dt']);
-			 $status = static::$STATUS_ACTIVE;	
+			 $status = static::$STATUS_ACTIVE;
 		 }
 		 else if ($clientStatus == 1579)
 		 {
              if (empty($sd['task_d_closed']))
 			 {
-				$sd['task_d_closed'] = date('Y-m-d\TH:i:s\Z'); 
+				$sd['task_d_closed'] = date('Y-m-d\TH:i:s\Z');
 			 }
 			 $status = static::$STATUS_CLOSED;
 		 }
@@ -609,13 +609,13 @@ class Cases extends CBObject
 		 		$sd['transferred_dt'] = date('Y-m-d\TH:i:s\Z');
 		 	}
 		 	$status = static::$STATUS_TRANSFERRED;
-		 }		 
+		 }
 		}
 		else
 		{
 			unset($sd['task_d_closed']);
 			$d['_clientstatus'] = 1578;
-			$status = static::$STATUS_ACTIVE;	
+			$status = static::$STATUS_ACTIVE;
 		}
 		if (!empty($sd['transferred_dt']))
 		{
@@ -629,11 +629,11 @@ class Cases extends CBObject
                 $status = static::$STATUS_OVERDUE;
             }
         }*/
-		
+
         $sd['task_status'] = $status;
 		$sd['case_status'] = $this->trans('caseStatus'.$status, '');
     }
-    
+
     /**
      * Mark the task active
      * @return void
@@ -646,6 +646,7 @@ class Cases extends CBObject
         unset($sd['task_d_closed']);
 		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_ACTIVE, '');
 		$d['data']['_clientstatus'] = 1578;
+		$d['data']['_openstatus'] = 246933;
         $this->updateCustomData();
 		$this->updateSysData();
     }
@@ -681,7 +682,7 @@ class Cases extends CBObject
         $sd['task_status'] = static::$STATUS_CLOSED;
         $sd['task_d_closed'] = date('Y-m-d\TH:i:s\Z');
 		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_CLOSED, '');
-		$d['data']['_clientstatus'] = 1579;
+		$d['data']['_openstatus'] = 1579;
 		$this->updateCustomData();
 		$this->updateSysData();
     }
@@ -694,15 +695,16 @@ class Cases extends CBObject
     {
     	$d = &$this->data;
     	$sd = &$d['sys_data'];
-    
+
     	$sd['task_status'] = static::$STATUS_TRANSFERRED;
     	$sd['transferred_dt'] = date('Y-m-d\TH:i:s\Z');
     	$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_TRANSFERRED, '');
     	$d['data']['_clientstatus'] = 604;
+		$d['data']['_openstatus'] = 1579;
     	$this->updateCustomData();
     	$this->updateSysData();
-    }    
-    
+    }
+
     /**
      * Mark the task as closed and update into db
      * @return void
@@ -726,11 +728,11 @@ class Cases extends CBObject
     {
         return ($this->getStatus() == static::$STATUS_CLOSED);
     }
-	
+
     /**
      * Geocode client
      * @return void
-     */    
+     */
     public function geocode()
     {
     	$d = &$this->data;
@@ -751,7 +753,7 @@ class Cases extends CBObject
     		}
     		$this->updateSysData();
     	}
-    }    
+    }
     /**
      * Get task status
      * @return int
@@ -760,16 +762,16 @@ class Cases extends CBObject
     {
         $d = &$this->data;
 		if (isset($d['did'])) //it's deleted
-		{   
+		{
 			$rez =  static::$STATUS_DELETED;
 		}
 		else
 		{
 			$sd = &$d['sys_data'];
-			
+
 			$rez = empty($sd['task_status']) ? static::$STATUS_NONE : $sd['task_status'];
 		}
-		
+
         return $rez;
     }
 
@@ -816,19 +818,19 @@ class Cases extends CBObject
             case static::$STATUS_CLOSED:
                 $rez .= ' case-status-closed';
                 break;
-				
+
 			case static::$STATUS_DELETED:
 				$rez .= ' case-status-closed';
 				break;
-				
+
             case static::$STATUS_INFORMATION:
                 $rez .= ' case-status-information';
-                break;	
-                
+                break;
+
             case static::$STATUS_TRANSFERRED:
                 $rez .= ' case-status-transferred';
                 break;
-                
+
         }
 
         return $rez;
@@ -931,7 +933,7 @@ class Cases extends CBObject
 		//	Cache::get('symfony.container')->get('logger')->error(
 	//		'sup',
 //			$sd
-//		);	
+//		);
 
         $rez = [
             // 'edit' => $canEdit
@@ -994,13 +996,14 @@ class Cases extends CBObject
         $closureReason = '';
 		$identifiedNeedsLine = '';
 		$atRiskLine = '';
+    $checklistLine = '';
         $coreUri = $this->configService->get('core_uri');
 
 		/*if (!empty($sd['solr']['assessments_completed']))
 		{
-			$actionsLine = count($sd['solr']['assessments_completed']) . " Assessments Completed -";	
+			$actionsLine = count($sd['solr']['assessments_completed']) . " Assessments Completed -";
 		}
-		
+
 		if (!empty($sd['solr']['assessments_needed'])) {
 			$actionsLine = count($sd['solr']['assessments_needed']) . " Assessments Needed - ";
 		}*/
@@ -1011,33 +1014,33 @@ class Cases extends CBObject
 		else
 		{
 			$demographicsLine = $demographicsLine . $this->trans('GenderNotCollected') . " - ";
-		}		
+		}
 		if (!empty($sd['solr']['race'])) {
 			$demographicsLine = $demographicsLine . $sd['solr']['race'] . " - ";
 		}
 
 		if (!empty($sd['solr']['ethnicity'])) {
-			$demographicsLine = $demographicsLine . $sd['solr']['ethnicity'] . " - ";	
+			$demographicsLine = $demographicsLine . $sd['solr']['ethnicity'] . " - ";
 		}
-		
+
 		if (!empty($sd['solr']['closurereason_s'])) {
 			$closureReason = '<b>'. $sd['solr']['closurereason_s'] .'</b><br/>';
-		}		
-		
+		}
+
 		if (!empty($sd['solr']['headofhousehold'])) {
 			if ($sd['solr']['headofhousehold'] == "No")
 			{
-				$addressLine = $addressLine . $this->trans('Not') . ' ' . $this->trans('HeadOfHousehold') . ' - ';	
+				$addressLine = $addressLine . $this->trans('Not') . ' ' . $this->trans('HeadOfHousehold') . ' - ';
 			}
 			else if ($sd['solr']['headofhousehold'] == "Yes")
 			{
-				$addressLine = $addressLine . $this->trans('HeadOfHousehold') .' - ';	
+				$addressLine = $addressLine . $this->trans('HeadOfHousehold') .' - ';
 			}
 			else
 			{
-				$addressLine = $addressLine . $this->trans('Unknown') . ' ' . $this->trans('HeadOfHousehold') .' - ';	
+				$addressLine = $addressLine . $this->trans('Unknown') . ' ' . $this->trans('HeadOfHousehold') .' - ';
 			}
-		}		
+		}
 
 		if (!empty($sd['solr']['femanumber_s'])) {
 			if (!is_numeric($sd['solr']['femanumber_s']))
@@ -1045,9 +1048,9 @@ class Cases extends CBObject
 				$femaLine = $femaLine . '<span style="color:red;font-weight:bold;">' . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . "</span> - ";
 			}
 			else {
-				$femaLine = $femaLine . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . " - ";	
+				$femaLine = $femaLine . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . " - ";
 			}
-		}	
+		}
 		else
 		{
 			$femaLine = $femaLine . $this->trans('FEMANotCollected') ." - ";
@@ -1055,12 +1058,12 @@ class Cases extends CBObject
 
 		if (!empty($sd['solr']['fematier'])) {
 			$femaLine = $femaLine . $sd['solr']['fematier'] . " - ";
-		}				
-		
+		}
+
 		if (!empty($sd['solr']['clientage_i'])) {
 			$demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " " . $this->trans('yrs') ." - ";
 		}
-		
+
 		if (!empty($sd['solr']['language'])) {
 			$demographicsLine = $demographicsLine . $sd['solr']['language'] . " - ";
 		}
@@ -1071,16 +1074,16 @@ class Cases extends CBObject
 		else
 		{
 			$emailLine = $this->trans('EmailNotCollected') . " - ";
-		}		
-		
+		}
+
 		if (!empty($sd['solr']['phonenumber_s'])) {
 			$emailLine = $emailLine . $sd['solr']['phonenumber_s'] . " - ";
 		}
-		
+
 		if (!empty($sd['solr']['maritalstatus'])) {
 			$emailLine =  $emailLine .$sd['solr']['maritalstatus'] . " - ";
-		}		
-		
+		}
+
 		if (!empty($sd['solr']['full_address'])) {
 			$addressLine = $addressLine . str_replace(", United States","",$sd['solr']['full_address']) . (!empty($sd['solr']['zipcode_s'])?' '. $sd['solr']['zipcode_s']:''). " - ";
 		}
@@ -1094,38 +1097,41 @@ class Cases extends CBObject
 		elseif (!empty($sd['solr']['county'])) {
 			$addressLine = $addressLine . ' ' . $this->trans('RegisteredCounty').':'.$sd['solr']['county']. " - ";
 		}
-			
+
 		if (!empty($sd['solr']['location_type'])) {
 			$addressLine = $addressLine . $sd['solr']['location_type']. " - ";
 		}
-		
+
 		/*
 		 * Intake location commented out until otherwise noted.
-		 
+
 		if (!empty($data['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type'])))
 			{
 				$objService = new Objects();
 				$location = $objService->load(['id' => is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type']]);
 				$addressLine = $addressLine . $location['data']['data']['_locationcity'];
-			} 
+			}
 		*/
-		
+
 
 			$filePlugin = new Files();
 			$files = $filePlugin->getData($data['id']);
-			
+
 			$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' ' . $this->trans('ConsentForm') .'</a>';
-			
+
 			foreach ($files['data'] as $file) {
 				$fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr><tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr></table>';
 			}
 			$contentItems = new ContentItems();
 			$items = $contentItems->getData($data['id']);
-			
+
 			$addressInfo = '';
 			$familyMemberInfo = '';
+      $emergencyContactInfo = '';
+      $checklistLine = '';
 			$contentRow = '';
 			$familyMemberCount = 0;
+			$emergencyContactCount = 0;
 			$addressCount = 0;
 			if (!isset($data['udate']))
 			{
@@ -1142,6 +1148,11 @@ class Cases extends CBObject
 					 $addressInfo = $addressInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-address icon-padding" src="/css/i/s.gif">    </td>    <td width="90%"><a class="bt item-action click" action="editContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"><a class="bt item-action click" myName="Address" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"><span title="Remove Address" class="click icon-cross" myName="Address" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"></span></a></td><td width="5%" class="obj" style="background-color:white !important;"></td></tr>';
 					 $addressCount++;
 				}
+        if ($item['template_id'] == 247090)
+				{
+					 $emergencyContactInfo = $emergencyContactInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-committee-phase icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="247090" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"> <a class="bt item-action click" myName="Family Member" action="removeContent" myPid="'.$data['id'].'" templateId="247090" myId="'.$item['id'].'"><span title="Remove Emergency Contact" class="click icon-cross" myName="Emergency Contact" action="removeContent" myPid="'.$data['id'].'" templateId="247090" myId="'.$item['id'].'"></span></a></td></tr>';
+					 $emergencyContactCount++;
+				}
 				if (isset($data['udate']) && isset($item['cdate']))
 				{
 				if (Util\getDatesDiff($data['udate'],$item['cdate']) > 0)
@@ -1150,31 +1161,40 @@ class Cases extends CBObject
 				}
 				}
 				if (isset($data['udate']) && isset($item['udate']))
-				{				
+				{
 				if (Util\getDatesDiff($data['udate'],$item['udate']) > 0)
 				{
 					$data['udate'] = $item['udate'];
 				}
 				}
 			}
-			
+
+      if ($emergencyContactCount ==0)
+			{
+				$emergencyContactInfo = $emergencyContactInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="247090" myPid="'.$data['id'].'">Add Emergency Contact/Next of Kin</a></td></tr>';
+			}
+			else
+			{
+				$emergencyContactInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$emergencyContactInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Emergency Concat" action="addContent" templateId="247090" myPid="'.$data['id'].'">   <img alt="Add Emergency Contact" title="Add Emergency Contact/Next of Kin" class="i16u icon-plus"  action="addContent" templateId="247090" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
+			}
+
 			if ($familyMemberCount ==0)
 			{
 				$familyMemberInfo = $familyMemberInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="289" myPid="'.$data['id'].'">'.$this->trans('AddFamilyMember').'</a></td></tr>';
 			}
 			else
 			{
-				$familyMemberInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$familyMemberInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Family Member" action="addContent" templateId="289" myPid="'.$data['id'].'">   <img alt="Add Family Member" title="Add Family Member" class="i16u icon-plus"  action="addContent" templateId="289" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>'; 
+				$familyMemberInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$familyMemberInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Family Member" action="addContent" templateId="289" myPid="'.$data['id'].'">   <img alt="Add Family Member" title="Add Family Member" class="i16u icon-plus"  action="addContent" templateId="289" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
 			}
 			if ($addressCount ==0)
 			{
 				$addressInfo = $addressInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr><td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="311" myPid="'.$data['id'].'">'.$this->trans('AddAddress').'</a></td></tr>';
-			}	
+			}
 			else
 			{
-				$addressInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$addressInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Address" action="addContent" templateId="311" myPid="'.$data['id'].'">   <img alt="Add Address" title="Add Address" class="i16u icon-plus"  action="addContent" templateId="311" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>'; 				
+				$addressInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$addressInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Address" action="addContent" templateId="311" myPid="'.$data['id'].'">   <img alt="Add Address" title="Add Address" class="i16u icon-plus"  action="addContent" templateId="311" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
 			}
-			
+			$emergencyContactInfo = $emergencyContactInfo . '</table>';
 			$familyMemberInfo = $familyMemberInfo . '</table>';
 			$addressInfo = $addressInfo . '</table>';
         $userService = Cache::get('symfony.container')->get('casebox_core.service.user');
@@ -1200,8 +1220,8 @@ class Cases extends CBObject
         			$this->trans('Transitioned').':</td><td>'.
         			Util\formatAgoTime($sd['transferred_dt']).'</td></tr>';
         }
-        
-        
+
+
         // Create owner row
         $v = $this->getOwner();
         if (!empty($v)) {
@@ -1254,7 +1274,7 @@ class Cases extends CBObject
                 	$tdt = Util\formatMysqlDate($sd['transferred_dt'], $dateFormat);
                 	$tdateText = ': '.Util\formatAgoTime($sd['transferred_dt']);
                 }
-                
+
                 if ($completed) {
                     $cdt = Util\formatMysqlDate($sd['task_d_closed'], $dateFormat);
                     $dateText = ': '.Util\formatAgoTime($sd['task_d_closed']);
@@ -1279,23 +1299,23 @@ class Cases extends CBObject
                         : $this->trans('LastAction').': '.$dateText
                     ).'</td></tr>';
             }
-        }			
-			
-			
-			
+        }
+
+
+
 
         $pb[0] = '<table class="obj-preview"><tbody>'.
             $dateLines.
             $ownerRow. '</tbody></table></td></tr><tr>'.
             $assigneeRow. '</tbody></table></td></tr>'.
             '<tbody></table>';
-        $pb[1] = 
+        $pb[1] =
             '<div width="100%">'.
-			'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr style="vertical-align:top"><td width="70%">'.	
+			'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr style="vertical-align:top"><td width="70%">'.
 			$demographicsLine.trim($femaLine, " - ").'<br/>'.
 			trim($emailLine.$addressLine, " - ").'<br/></td>'.
 			'<td width="30%" style="text-align:right;" align="right">'.$closureReason.'<a target="_new" href="get/?pdf='.$data['id'].'">' . $this->trans('PrintRecoveryPlan') .'</a></td></tr></table>';
-        
+
 		// Create description row
         $v = $this->getFieldValue('identified_unmet_needs', 0);
         if (!empty($v['value'])) {
@@ -1321,8 +1341,14 @@ class Cases extends CBObject
             $tf = $template->getField('at_risk_population');
             $atRiskLine = $template->formatValueForDisplay($tf, $v);
         }
-		
-		$pb[2] = 
+
+        $v = $this->getFieldValue('_checkpoint', 0);
+        if (!empty($v['value'])) {
+            $tf = $template->getField('_checkpoint');
+            $checklistLine = $template->formatValueForDisplay($tf, $v);
+        }
+
+		$pb[2] =
             '<table class="obj-preview"><tbody>'.
             $ownerRow.'</tbody></table></td>'.
             $assigneeRow. '</tbody></table>'.
@@ -1332,21 +1358,24 @@ class Cases extends CBObject
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('ConsentForm') .':</td><td class="prop-val" width="35%">'.$fileInfo.'</td></tr>'.
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('FamilyMembers') .':</td><td width="35%" style="width:15%" class="prop-val">'.$familyMemberInfo.'</td>'.
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('AlternativeAddress') .':</td><td class="prop-val" width="35%">'.$addressInfo.'</td></tr>'.
+
+      '<tr><td class="prop-key" style="width:15%" width="15%">Next of Kin/Emergency Contact:</td><td width="35%" style="width:15%" class="prop-val">'.$emergencyContactInfo.'</td>'.
+      '<td class="prop-key" style="width:15%" width="15%">Checklist:</td><td class="prop-val" width="35%">'.$checklistLine.'</td></tr>'.
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('SpecialAtRiskPopulation') .':</td><td width="35%" style="width:15%" class="prop-val">'.$atRiskLine.'</td>'.
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('IdentifiedNeeds') .':</td><td class="prop-val" width="35%">'.$identifiedNeedsLine.'</td></tr>'.
-            '<tbody></table>';		
-        $pb[3] = ''; 
+            '<tbody></table>';
+        $pb[3] = '';
             //'<table class="obj-preview'.$rtl.'"><tbody>'.
 	//		'<tr class="prop-header"><th colspan="3" style>'.count(array_intersect($sd['solr']['assessments_completed'], $sd['solr']['assessments_reported'])).' out of '.count($sd['solr']['assessments_reported']).' assessments completed. '.count($sd['solr']['assessments_needed']).' remain to be completed</td></tr>'.
-         //   '<tbody></table>';	
+         //   '<tbody></table>';
         $pb[4] = '';
           //  '<table class="obj-preview'.$rtl.'"><tbody>'.
 	//		'<tr class="prop-header"><th colspan="3" style>'.count($sd['solr']['referrals_needed']).' assessments required referrals. '.count($sd['solr']['referrals_started']).' services need to be completed</td></tr>'.
-        //    '<tbody></table>';			
-        $pb[5] = ''; 
+        //    '<tbody></table>';
+        $pb[5] = '';
           //  '<table class="obj-preview'.$rtl.'"><tbody>'.
 	//		'<tr class="prop-header"><th colspan="3" style>Recovery</td></tr>'.
-         //   '<tbody></table>';			
+         //   '<tbody></table>';
 		return $pb;
     }
 

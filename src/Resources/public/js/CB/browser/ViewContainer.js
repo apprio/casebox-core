@@ -101,7 +101,7 @@ Ext.define('CB.browser.ViewContainer', {
 			 ,scope: this
 			 ,handler: this.onAssignClientClick
 			 })
-			
+
             ,copy: new Ext.Action({
                 text: L.Copy
                 ,itemId: 'copy'
@@ -161,13 +161,13 @@ Ext.define('CB.browser.ViewContainer', {
                 ,scope: this
                 ,handler: this.onExportClick
             })
-			
+
             ,pdfExport: new Ext.Action({
                 iconCls: 'i-book-open'
                 ,text: L.PrintRecoveryPlan
                 ,scope: this
                 ,handler: this.onPdfExportClick
-            })			
+            })
 
             ,star: new Ext.Action({
                 iconCls: 'i-star'
@@ -523,8 +523,8 @@ Ext.define('CB.browser.ViewContainer', {
                 ,beforeactivate: this.onBeforeContainersPanelItemChange
                 ,activate: this.onContainersPanelItemChange
             }
-        });		
-		
+        });
+
         this.objectEditView = new CB.object.edit.View({
             listeners: {
                 scope: this
@@ -536,7 +536,7 @@ Ext.define('CB.browser.ViewContainer', {
 
         this.objectEditView.dockedItems.items[0].add('->');
         //this.objectEditView.dockedItems.items[0].add(this.actions.preview);  //Dumbing Down Apprio - Actually prob never want to have this
-		
+
         this.loadParamsTask = new Ext.util.DelayedTask(this.loadParams, this);
 
         App.fireEvent('browserinit', this);
@@ -558,7 +558,7 @@ Ext.define('CB.browser.ViewContainer', {
                             this.cardContainer
                             ,this.notificationsView
                             ,this.objectEditView
-							,this.notificationsReports							
+							,this.notificationsReports
                         ]
                     }
                     ,this.objectPanel
@@ -832,7 +832,7 @@ Ext.define('CB.browser.ViewContainer', {
      * @return activated component
      */
     ,setActiveView: function(indexOrName, viewParams) {
-    	this.viewToolbar.setVisible(false);        
+    	this.viewToolbar.setVisible(false);  //Dumbing down for Apprio Part 2
     	var layout = this.cardContainer.getLayout()
             ,rez = null;
 
@@ -905,9 +905,9 @@ Ext.define('CB.browser.ViewContainer', {
 			if (result.view.type == 'dashboard' && this.folderProperties.case_id == null)
 			{
 				result.view.type = 'grid';
-				this.userViewSet = false;				
+				this.userViewSet = false;
 				var params = {view: 'grid'};
-				this.fireEvent('changeparams', params);						
+				this.fireEvent('changeparams', params);
 			} else if (this.folderProperties.case_id != null && result.view.type == 'grid')
 			{
 				result.view.type = 'dashboard';
@@ -915,7 +915,7 @@ Ext.define('CB.browser.ViewContainer', {
 				var params = {view: 'dashboard'};
 				this.fireEvent('viewloaded', this, this.cardContainer);//or change params event...
 			}
-		}		
+		}
 
         /* change view if set in params */
         if(!this.userViewSet) {
@@ -1276,7 +1276,7 @@ Ext.define('CB.browser.ViewContainer', {
             this.actions.copy.setDisabled(false);
 			this.actions.pdfExport.setDisabled(false);
 			this.actions.assignClient.setDisabled(false);
-			
+
             this.actions.edit.setDisabled(
                 (firstObjType === 'file') &&
                 (firstFileEditor === false)
@@ -1389,7 +1389,7 @@ Ext.define('CB.browser.ViewContainer', {
             }
 
             return;
-        } 
+        }
 			else{
             //check if leaf set in template config and open edit if so
             var cfg = CB.DB.templates.getProperty(data.template_id, 'cfg');
@@ -1445,7 +1445,7 @@ Ext.define('CB.browser.ViewContainer', {
 
     ,processSetOwnership: function(r, e) {
         if(r && r.success) {
-			App.fireEvent('objectchanged', this.folderProperties, this); //changed dsstoudt		
+			App.fireEvent('objectchanged', this.folderProperties, this); //changed dsstoudt
             this.onReloadClick();
         }
     }
@@ -1727,9 +1727,9 @@ Ext.define('CB.browser.ViewContainer', {
                     ,this.actions.unstar
                     ,this.actions.webdavlink
                     ,this.actions.permalink
-					,this.actions.contextExport					
-					,this.actions.pdfExport										
-					,this.actions.assignClient					
+					,this.actions.contextExport
+					,this.actions.pdfExport
+					,this.actions.assignClient
                     ,this.setOwnerItem
                     ,'-'
                     ,this.createItem
@@ -1777,14 +1777,14 @@ Ext.define('CB.browser.ViewContainer', {
     ,onExportClick: function(b, e) {
         this.fireEvent('exportrecords', this, e);
     }
-	
+
     ,onPdfExportClick: function(b, e) {
 		var selection = this.getSelection();
 		if(Ext.isEmpty(selection)) {
             return;
         }
         this.fireEvent('exportpdf', this, e);
-    }	
+    }
 
     ,onDescendantsCheckChange: function(cb, checked, eOpts) {
         this.changeSomeParams({
@@ -1831,7 +1831,7 @@ Ext.define('CB.browser.ViewContainer', {
 	,onAssignClientClick: function(b, e) {
 		CB_Tasks.setUserStatus({id: this.getSelection()[0].nid,userId: -1}, this.processSetOwnership, this);//assign click Apprio
 	}
-	
+
     ,onPermalinkClick: function(b, e) {
         var selection = this.getSelection();
 

@@ -1,0 +1,90 @@
+        </main>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/css/bs/js/jquery.min.js"></script>
+    <script src="/css/bs/js/jquery-ui.min.js"></script>    
+    <script src="/css/bs/js/popper.min.js"></script>
+    <script src="/css/bs/js/bootstrap.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+    
+    <!-- Reports -->
+     <script>
+	 
+	 $( document ).ajaxStart(function() {
+	  $( "#loading" ).show();
+	}).ajaxStop(function() {
+	  $( "#loading" ).hide();
+	});
+	 	 
+     $(document).on("click", '#resubmitReport', function(e) { 
+			  var url = $(this).data("id");
+			  var formParams = $('form').serialize();
+			  url += '?'+formParams;
+
+			  $('#reportContent').load(url);
+			  return false;
+});
+
+        $( document ).ready(function() {
+			
+			$('.ajax').bind('click', function(e) {           
+              var url = $(this).data("id");
+              $('#reportContent').load(url);
+              $( ".nav-link" ).each(function( index ) {
+                 $( this ).removeClass('active');
+                }); 
+              e.preventDefault(); 
+              $( this ).addClass('active');
+            });
+            
+        });
+        
+        
+        $( function() {
+
+        var dateFormat = "yy-mm-dd",
+            from = $( "#startDate" )
+                .datepicker({
+                    dateFormat: dateFormat,
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    numberOfMonths: 3
+                })
+                .on( "change", function() {
+                    to.datepicker( "option", "minDate", getDate( this ) );
+                }),
+            to = $( "#endDate" ).datepicker({
+                dateFormat: dateFormat,
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 3
+            })
+            .on( "change", function() {
+                from.datepicker( "option", "maxDate", getDate( this ) );
+            });
+
+        function getDate( element ) {
+            var date;
+            try {
+                date = $.datepicker.parseDate( dateFormat, element.value );
+            } catch( error ) {
+                date = null;
+            }
+
+            return date;
+        }
+    } ); 
+        
+    </script>
+    
+  </body>
+</html>

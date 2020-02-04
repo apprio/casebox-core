@@ -7,3 +7,4 @@ src/Resources/public/min/*.css
 src/Resources/public/min/locale/*.js
 *sublime*
 /.project
+.remote-sync.json
