@@ -198,7 +198,7 @@
 			//527,289,311,607,61,510,533,553,482,1120,455,505,559,489,440,656,1175,651,172
 			var addressesMenu = '311';
 			var familymembersMenu = '289';
-			var assessmentMenu = '510,533,553,482,455,505,559,489,440,656,1175,651,172,3114'; //removed 1120 FEMA
+			var assessmentMenu = '510,533,553,482,455,1120,505,559,489,440,656,1175,651,172,3114'; //removed 1120 FEMA
 			var taskMenu = '7';
 			var recoveryMenu = '527'
 			var referralMenu = '607';
