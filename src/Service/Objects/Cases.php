@@ -1113,14 +1113,15 @@ class Cases extends CBObject
 			}
 		*/
 
-
+      $fileCount = 0;
 			$filePlugin = new Files();
 			$files = $filePlugin->getData($data['id']);
 
-			$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' ' . $this->trans('ConsentForm') .'</a>';
-
+			//$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' Form</a>'; //need to change this to be parameterized - multiple forms vs one
+      $fileInfo = '';
 			foreach ($files['data'] as $file) {
-				$fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr><tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr></table>';
+				$fileInfo = $fileInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr>';
+        $fileCount++;
 			}
 			$contentItems = new ContentItems();
 			$items = $contentItems->getData($data['id']);
@@ -1169,6 +1170,16 @@ class Cases extends CBObject
 				}
 			}
 
+      if ($fileCount ==0)
+			{
+				$fileInfo = $fileInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '</a></td></tr>'; //need to change this to be parameterized - multiple forms vs one
+			}
+			else
+			{
+				$fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$fileInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a '. (($fileCount > 4)?'style="display:none"':'') .' class="bt item-action click" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" action="upload" uid="'.User::getId().'"">   <img alt="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" class="i16u icon-plus"  action="upload" id="'.User::getId().'" src="/css/i/s.gif"> </a></td></tr>';
+			}
+
+
       if ($emergencyContactCount ==0)
 			{
 				$emergencyContactInfo = $emergencyContactInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="247090" myPid="'.$data['id'].'">Add Emergency Contact/Next of Kin</a></td></tr>';
@@ -1196,6 +1207,7 @@ class Cases extends CBObject
 			}
 			$emergencyContactInfo = $emergencyContactInfo . '</table>';
 			$familyMemberInfo = $familyMemberInfo . '</table>';
+      $fileInfo = $fileInfo.'</table>';
 			$addressInfo = $addressInfo . '</table>';
         $userService = Cache::get('symfony.container')->get('casebox_core.service.user');
 

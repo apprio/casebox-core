@@ -131,7 +131,7 @@ class IndexController extends Controller
         if (isset($_SERVER['HTTP_X_FILE_OPTIONS'])) {
             $file = Util\jsonDecode($_SERVER['HTTP_X_FILE_OPTIONS']);
             $file['error'] = UPLOAD_ERR_OK;
-            $file['tmp_name'] = tempnam($configService->get('incomming_files_dir'), 'cbup');
+            $file['tmp_name'] = @tempnam($configService->get('incomming_files_dir'), 'cbup'); //used @ to turn off notice
             $file['name'] = urldecode($file['name']);
 
         if (substr($file['type'], 0, 6) !== 'image/' && $file['type'] !== 'application/pdf' && (pathinfo($file['name'])['extension'] !== "docx") && (pathinfo($file['name'])['extension'] !== "doc") && (strrpos($file['type'], "document")=== false)) {
