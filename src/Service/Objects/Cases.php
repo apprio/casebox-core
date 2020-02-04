@@ -528,8 +528,8 @@ class Cases extends CBObject
 
 		$ASSESSMENT_MAP = array(
 		   1511=>510, //behavioral
-		   1497=>533,//child
-		   1507=>553,//clothing
+		   1497=>533,//child and emergency group processing
+		   1507=>553,//clothing and rr01
 		   1508=>482, //employment
 		   1506=>1120,//fema
 		   1515=>455,//finance
@@ -538,7 +538,7 @@ class Cases extends CBObject
 		   1512=>489,//health
 		   1514=>440, //housing
 		   1501=>656,//language
-		   1505=>1175,//legal
+		   1505=>1175,//legal and Privacy Repayment
 		   1498=>651, //senior
 		   1513=>172, //transportation
 		   3151=>3114 //shelterassessment
@@ -546,8 +546,9 @@ class Cases extends CBObject
 
 		$identified_unmet_needs = Util\toNumericArray($this->getFieldValue('identified_unmet_needs', 0)['value']);
 		$at_risk_population = Util\toNumericArray($this->getFieldValue('at_risk_population', 0)['value']);
+		$documents_filled_out = Util\toNumericArray($this->getFieldValue('documents_filled_out', 0)['value']); //MAY BREAK REPAIT IDE!
 		foreach($ASSESSMENT_MAP as $identified=>$assessment){
-			if (in_array($identified,$identified_unmet_needs)||in_array($identified,$at_risk_population))
+			if (in_array($identified,$identified_unmet_needs)||in_array($identified,$at_risk_population)||in_array($identified,$documents_filled_out))
 			{
 				$assessments_reported[] = $assessment;
 			}
