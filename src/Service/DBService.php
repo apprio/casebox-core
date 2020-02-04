@@ -167,10 +167,13 @@ class DBService
         }
 
         $this->lastQueryParams = $parameters;
+        set_error_handler(function ($severity, $message, $file, $line) {
 
+        });
         if (($sth->execute() !== true) && !$hideErrors) {
             $this->raiseError();
         }
+        restore_error_handler();
 
         return $sth;
     }
@@ -187,9 +190,6 @@ class DBService
         if (!empty($this->lastQuery)) {
             $result .= "\n\r<br /><hr />Query: ".$this->lastQuery.$result;
         }
-
-        $cfg = Cache::get('platformConfig');
-        error_log($result, 3, $cfg['cb_logs_dir'].'/'.'db.log');
 
         trigger_error($result, E_USER_ERROR);
     }

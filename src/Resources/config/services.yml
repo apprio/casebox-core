@@ -1,4 +1,6 @@
 services:
+    _defaults: {public:true}
+    
     casebox_core.service.domain_session_storage:
         class: Casebox\CoreBundle\Service\DomainSessionStorage
 
