@@ -10,9 +10,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SolrCreateCommand
+ * Class SolrDeleteCommand
  */
-class SolrCreateCommand extends ContainerAwareCommand
+class SolrDeleteCommand extends ContainerAwareCommand
 {
     const SOLR_DEFAULT_CONFIGSET = 'casebox';
 
@@ -22,7 +22,7 @@ class SolrCreateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('casebox:solr:create')
+            ->setName('casebox:solr:delete')
             ->setDescription('Create solr index.');
     }
 
@@ -56,9 +56,8 @@ class SolrCreateCommand extends ContainerAwareCommand
         foreach ($solrCores as $solrCore => $configSet) {
             $options = [
                 'query' => [
-                    'action' => 'CREATE',
-                    'name' => $solrCore,
-                    'configSet' => $configSet,
+                    'action' => 'UNLOAD',
+                    'core' => $solrCore,
                     'wt' => 'json',
                 ],
             ];
@@ -75,28 +74,27 @@ class SolrCreateCommand extends ContainerAwareCommand
                 'query' => [
                     'action' => 'STATUS',
                     'core' => $solrCore,
-                    'wt' => 'json',
                 ],
             ];
 
-            $statusResult = $client->request('GET', $url, $status);
+/*            $statusResult = $client->request('GET', $url, $status);
 
             if ($statusResult->getStatusCode() == '200' && !empty($statusResult->getBody())) {
                 $statusArray = json_decode($statusResult->getBody()->getContents(), true);
 
                 if (!empty($statusArray['status'][$solrCore])) {
-                    $output->writeln('<notice>'.sprintf("Skip. Unable to create '%s' core.", $solrCore).'</notice>');
+                    $output->writeln('<notice>'.sprintf("Skip. Unable to created '%s' core.", $solrCore).'</notice>');
                     continue;
                 }
             }
-
+*/
             $result = $client->request('GET', $url, $options);
 
             $statusCode = $result->getStatusCode();
             if ($statusCode == 200) {
-                $output->writeln('<info>'.sprintf("Success. Created '%s' core.", $solrCore).'</info>');
+                $output->writeln('<info>'.sprintf("Success. Deleted '%s' core.", $solrCore).'</info>');
             } else {
-                $output->writeln('<error>'.sprintf("Error. Unable to create '%s' core.", $solrCore).'</error>');
+                $output->writeln('<error>'.sprintf("Error. Unable to delete '%s' core.", $solrCore).'</error>');
             }
         }
 
