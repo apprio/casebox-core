@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="105">
                 <source>Case</source>
-                <target>Disaster Survivor</target>
+                <target>Repatriate</target>
             </trans-unit>
             <trans-unit id="118">
                 <source>ofCase</source>
@@ -165,7 +165,7 @@
             </trans-unit>
             <trans-unit id="159">
                 <source>Cases</source>
-                <target>Disaster Survivors</target>
+                <target>Repatriates</target>
             </trans-unit>
             <trans-unit id="160">
                 <source>male</source>
@@ -222,7 +222,7 @@
             </trans-unit>
             <trans-unit id="671">
                 <source>AddCaseTask</source>
-                <target>Add task to disaster survivor</target>
+                <target>Add task to repatriate</target>
             </trans-unit>
             <trans-unit id="674">
                 <source>addedByUser</source>
@@ -299,7 +299,7 @@
             </trans-unit>
             <trans-unit id="695">
                 <source>allCaseFiles</source>
-                <target>all disaster survivor files</target>
+                <target>all repatriate files</target>
             </trans-unit>
             <trans-unit id="698">
                 <source>AllWithDeadlines</source>
@@ -386,19 +386,19 @@
             </trans-unit>
             <trans-unit id="728">
                 <source>CaseClosing</source>
-                <target>Closing the disaster survivor</target>
+                <target>Closing the repatriate</target>
             </trans-unit>
             <trans-unit id="729">
                 <source>CaseClosingMessage</source>
-                <target>Are you sure you want to close the disaster survivor?</target>
+                <target>Are you sure you want to close the repatriate?</target>
             </trans-unit>
             <trans-unit id="730">
                 <source>CaseDeletingMessage</source>
-                <target>Are you sure you want to delete this disaster survivor?</target>
+                <target>Are you sure you want to delete this repatriate?</target>
             </trans-unit>
             <trans-unit id="731">
                 <source>CaseEditedMessage</source>
-                <target>This disaster survivor has been edited. Do you want to save changes?</target>
+                <target>This repatriate has been edited. Do you want to save changes?</target>
             </trans-unit>
             <trans-unit id="732">
                 <source>CaseFiles</source>
@@ -2858,11 +2858,11 @@
             </trans-unit>
             <trans-unit id="3059">
                 <source>GridDDMgs</source>
-                <target><![CDATA[Navigate disaster survivors/resources using the tree to the left<br />or search for a disaster survivor in the search box above]]></target>
+                <target><![CDATA[Navigate repatriates/resources using the tree to the left<br />or search for a repatriate in the search box above]]></target>
             </trans-unit>
             <trans-unit id="3060">
                 <source>GridEmptyText</source>
-                <target><![CDATA[<h3>Navigate disaster survivors/resources using the tree to the left</h3> or search for a disaster survivor in the search box above]]></target>
+                <target><![CDATA[<h3>Navigate repatriates/resources using the tree to the left</h3> or search for a repatriate in the search box above]]></target>
             </trans-unit>
             <trans-unit id="3061">
                 <source>NoResultsFound</source>
@@ -3228,7 +3228,7 @@
             <trans-unit id="3166">
                 <source>Pending</source>
                 <target>Pending</target>
-            </trans-unit>	
+            </trans-unit>
             <trans-unit id="3167">
                 <source>Created</source>
                 <target>Created</target>
@@ -3236,155 +3236,155 @@
             <trans-unit id="3168">
                 <source>caseStatus5</source>
                 <target>Information Only</target>
-            </trans-unit>			
+            </trans-unit>
             <trans-unit id="3169">
                 <source>Information Only</source>
                 <target>Information Only</target>
-            </trans-unit>	
+            </trans-unit>
             <trans-unit id="3170">
                 <source>Reports</source>
                 <target>Reports</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="3171">
                 <source>Dashboard</source>
                 <target>Dashboard</target>
-            </trans-unit>    
+            </trans-unit>
             <trans-unit id="3172">
                 <source>ClientID</source>
-                <target>Disaster Survivor ID</target>
-            </trans-unit>    
+                <target>Repatriate ID</target>
+            </trans-unit>
             <trans-unit id="3173">
                 <source>AssignedCM</source>
-                <target>IDCM Worker</target>
-            </trans-unit> 
+                <target>Repatriation Worker</target>
+            </trans-unit>
             <trans-unit id="3174">
                 <source>FEMATier</source>
                 <target>FEMA Tier</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3175">
                 <source>IntakeRepresentative</source>
                 <target>Intake Representative</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3176">
                 <source>AssignToYourself</source>
                 <target>Assign to Yourself</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3177">
                 <source>ExportRecords</source>
                 <target>Export Records</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3178">
                 <source>PrintRecoveryPlan</source>
                 <target>Print Recovery Plan</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3179">
                 <source>SetAssignee</source>
                 <target>Set Assignee</target>
-            </trans-unit>     
+            </trans-unit>
             <trans-unit id="3180">
                 <source>Facesheet</source>
                 <target>Face Sheet</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="3181">
                 <source>Assessments</source>
                 <target>Assessments</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="3182">
                 <source>Referrals</source>
                 <target>Referrals</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3183">
                 <source>Recovery</source>
                 <target>Recovery</target>
-            </trans-unit>     
+            </trans-unit>
             <trans-unit id="3184">
                 <source>Timeline</source>
                 <target>Timeline</target>
-            </trans-unit>        
+            </trans-unit>
             <trans-unit id="3185">
                 <source>TaskStatus</source>
                 <target>Task Status</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3186">
                 <source>DueDate</source>
                 <target>Due Date</target>
-            </trans-unit>        
+            </trans-unit>
             <trans-unit id="3187">
                 <source>ClientAssessmentsNeeded</source>
-                <target>Disaster Survivor Assessments to be completed</target>
-            </trans-unit>       
+                <target>Repatriate Assessments to be completed</target>
+            </trans-unit>
             <trans-unit id="3188">
                 <source>ClientAssessmentsCompleted</source>
-                <target>Disaster Survivor Assessments completed</target>
-            </trans-unit>       
+                <target>Repatriate Assessments completed</target>
+            </trans-unit>
             <trans-unit id="3189">
                 <source>ToBeCreated</source>
                 <target>to be created</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3190">
                 <source>ClientRecoveryNeeded</source>
-                <target>Disaster Survivor Recovery to be completed</target>
-            </trans-unit>       
+                <target>Repatriate Recovery to be completed</target>
+            </trans-unit>
             <trans-unit id="3191">
                 <source>ClientReferrals</source>
-                <target>Disaster Survivor Referrals</target>
-            </trans-unit>                                                                   
+                <target>Repatriate Referrals</target>
+            </trans-unit>
             <trans-unit id="3192">
                 <source>ReferralsMade</source>
                 <target>Referrals Made</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3193">
                 <source>CompletedReferrals</source>
                 <target>Completed Referrals</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="3194">
                 <source>RecoveryNotes</source>
                 <target>Recovery Notes</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3195">
                 <source>ClientTasks</source>
-                <target>Disaster Survivor Tasks</target>
-            </trans-unit>   
+                <target>Repatriate Tasks</target>
+            </trans-unit>
             <trans-unit id="3196">
                 <source>TotalRecords</source>
                 <target>Total Records</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3197">
                 <source>SelectReport</source>
                 <target>Select Report</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="3198">
                 <source>ReportFrom</source>
                 <target>From</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3199">
                 <source>ReportTo</source>
                 <target>To</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3200">
                 <source>PrintReport</source>
                 <target>Print Report</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3201">
                 <source>ExportReport</source>
                 <target>Export Report</target>
-            </trans-unit>   
+            </trans-unit>
 			<trans-unit id="3202">
                 <source>ResourceId</source>
                 <target>Resource ID</target>
-            </trans-unit>       
+            </trans-unit>
 			<trans-unit id="3203">
                 <source>ResourceAgency</source>
                 <target>Resource/Agency</target>
-            </trans-unit>      
+            </trans-unit>
 			<trans-unit id="3204">
                 <source>ResourceType</source>
                 <target>Type of Resource</target>
-            </trans-unit>      
+            </trans-unit>
 			<trans-unit id="3205">
                 <source>AdditionalInformation</source>
                 <target>Additional Information/Services Provided</target>
-            </trans-unit>      
+            </trans-unit>
 			<trans-unit id="3206">
                 <source>Street</source>
                 <target>Street/Address</target>
@@ -3392,167 +3392,167 @@
 			<trans-unit id="3207">
                 <source>City</source>
                 <target>City</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3208">
                 <source>State</source>
                 <target>State</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3209">
                 <source>Zipcode</source>
                 <target>Zipcode</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3210">
                 <source>Eligibility</source>
                 <target>Eligibility Qualifications</target>
-            </trans-unit>   
+            </trans-unit>
 			<trans-unit id="3211">
                 <source>Hours</source>
                 <target>Hours of Operation</target>
-            </trans-unit> 
+            </trans-unit>
 			<trans-unit id="3212">
                 <source>ServiceArea</source>
                 <target>Service Area</target>
-            </trans-unit>     
+            </trans-unit>
 			<trans-unit id="3213">
                 <source>FacilityName</source>
                 <target>Facility Name</target>
-            </trans-unit>    
+            </trans-unit>
 			<trans-unit id="3214">
                 <source>FacilityType</source>
                 <target>Type of Location</target>
-            </trans-unit>    
+            </trans-unit>
  			<trans-unit id="3215">
                 <source>County</source>
                 <target>County</target>
-            </trans-unit>    
+            </trans-unit>
  			<trans-unit id="3216">
                 <source>SessionAboutToExpire</source>
                 <target>Your Session is About to Expire</target>
-            </trans-unit>  
+            </trans-unit>
  			<trans-unit id="3217">
                 <source>SessionExpireMessage</source>
                 <target>Your session will expire in one minute. Would you like to continue your session?</target>
-            </trans-unit> 
+            </trans-unit>
  	   	 	<trans-unit id="3218">
                 <source>RequiredFieldsMessage</source>
                 <target>Please fix required fields and formatting for fields and resubmit</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3219">
                 <source>Website</source>
                 <target>Website</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3220">
                 <source>caseStatus6</source>
                 <target>Transitioned</target>
-            </trans-unit>   	
+            </trans-unit>
  	    	<trans-unit id="3221">
                 <source>Transitioned</source>
                 <target>Transitioned</target>
-            </trans-unit> 
+            </trans-unit>
  	    	<trans-unit id="3222">
                 <source>RecoveryPlan</source>
                 <target>Recovery Plan</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3223">
                 <source>Name</source>
                 <target>Name</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3224">
                 <source>Address</source>
                 <target>Address</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3225">
                 <source>PhoneNumber</source>
                 <target>Phone Number</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3226">
                 <source>SecondaryPhoneNumber</source>
                 <target>Secondary Phone Number</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3227">
                 <source>FEMARegistrationNumber</source>
                 <target>FEMA Registration Number</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3228">
                 <source>CaseManager</source>
-                <target>IDCM Worker</target>
-            </trans-unit>   
+                <target>Repatriation Worker</target>
+            </trans-unit>
  	    	<trans-unit id="3229">
                 <source>EmailAddress</source>
                 <target>Email Address</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3230">
                 <source>DisasterDeclaration</source>
-                <target>DR - Disaster Declaration</target>
-            </trans-unit>       
+                <target>Event</target>
+            </trans-unit>
  	    	<trans-unit id="3231">
                 <source>ClientID</source>
-                <target>Disaster Survivor ID</target>
-            </trans-unit>   
+                <target>Repatriate ECMRS ID</target>
+            </trans-unit>
  	    	<trans-unit id="3232">
                 <source>CMTelephoneNumber</source>
-                <target>IDCM Telephone Number</target>
-            </trans-unit>   
+                <target>Repatriation Telephone Number</target>
+            </trans-unit>
  	    	<trans-unit id="3233">
                 <source>ClientPlanCreationDate</source>
-                <target>Disaster Survivor Plan Creation Date</target>
-            </trans-unit>       
+                <target>Repatriate Plan Creation Date</target>
+            </trans-unit>
  	    	<trans-unit id="3234">
-                <source>IDCMSiteAddress</source>
-                <target>IDCM Site Address</target>
-            </trans-unit>   
+                <source>RepatriationSiteAddress</source>
+                <target>Repatriation Site Address</target>
+            </trans-unit>
  	    	<trans-unit id="3235">
                 <source>RecoveryPlanDevelopment</source>
                 <target>Recovery Plan Development</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3236">
                 <source>ReferralType</source>
                 <target>Referral Type</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3237">
                 <source>ReferralSubType</source>
                 <target>Referral Sub Type</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3238">
                 <source>ResourceAgencyName</source>
                 <target>Resource Agency Name</target>
-            </trans-unit>                                                               
+            </trans-unit>
    	    	<trans-unit id="3239">
                 <source>ResourceAgencyContactInformation</source>
                 <target>Resource Agency Contact Information</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3240">
                 <source>PointOfContact</source>
                 <target>Point of Contact</target>
-            </trans-unit>  
+            </trans-unit>
   	    	<trans-unit id="3241">
                 <source>ReferralAppointmentDateTime</source>
                 <target>Referral Appointment Date/Time</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3242">
                 <source>TargetCompletionDate</source>
                 <target>Target Completion Date</target>
-            </trans-unit>         
+            </trans-unit>
  	    	<trans-unit id="3243">
                 <source>Comments</source>
                 <target>Comments</target>
-            </trans-unit>     
+            </trans-unit>
  	    	<trans-unit id="3244">
                 <source>CaseManagerSignature</source>
-                <target>IDCM Worker Signature</target>
-            </trans-unit>     
+                <target>Repatriation Worker Signature</target>
+            </trans-unit>
  	    	<trans-unit id="3245">
                 <source>ClientSignature</source>
-                <target>Disaster Survivor Signature</target>
-            </trans-unit>  
+                <target>Repatriate Signature</target>
+            </trans-unit>
  	    	<trans-unit id="3246">
                 <source>DateTime</source>
                 <target>Date And Time</target>
-            </trans-unit>    
+            </trans-unit>
  	    	<trans-unit id="3247">
                 <source>Location</source>
                 <target>Location</target>
-            </trans-unit>			
+            </trans-unit>
  	    	<trans-unit id="3248">
                 <source>Status</source>
                 <target>Status</target>
@@ -3560,63 +3560,63 @@
  	    	<trans-unit id="3249">
                 <source>County</source>
                 <target>County</target>
-            </trans-unit>	
+            </trans-unit>
 			<trans-unit id="3250">
                 <source>Gender</source>
                 <target>Gender</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3251">
                 <source>AtRiskPopulation</source>
                 <target>At Risk Population</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3252">
                 <source>IdentifiedNeeds</source>
                 <target>Self-Identified Needs</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3253">
                 <source>AssessmentsNeeded</source>
                 <target>Assessments Needed</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3254">
                 <source>AssessmentsComplete</source>
                 <target>Assessments Complete</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3255">
                 <source>Services</source>
                 <target>Services</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3256">
                 <source>ReferralsNeeded</source>
                 <target>Referrals Needed</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3257">
                 <source>Language</source>
                 <target>Language</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3258">
                 <source>MaritalStatus</source>
                 <target>Marital Status</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3259">
                 <source>HeadOfHousehold</source>
                 <target>Head of Household</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3260">
                 <source>Creator</source>
                 <target>Creator</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3261">
                 <source>ClientRace</source>
-                <target>Disaster Survivor Race</target>
-            </trans-unit>		
+                <target>Repatriate Race</target>
+            </trans-unit>
  	    	<trans-unit id="3262">
                 <source>Ethnicity</source>
                 <target>Ethnicity</target>
-            </trans-unit>		
+            </trans-unit>
  	    	<trans-unit id="3263">
                 <source>Client</source>
-                <target>Disaster Survivor</target>
-            </trans-unit>		
+                <target>Repatriate</target>
+            </trans-unit>
  	    	<trans-unit id="3264">
                 <source>Resource</source>
                 <target>Resource</target>
@@ -3624,19 +3624,19 @@
  	    	<trans-unit id="3265">
                 <source>ApplicationFeedback</source>
                 <target>ECMRS Feedback</target>
-            </trans-unit>		
+            </trans-unit>
             <trans-unit id="3266">
                 <source>PRAWindow</source>
                 <target>OMB Control Number, Expiration Date, and PRA Burden Statement</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="3267">
                 <source>PRAStatement</source>
-                <target><![CDATA[OMB Control No: 0970-0461<br/>Expiration date: 05/31/2020</br></br>THE PAPERWORK REDUCTION ACT OF 1995 (Pub. L. 104-13)</br>Public reporting burden for this collection of information is estimated to average 60 minutes per response, including the time for reviewing instructions, gathering and maintaining the data needed, and reviewing the collection of information.An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number.]]></target>
+                <target><![CDATA[OMB Control No: 0970-0474<br/>Expiration date: 04/30/2022</br></br>THE PAPERWORK REDUCTION ACT OF 1995 (Pub. L. 104-13)</br>Public reporting burden for this collection of information is estimated to average 60 minutes per response, including the time for reviewing instructions, gathering and maintaining the data needed, and reviewing the collection of information.An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number.]]></target>
             </trans-unit>
             <trans-unit id="3268">
                 <source>NoteWindow</source>
                 <target>Notes</target>
-            </trans-unit>  		                                           
+            </trans-unit>
 		</body>
     </file>
 </xliff>

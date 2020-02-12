@@ -131,7 +131,7 @@ class IndexController extends Controller
         if (isset($_SERVER['HTTP_X_FILE_OPTIONS'])) {
             $file = Util\jsonDecode($_SERVER['HTTP_X_FILE_OPTIONS']);
             $file['error'] = UPLOAD_ERR_OK;
-            $file['tmp_name'] = tempnam($configService->get('incomming_files_dir'), 'cbup');
+            $file['tmp_name'] = @tempnam($configService->get('incomming_files_dir'), 'cbup'); //used @ to turn off notice
             $file['name'] = urldecode($file['name']);
 
         if (substr($file['type'], 0, 6) !== 'image/' && $file['type'] !== 'application/pdf' && (pathinfo($file['name'])['extension'] !== "docx") && (pathinfo($file['name'])['extension'] !== "doc") && (strrpos($file['type'], "document")=== false)) {
@@ -140,7 +140,7 @@ class IndexController extends Controller
             return new Response($result, 200, ['Content-Type' => 'application/json', 'charset' => 'UTF-8']);
         }
 
-            
+
             if (empty($file['content_id'])) {
                 Util\bufferedSaveFile('php://input', $file['tmp_name']);
             }
@@ -166,12 +166,12 @@ class IndexController extends Controller
     /**
      * @Route("/c/{coreName}/export", name="app_core_export_upload")
      * @Route("/c/{coreName}/export/", name="app_core_export_slash")
-     * 
-     * @param Request $request          
-     * @param string $coreName          
-     * @param string $id            
+     *
+     * @param Request $request
+     * @param string $coreName
+     * @param string $id
      * @method ({"GET", "POST"})
-     *        
+     *
      * @return Response
      * @throws \Exception
      */
@@ -192,9 +192,9 @@ class IndexController extends Controller
                 //print_r($decoded);  //do something with what we decoded?
                 $cmd = 'php '.$rootDir.'/../bin/console'.' '.'ecmrs:database:export '.(!empty($request->get('state'))?' --state='.$request->get('state'):'').(!empty($request->get('county'))?' --county='.$request->get('county'):'').(!empty($request->get('tier'))?' --tier='.$request->get('tier'):'').' --env='.$coreName;
                 //echo($cmd);
-        
+
                 $pid = shell_exec($cmd .' > /dev/null & echo $!');
-                        
+
                 $response->message = 'process <'. $cmd . '> started on pid <'.$pid.'>';
             } catch (\Exception $e) {
                 /*
@@ -203,7 +203,7 @@ class IndexController extends Controller
                  */
                 header('HTTP/1.0 401 Unauthorized');
                 $response->message ='unable to decode';
-            } 
+            }
         } else
         {
             header('HTTP/1.0 401 Unauthorized');
@@ -220,19 +220,19 @@ class IndexController extends Controller
         header('Content-type: application/json');
         echo(json_encode($response));
         exit(0);
-    
-    }   
+
+    }
 
 
     /**
      * @Route("/c/{coreName}/exportstatus", name="app_core_exportstatus_upload")
      * @Route("/c/{coreName}/exportstatus/", name="app_core_exportstatus_slash")
-     * 
-     * @param Request $request          
-     * @param string $coreName          
-     * @param string $id            
+     *
+     * @param Request $request
+     * @param string $coreName
+     * @param string $id
      * @method ({"GET", "POST"})
-     *        
+     *
      * @return Response
      * @throws \Exception
      */
@@ -240,7 +240,7 @@ class IndexController extends Controller
         $configService = $this->get ( 'casebox_core.service.config' );
                 $container = Cache::get('symfony.container');
         $rootDir = $container->getParameter('kernel.root_dir');
-        
+
         $authHeader = $request->get('jwt');
         $response = new \stdClass(); //remove strict error message
         if ($request->isMethod ( Request::METHOD_GET ))
@@ -252,10 +252,10 @@ class IndexController extends Controller
                 shell_exec('cd '.$baseDirectory);
                 $directorystructure = shell_exec('cd '.$baseDirectory.';find . -mindepth 1 -type d -exec sh -c \'echo "{} - $(find "{}" -type f | wc -l)" \' \;');
                 $processes = shell_exec('ps | ');
-                
+
                 $response->directorystructure = $directorystructure;
                 $response->processes = shell_exec('ps -ef | grep [e]cmrs:database:export');
-                $response->processcount = shell_exec('ps -ef | grep [e]cmrs:database:export | wc -l');              
+                $response->processcount = shell_exec('ps -ef | grep [e]cmrs:database:export | wc -l');
             } catch (\Exception $e) {
                 /*
                  * the token was not able to be decoded.
@@ -263,7 +263,7 @@ class IndexController extends Controller
                  */
                 header('HTTP/1.0 401 Unauthorized');
                 $response->message ='unable to decode';
-            } 
+            }
         } else
         {
             header('HTTP/1.0 401 Unauthorized');
@@ -280,12 +280,12 @@ class IndexController extends Controller
         header('Content-type: application/json');
         echo(json_encode($response));
         exit(0);
-    
-    }   
+
+    }
 
 /**
      * @Route("/d", name="app_core_reports")
-     * @Route("/d/", name="app_core_reports_slash")* 
+     * @Route("/d/", name="app_core_reports_slash")*
      * @param Request $request
      *
      * @return Response
@@ -293,20 +293,20 @@ class IndexController extends Controller
      */
     public function reportsAction(Request $request)
     {
-        
+
         /*$auth = $this->container->get('casebox_core.service_auth.authentication');
         $user = $auth->isLogged(false);
-        
+
         if (!$user) {
             $vars = [
                 'locale' => $this->container->getParameter('locale')
             ];
-    
+
             return $this->render('CaseboxCoreBundle::no-core-found.html.twig', $vars);
         }*/
-        
+
         return $this->redirect('/d/index.html');
-    }   
+    }
 
 
 /**
@@ -320,7 +320,6 @@ class IndexController extends Controller
      */
     public function coreReportsAction(Request $request, $coreName)
     {
-        
         $auth = $this->container->get('casebox_core.service_auth.authentication');
         $user = $auth->isLogged(false);
         $configService = $this->get('casebox_core.service.config');
@@ -341,8 +340,8 @@ class IndexController extends Controller
         //$configuration = \GuzzleHttp\json_decode($objData['data']['value'], true);
         $vars['reports'] = $configService->get('Reports');
         return $this->render('CaseboxCoreBundle::reports.html.twig', $vars);
-    }   
-    
+    }
+
 /**
      * @Route("/c/{coreName}/report/{id}/", name="app_core_report", requirements = {"coreName": "[a-z0-9_\-]+"})
      * @param Request $request
@@ -354,23 +353,23 @@ class IndexController extends Controller
      */
     public function reportAction(Request $request, $coreName, $id)
     {
-        
+
         $configService = $this->get('casebox_core.service.config');
-        $headers = ['Content-Type' => 'application/json', 'charset' => 'UTF-8'];        
+        $headers = ['Content-Type' => 'application/json', 'charset' => 'UTF-8'];
         $pdfParam = $request->query->get('pdf');
         $xlsParam = $request->query->get('xls');
         $reportDate = empty($request->query->get('reportDateInput'))?date("Y-m-d", time() - 60 * 60 * 28):substr($request->query->get('reportDateInput'),0,10); //get report running date
 
         $auth = $this->container->get('casebox_core.service_auth.authentication');
         $user = $auth->isLogged(false);
-        
+
         /* Check if user is logged in */
         if (!$user) {
             $this->get('session')->set('redirectUrl', 'app_core_report');
             $this->get('session')->set('redirectId', $id);
             return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
         }
-        
+
         /* Get reports config */
         $reports = $configService->get('Reports');
         if (empty($id) || (!isset($reports[$id]) && !is_numeric($id))) {
@@ -380,15 +379,15 @@ class IndexController extends Controller
         }
         if (is_numeric($id))
         {
-            $obj = Objects::getCachedObject($id);       
+            $obj = Objects::getCachedObject($id);
             $objData = $obj->getData();
-            $reportConfig = \GuzzleHttp\json_decode($objData['data']['value'], true);   
+            $reportConfig = \GuzzleHttp\json_decode($objData['data']['value'], true);
         }
         else {
             $reportConfig = $reports[$id];
         }
-        $reportConfig['reportId'] = $id;    
-        $reportConfig['core_name'] = $coreName; 
+        $reportConfig['reportId'] = $id;
+        $reportConfig['core_name'] = $coreName;
         $reportConfig['reports'] = $reports;
         $class = '\\Casebox\\CoreBundle\\Reports\\'.$reportConfig['reportClass'];
         if (class_exists($class)) {
@@ -408,13 +407,13 @@ class IndexController extends Controller
             {
                 if (is_string($reportConfig['excel']))
                 {
-                    $class->run()->exportToExcel($reportConfig['excel'])->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');      
+                    $class->run()->exportToExcel($reportConfig['excel'])->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');
                 }
                 else
                 {
                     $class->run()->exportToExcel()->toBrowser($reportConfig['reportClass'].$reportDate.'.xlsx');
                 }
-            }           
+            }
             else
             {
                 $class->run()->render();
@@ -424,17 +423,17 @@ class IndexController extends Controller
         $result['message'] = $this->trans(('Object_not_found'));
 
         return new Response(json_encode($result), 200, $headers);
-    }   
+    }
 
     /**
      * @Route("/c/{coreName}/bulkupload", name="app_core_bulk_upload")
      * @Route("/c/{coreName}/bulkupload/", name="app_core_bulk_upload_slash")
-     * 
-     * @param Request $request          
-     * @param string $coreName          
-     * @param string $id            
+     *
+     * @param Request $request
+     * @param string $coreName
+     * @param string $id
      * @method ({"GET", "POST"})
-     *        
+     *
      * @return Response
      * @throws \Exception
      */
@@ -442,8 +441,8 @@ class IndexController extends Controller
         $configService = $this->get ( 'casebox_core.service.config' );
         $auth = $this->container->get ( 'casebox_core.service_auth.authentication' );
         if (! $auth->isLogged ( false )) {
-            return $this->redirectToRoute ( 'app_core_login', [ 
-                    'coreName' => $coreName 
+            return $this->redirectToRoute ( 'app_core_login', [
+                    'coreName' => $coreName
             ] );
         }
         $this->get('translator')->setLocale(isset($vars['locale'])?isset($vars['locale']):'en');
@@ -465,7 +464,7 @@ class IndexController extends Controller
            case '1':
                 if (empty($templateId)) {
                     $this->addFlash('notice', 'Please select a template ID');
-                
+
                     return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
                 }
                 $csvContent = $request->get('csvContent');
@@ -475,10 +474,10 @@ class IndexController extends Controller
                     $_FILES ['file'] ['type'] = 'text/csv';
                     $file = tmpfile();
                     fwrite($file, $csvContent);
-                    $path = stream_get_meta_data($file)['uri']; // eg: /tmp/phpFx0513a                  
+                    $path = stream_get_meta_data($file)['uri']; // eg: /tmp/phpFx0513a
                     $_FILES ['file'] ['tmp_name'] = stream_get_meta_data($file)['uri'];
                 }
-                    
+
                 // validate whether uploaded file is a csv file
                 $csvMimes = array ('text/x-comma-separated-values','text/comma-separated-values','application/octet-stream','application/vnd.ms-excel','application/x-csv',
                                     'text/x-csv','text/csv','application/csv','application/excel','application/vnd.msexcel','text/plain','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -506,16 +505,16 @@ class IndexController extends Controller
                                 // get titles
                                 if (!empty($request->get('hasHeader')))
                                 {
-                                    $titles = fgetcsv ( $csvFile );     
+                                    $titles = fgetcsv ( $csvFile );
                                     foreach($titles as $title => $fieldName){
                                         $bom = pack('H*','EFBBBF');
                                         $titles[$title] = preg_replace("/^$bom/", '', $fieldName);
                                         //Cache::get ( 'symfony.container' )->get ( 'logger' )->error ( 'herenow', ( array ) $titles );
-                                    }                                                               
+                                    }
                                 }
                                 // parse data from csv file line by line
                                 while ( ($line = fgetcsv ( $csvFile,0,$delimiter )) !== FALSE ) {
-                                    $results = [];      
+                                    $results = [];
                                     $id = null;
                                     foreach ( $line as $k => $value ) {
                                         if (!isset($titles))
@@ -524,31 +523,31 @@ class IndexController extends Controller
                                             $count = 1;
                                             foreach($titles as $title => $fieldName){
                                                 $titles[$title] = 'Column ' . $count++;
-                                            }                                       
+                                            }
                                         }
                                         $results [$titles [$k]] = $value;
                                     }
                                     $data[] = [
-                                        'data' => $results 
-                                    ];                                                                                      
+                                        'data' => $results
+                                    ];
                                 }
                                 }
-                                
+
                                 if (!empty($templateData['cfg']['defaultPid'])) {
                                     $pid = $templateData['cfg']['defaultPid'];
                                 }
-                                
-                                if (isset($uploadTemplate['pid'])) 
+
+                                if (isset($uploadTemplate['pid']))
                                 {
                                     $pid = $uploadTemplate['pid'];
                                 }
-                                
-                                $parent =  Objects::getCachedObject(isset($pid)?$pid:1);        
+
+                                $parent =  Objects::getCachedObject(isset($pid)?$pid:1);
                                 if (!isset($parent))
                                 {
                                     $pid = 1;
                                 }
-                                
+
                                 // close opened csv file
                                 //move_uploaded_file($_FILES ['file'] ['tmp_name'],$_FILES ['file'] ['tmp_name']); //maybe should think about temp variables instead
                                 fclose ( $csvFile );
@@ -572,10 +571,10 @@ class IndexController extends Controller
                     $this->addFlash('notice', 'Invalid File');
                     return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
                 }
-            break;  
+            break;
         case '2':
                 $csvData = $_SESSION['csvData'];
-                $csvHeaders =$request->get('csvHeader'); 
+                $csvHeaders =$request->get('csvHeader');
                 $pid =$request->get('pid');
                 $errorMessage = '';
                 if (!isset($csvData))
@@ -588,38 +587,38 @@ class IndexController extends Controller
                 if (!empty($template)) {
                     $templateData = $template->getData();
                     $requiredFields = $template->getRequiredFields();
-                    $parent =  Objects::getCachedObject(isset($pid)?$pid:1);        
+                    $parent =  Objects::getCachedObject(isset($pid)?$pid:1);
                     $parentName =$parent->getHtmlSafeName();
-                    
-                    //* old info */         
+
+                    //* old info */
                     $newObjects = 0;
                     $existingObjects = 0;
-                    
+
                     // parse data from csv file line by line
                     $objService = new Objects ();
-                    //print_r($csvData);        
+                    //print_r($csvData);
                     foreach ( $csvData as &$line ) {
                         $i = 0;
                         $oldValue = false;
                         $line['message'] = '';
                         $templateRequiredFields = $requiredFields;
                         foreach ( $line['data'] as $key => $value ) {
-                            $columnHeader = isset($csvHeaders[$i])?$csvHeaders[$i]:'';  
+                            $columnHeader = isset($csvHeaders[$i])?$csvHeaders[$i]:'';
                             if (empty($columnHeader)) //not mapped
                             {
                                 unset($line['data'][$key]);
                                 unset($csvHeaders[$i]);
                             }
-                            else 
+                            else
                             {
                                 if ($key !== $columnHeader)
                                 {
                                     if(array_key_exists( $key, $line['data'])) {
                                          $keys = array_keys($line['data']);
                                          $keys[array_search($key, $keys)] = $columnHeader;
-                                         $line['data'] = array_combine($keys, $line['data']); 
-                                     }                              
-                                }       
+                                         $line['data'] = array_combine($keys, $line['data']);
+                                     }
+                                }
                                 if ($columnHeader === "id") {
                                     $obj = Objects::getTemplateId($value);
                                     if ($templateData['id'] === $obj)
@@ -635,15 +634,15 @@ class IndexController extends Controller
                                     }
                                     else
                                     {
-                                        $line['pid'] = $pid;                                        
+                                        $line['pid'] = $pid;
                                         $line['data'][$key]="";
-                                        $line['message'] = $line['message'] . '&#013;ID was invalid - blanking';                                            
+                                        $line['message'] = $line['message'] . '&#013;ID was invalid - blanking';
                                     }
                                 }
                             }
-                            $i++;                   
+                            $i++;
                         }
-                        
+
                         $browser = new Browser(); //getchildobjects
                         $templateColumnObjects = [];
                         foreach ( $csvHeaders as $csvHeader ) {
@@ -651,16 +650,16 @@ class IndexController extends Controller
                             if ($templateColumn['type'] == '_objects') {
                                     if (isset($templateColumn['cfg']['scope']))
                                     {
-                                        $result = $browser->getObjectsForField(['fieldId' => $templateColumn['id']]);   
-                                        $templateColumnObjects[$templateColumn['id']] = $result['data'];                                    
+                                        $result = $browser->getObjectsForField(['fieldId' => $templateColumn['id']]);
+                                        $templateColumnObjects[$templateColumn['id']] = $result['data'];
                                     }
                             }
                         }
-                        
+
                         $i = 0;
                         $hasError = false;
                         foreach ( $line['data'] as $key => $value ) {
-                            $columnHeader = isset($csvHeaders[$i])?$csvHeaders[$i]:'';  
+                            $columnHeader = isset($csvHeaders[$i])?$csvHeaders[$i]:'';
                             $value = $line['data'][$key]; //line value
                             $line['template_id'] = $templateId;
                             $line['pid'] = $pid; //set the default one here
@@ -680,13 +679,13 @@ class IndexController extends Controller
                                         {
                                             $line['data'][$key] = '';
                                             $line['message'] = $line['message'] . '&#013;'. $columnHeader . ' was invalid - blanking';
-                                        }       
-                                    }   
-                                }   
+                                        }
+                                    }
+                                }
                                 if (empty($value) && isset($templateColumn['cfg']['required']))
                                 {
                                     $line['message'] = $line['message'] . '&#013;'.$templateColumn['name'] . ' is blank';
-                                    $hasError=true;     
+                                    $hasError=true;
                                     $errorMessage = $errorMessage . $line['message'] . '<br>';
                                 }
                                 else
@@ -697,11 +696,11 @@ class IndexController extends Controller
                                         if (!preg_match('/'.$templateColumn['cfg']['validationRe'].'/', $value))
                                         {
                                             $line['message'] = $line['message'] . '&#013;'.$templateColumn['name'] . ' does not match regular expression rules' . $templateColumn['cfg']['validationRe'];
-                                            $hasError=true; 
+                                            $hasError=true;
                                             $errorMessage = $errorMessage . $line['message'] . '<br>';
-                                        
+
                                         }
-                                    }                                   
+                                    }
                                 }
                                 //print_r($templateColumn);
                             }
@@ -713,20 +712,20 @@ class IndexController extends Controller
                             $line['message'] = $line['message'] . '&#013;Required Fields not set: '.implode($templateRequiredFields,', ');
                             $errorMessage = $errorMessage . $line['message'] . '<br>';
                         }
-                        $line['isvalid'] = !$hasError && (sizeof($templateRequiredFields) === 0 || $oldValue);  
-                        $line['isnew'] = !$oldValue;    
-                    }           
-                    
+                        $line['isvalid'] = !$hasError && (sizeof($templateRequiredFields) === 0 || $oldValue);
+                        $line['isnew'] = !$oldValue;
+                    }
+
                     $vars['confirmdata'] = $csvData;
                     $vars['templateId'] = $templateId;
                     $vars['step'] = 3;
                     $vars['confirmheader'] = $csvHeaders;
-                    $_SESSION['confirmCsvData'] = $csvData;                         
-                    }       
+                    $_SESSION['confirmCsvData'] = $csvData;
+                    }
                    // if(hasError){
                    //       $this->addFlash('notice', $errorMessage);
                    // }
-            break;  
+            break;
         case '3':
             $csvData = $_SESSION['confirmCsvData'];
             $results = [];
@@ -739,17 +738,17 @@ class IndexController extends Controller
                 $message = 'Not Processing<br>Dump<br>';
             }
             else {
-                unset($_SESSION['confirmCsvData']);             
+                unset($_SESSION['confirmCsvData']);
                 $message = 'Processing';
             }
             $objService = new Objects ();
-            foreach ( $csvData as $k => $result ) 
+            foreach ( $csvData as $k => $result )
             {
                 if ($result['isvalid'])
                 {
                     unset($result['isvalid']);
                     unset($result['message']);
-                    unset($result['isnew']);                    
+                    unset($result['isnew']);
                     if (isset($result['data']['id']))
                     {
                         $result['id'] = $result['data']['id'];
@@ -757,9 +756,9 @@ class IndexController extends Controller
                         if (isset($result['old']))
                         {
                             $result['data'] = array_merge($result['old'], $result['data']);
-                            unset($result['old']);  
+                            unset($result['old']);
                         }
-                        $updated++;                     
+                        $updated++;
                     }
                     else
                     {
@@ -769,41 +768,41 @@ class IndexController extends Controller
                     //exit;
                     if (!empty($processFile))
                     {
-                        $newReferral = $objService->save ( [ 
-                                'data' => $result 
+                        $newReferral = $objService->save ( [
+                                'data' => $result
                         ] );
                     }
                     else {
                         $message = $message . ' <br>' . print_r($result, true);
                     }
                 } else {
-                    $errorMessage = $errorMessage . ' <br>Problem with entry ' . $k . ": " . print_r($result['message'], true) .  ' <br>'; 
-                }   
+                    $errorMessage = $errorMessage . ' <br>Problem with entry ' . $k . ": " . print_r($result['message'], true) .  ' <br>';
+                }
             }
             $message = $message . ' <br><br>' . $updated . ' record(s) updated';
-            $message = $message . ' <br>' . $created . ' record(s) created';    
+            $message = $message . ' <br>' . $created . ' record(s) created';
             break;
         }
-        
+
         if($errorMessage){
             $errorMessage = "Entries not uploaded: " . $errorMessage;
             $this->addFlash('notice', $errorMessage);
         } elseif ($message) {
             $this->addFlash('notice', $message);
         }
-    
+
         return $this->render('CaseboxCoreBundle::bulkupload.html.twig', $vars);
-    }   
-    
+    }
+
     /**
      * @Route("/c/{coreName}/run", name="app_core_command")
      * @Route("/c/{coreName}/run/", name="app_core_command_slash")
-     * 
-     * @param Request $request          
-     * @param string $coreName          
-     * @param string $id            
+     *
+     * @param Request $request
+     * @param string $coreName
+     * @param string $id
      * @method ({"GET", "POST"})
-     *        
+     *
      * @return Response
      * @throws \Exception
      */
@@ -815,18 +814,18 @@ class IndexController extends Controller
         $configService = $this->get ( 'casebox_core.service.config' );
         $auth = $this->container->get ( 'casebox_core.service_auth.authentication' );
         if (! $auth->isLogged ( false )) {
-            return $this->redirectToRoute ( 'app_core_login', [ 
-                    'coreName' => $coreName 
+            return $this->redirectToRoute ( 'app_core_login', [
+                    'coreName' => $coreName
             ] );
         }
 
         if (empty($request->get('command'))) {
             echo('Please enter a command');
             exit(0);
-        }   
+        }
 
         $cmd = 'php '.$rootDir.'/../bin/console'.' '.$request->get('command');
-        
+
         $params = $request->query->all();
         foreach($params as $key => $val)
         {
@@ -836,17 +835,17 @@ class IndexController extends Controller
             }
         }
         $cmd = $cmd . ' --env='.$coreName;
-        
+
         if (!empty($request->get('detach'))) {
             $cmd = $cmd . ' > /dev/null & echo $!';
-        }   
+        }
         $cmdResponse = shell_exec($cmd);
-        
+
         header('Content-type: application/json');
         echo(json_encode('process <'. $cmd . '> started with response <'.$cmdResponse.'>'));
         exit(0);
-    }       
-    
+    }
+
     /**
      * @Route("/c/{coreName}/edit/{templateId}/{id}",
      *     name="app_core_item_edit",
@@ -1024,8 +1023,8 @@ class IndexController extends Controller
 
         return new Response(null, 200, $headers);
     }
-    
-    
+
+
  /**
      * @Route("/c/{coreName}/get", name="app_core_get", requirements = {"coreName": "[a-z0-9_\-]+"})
      * @Route("/c/{coreName}/get/", name="app_core_get_slash")
@@ -1041,12 +1040,12 @@ class IndexController extends Controller
         $result = [
             'success' => false,
         ];
-        
+
         $exportParam = $request->query->get('export');
         $pdfParam = $request->query->get('pdf');
-        
-        $headers = ['Content-Type' => 'application/json', 'charset' => 'UTF-8'];        
-        
+
+        $headers = ['Content-Type' => 'application/json', 'charset' => 'UTF-8'];
+
         if (empty($exportParam) && empty($pdfParam)) {
             $result['message'] = $this->trans(('Object_not_found'));
 
@@ -1058,25 +1057,25 @@ class IndexController extends Controller
         if (!$user) {
             return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
         }
-        
+
         $export = new Instance();
-        
+
         if (!empty($pdfParam))
         {
             $data = json_decode($pdfParam,true);
-    
+
             $export->getPDF($data);
         }
         else
         {
             $data = json_decode($exportParam,true);
-    
+
             $export->getCSV($data);
         }
-        
+
         return new Response(null, 200, $headers);
-    }   
-    
+    }
+
 
     /**
      * @Route("/dav/{coreName}/{action}/{filename}/", name="app_core_file_webdav_slash")

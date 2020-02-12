@@ -2,25 +2,24 @@
 
 namespace Casebox\CoreBundle\Service\TreeNode;
 
-use Casebox\CoreBundle\Service\Objects;
-use Casebox\CoreBundle\Service\Search;
 use Casebox\CoreBundle\Service\Templates;
-use Casebox\CoreBundle\Service\User;
+use Casebox\CoreBundle\Service\Cache;
+use Casebox\CoreBundle\Service\Search;
+use Casebox\CoreBundle\Service\Objects;
 use Casebox\CoreBundle\Service\DataModel as DM;
+use Casebox\CoreBundle\Service\User;
 
-/**
- * Class Tasks
- */
-class Tasks extends Base
+class Repatriates extends Base
 {
+
     protected function createDefaultFilter()
     {
         $this->fq = [];
 
-        // select only task templates
-        $taskTemplates = DM\Templates::getIdsByType('task');
-        if (!empty($taskTemplates)) {
-            $this->fq[] = 'template_id:('.implode(' OR ', $taskTemplates).')';
+        // select only case templates
+        $caseTemplates = DM\Templates::getIdsByType('case');
+        if (!empty($caseTemplates)) {
+            $this->fq[] = 'template_id:('.implode(' OR ', $caseTemplates).')';
         }
 
     }
@@ -50,11 +49,12 @@ class Tasks extends Base
             $rez = $this->getRootNodes();
         } else {
             switch ($this->lastNode->id) {
-                case 'tasks':
+                case 'cases':
                     $rez = $this->getDepthChildren2();
                     break;
                 case 2:
                 case 3:
+                case 4:
                     $rez = $this->getDepthChildren3();
                     break;
                 default:
@@ -71,20 +71,24 @@ class Tasks extends Base
             $id = $this->id;
         }
         switch ($id) {
-            case 'tasks':
-                return $this->trans('MyTasks');
+            case 'cases':
+                return $this->trans('Repatriates');
             case 2:
-                return $this->trans('AssignedToMe');
+                return $this->trans('MyClients');
             case 3:
-                return $this->trans('CreatedByMe');
+                return $this->trans('Unassigned');
             case 4:
-                return lcfirst($this->trans('Overdue'));
+                return $this->trans('CreatedByMe');
             case 5:
-                return lcfirst($this->trans('Ongoing'));
+                return $this->trans('Active');
             case 6:
-                return lcfirst($this->trans('Closed'));
+                return $this->trans('Closed');
+            case 7:
+                return $this->trans('InformationOnly');
+            case 8:
+            	return $this->trans('Transitioned');
             case 'assignee':
-                return lcfirst($this->trans('Assignee'));
+                return $this->trans('IntakeRepresentative');
             default:
                 if (substr($id, 0, 3) == 'au_') {
                     return User::getDisplayName(substr($id, 3));
@@ -99,9 +103,9 @@ class Tasks extends Base
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.User::getId();
-        $p['fq'][] = 'task_status:(1 OR 2)';
-        $p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
-        $p['rows'] = 0;
+        $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
+        $p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+		$p['rows'] = 0;
 
         $s = new Search();
         $rez = $s->query($p);
@@ -113,9 +117,9 @@ class Tasks extends Base
         return [
             'data' => [
                 [
-                    'name' => $this->trans('MyTasks').$count,
-                    'id' => $this->getId('tasks'),
-                    'iconCls' => 'icon-task',
+                    'name' => $this->trans('Repatriates').$count,
+                    'id' => $this->getId('cases'),
+                    'iconCls' => 'icon-case',
                     'cls' => 'tree-header',
                     'has_childs' => true,
                 ],
@@ -123,41 +127,10 @@ class Tasks extends Base
         ];
     }
 
-   /* protected function getMyUserNodes()
-    {
-        $p = $this->requestParams;
-        $p['fq'] = $this->fq;
-        $p['fq'][] = 'task_u_all:'.User::getId();
-        $p['fq'][] = 'task_status:(1 OR 2)';
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
-        $p['rows'] = 0;
-
-        $s = new Search();
-        $rez = $s->query($p);
-        $count = '';
-        if (!empty($rez['total'])) {
-            $count = $this->renderCount($rez['total']);
-        }
-
-        return [
-            'data' => [
-                [
-                    'name' => $this->trans('MyTasks').$count,
-                    'id' => $this->getId('tasks'),
-                    'iconCls' => 'icon-task',
-                    'cls' => 'tree-header',
-                    'has_childs' => true,
-                ],
-            ],
-        ];
-    }*/
-
-
-
     /**
      *  returns a formatted total number for UI tree
      *
-     * @param  Int $n the total count of tasks
+     * @param  Int $n the total count of cases
      *
      * @return String   formatted string
      */
@@ -170,59 +143,56 @@ class Tasks extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.$userId;
-        $p['fq'][] = 'task_status:(1 OR 2)';
-
+        $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
+		if (!isset($p['sort'])) {
+			$p['sort'][0]['property'] = 'id';
+			$p['sort'][0]['direction'] = 'desc';
+		}
         if (@$this->requestParams['from'] == 'tree') {
             $s = new \Casebox\CoreBundle\Service\Search();
             $p['rows'] = 0;
             $p['facet'] = true;
+            $p['facet.missing'] ='on';//true;
+	    $p['facet.limit'] =5000;
             $p['facet.field'] = [
                 '{!ex=task_u_assignee key=1assigned}task_u_assignee',
                 '{!ex=cid key=2cid}cid',
             ];
             $sr = $s->query($p);
             $rez = ['data' => []];
-            if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
-                //Now, will still populate if empty
+
+            if (!empty($sr['facets']->facet_fields->{'1assigned'}->_empty_)) {
                 $rez['data'][] = [
-                    'name' => $this->trans('AssignedToMe').$this->renderCount(
-                            $sr['facets']->facet_fields->{'1assigned'}->{$userId}
-                        ),
-                    'id' => $this->getId(2),
-                    'iconCls' => 'icon-task',
+                    'name' => $this->trans('Unassigned').$this->renderCount(
+                            $sr['facets']->facet_fields->{'1assigned'}->_empty_),
+                    'id' => $this->getId(3),
+                    'iconCls' => 'icon-task-user-status0',
                     'has_childs' => true,
                 ];
             }
-            else {
-              // code...
-              $rez['data'][] = [
-                  'name' => $this->trans('AssignedToMe'), //this is necessary to not throw an error
-                  'id' => $this->getId(2),
-                  'iconCls' => 'icon-task',
-                  'has_childs' => true,
-              ];
+
+          if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
+                $rez['data'][] = [
+                    'name' => $this->trans('MyClients').$this->renderCount(
+                            $sr['facets']->facet_fields->{'1assigned'}->{$userId}
+                        ),
+                    'id' => $this->getId(2),
+                    'iconCls' => 'icon-user',
+                    'has_childs' => true,
+                ];
             }
             if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
-                //Now, will still populate if empty
                 $rez['data'][] = [
                     'name' => $this->trans('CreatedByMe').$this->renderCount(
                             $sr['facets']->facet_fields->{'2cid'}->{$userId}
                         ),
-                    'id' => $this->getId(3),
-                    'iconCls' => 'icon-task',
+                    'id' => $this->getId(4),
+                    'iconCls' => 'icon-user',
                     'has_childs' => true,
                 ];
-            }
-            else {
-              $rez['data'][] = [
-                  'name' => $this->trans('CreatedByMe'),
-                  'id' => $this->getId(3),
-                  'iconCls' => 'icon-task',
-                  'has_childs' => true,
-              ];
             }
 
             return $rez;
@@ -240,13 +210,15 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+
         if ($this->lastNode->id == 2) {
             $p['fq'][] = 'task_u_ongoing:'.$userId;
+        } elseif ($this->lastNode->id == 4) {
+        	$p['fq'][] = 'cid:'.$userId;
         } else {
-            $p['fq'][] = 'cid:'.$userId;
+            $p['fq'][] = '-task_u_assignee:[* TO *]';
         }
-
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
 
@@ -261,44 +233,53 @@ class Tasks extends Base
                 ]
             );
             $rez = ['data' => []];
-            if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'1'})) {
-                $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Overdue')).$this->renderCount(
-                            $sr['facets']->facet_fields->{'0task_status'}->{'1'}
-                        ),
-                    'id' => $this->getId(4),
-                    'iconCls' => 'icon-task',
-                ];
-            }
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'2'})) {
                 $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Ongoing')).$this->renderCount(
+                    'name' => $this->trans('Active').$this->renderCount(
                             $sr['facets']->facet_fields->{'0task_status'}->{'2'}
                         ),
                     'id' => $this->getId(5),
-                    'iconCls' => 'icon-task',
+                    'iconCls' => 'icon-folder-open',
                 ];
             }
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'3'})) {
                 $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Closed')).$this->renderCount(
+                    'name' => $this->trans('Closed').$this->renderCount(
                             $sr['facets']->facet_fields->{'0task_status'}->{'3'}
                         ),
                     'id' => $this->getId(6),
-                    'iconCls' => 'icon-task',
+                    'iconCls' => 'icon-folder',
                 ];
             }
-            // Add assignee node if there are any created tasks already added to result
-            if (($this->lastNode->id == 3) && !empty($rez['data'])) {
+            if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'5'})) {
                 $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Assignee')),
+                    'name' => $this->trans('InformationOnly').$this->renderCount(
+                            $sr['facets']->facet_fields->{'0task_status'}->{'5'}
+                        ),
+                    'id' => $this->getId(7),
+                    'iconCls' => 'icon-information-white',
+                ];
+            }
+            if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'6'})) {
+            	$rez['data'][] = [
+            		'name' => $this->trans('Transitioned').$this->renderCount(
+            				$sr['facets']->facet_fields->{'0task_status'}->{'6'}
+            			),
+     				'id' => $this->getId(8),
+     				'iconCls' => 'icon-trigger-arrow-right',
+            	];
+            }
+            // Add assignee node if there are any created cases already added to result
+            if (($this->lastNode->id == 4) && !empty($rez['data'])) {
+                $rez['data'][] = [
+                    'name' => $this->trans('IntakeRepresentative'),
                     'id' => $this->getId('assignee'),
-                    'iconCls' => 'icon-task',
+                    'iconCls' => 'icon-folder',
                     'has_childs' => true,
                 ];
             }
         } else {
-            $p['fq'][] = 'task_status:(1 OR 2)';
+            $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
 
             $s = new Search();
             $rez = $s->query($p);
@@ -317,14 +298,18 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+
         $parent = $this->lastNode->parent;
 
-        if ($parent->id == 2) {
-            $p['fq'][] = 'task_u_ongoing:'.$userId;
-        } else {
+        if ($parent->id == 3) {
+            $p['fq'][] = '-task_u_assignee:[* TO *]';
+        } elseif ($parent->id == 4) {
             $p['fq'][] = 'cid:'.$userId;
-        }
+        } else
+        {
+                  $p['fq'][] = 'task_u_ongoing:'.$userId;
+                  }
 
         // please don't use numeric IDs for named folders: "Assigned to me", "Overdue" etc
         switch ($this->lastNode->id) {
@@ -337,7 +322,13 @@ class Tasks extends Base
             case 6:
                 $p['fq'][] = 'task_status:3';
                 break;
-            case 'assignee':
+            case 7:
+                $p['fq'][] = 'task_status:5';
+                break;
+            case 8:
+                $p['fq'][] = 'task_status:6';
+                break;
+			case 'assignee':
                 return $this->getAssigneeUsers();
                 break;
             default:
@@ -407,7 +398,7 @@ class Tasks extends Base
 
         $user_id = substr($this->lastNode->id, 3);
         $p['fq'][] = 'task_u_ongoing:'.$user_id;
-
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
         $s = new Search();
 
         $sr = $s->query($p);

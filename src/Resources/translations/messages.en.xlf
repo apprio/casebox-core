@@ -616,7 +616,7 @@
             </trans-unit>
             <trans-unit id="2887">
                 <source>OtherCases</source>
-                <target>Other disaster survivors</target>
+                <target>Other repatriates</target>
             </trans-unit>
             <trans-unit id="2888">
                 <source>DeletedByMe</source>
@@ -712,7 +712,7 @@
             </trans-unit>
             <trans-unit id="2960">
                 <source>AllMyCases</source>
-                <target>My disaster survivors</target>
+                <target>My repatriates</target>
             </trans-unit>
             <trans-unit id="2963">
                 <source>Assignee</source>
@@ -928,155 +928,155 @@
             <trans-unit id="3164">
                 <source>caseStatus3</source>
                 <target>Closed</target>
-            </trans-unit>       
+            </trans-unit>
            <trans-unit id="3165">
                 <source>caseStatus4</source>
                 <target>Pending</target>
-            </trans-unit>                  
+            </trans-unit>
            <trans-unit id="3166">
                 <source>caseStatus5</source>
                 <target>Information Only</target>
-            </trans-unit>   
+            </trans-unit>
            <trans-unit id="3167">
                 <source>Clients</source>
-                <target>Disaster Survivors</target>
-            </trans-unit>       
+                <target>Repatriates</target>
+            </trans-unit>
            <trans-unit id="3168">
                 <source>MyClients</source>
-                <target>My Disaster Survivors</target>
-            </trans-unit>       
+                <target>My Repatriates</target>
+            </trans-unit>
            <trans-unit id="3169">
                 <source>Unassigned</source>
                 <target>Unassigned</target>
-            </trans-unit>       
+            </trans-unit>
            <trans-unit id="3170">
                 <source>CreatedByMe</source>
                 <target>Created By Me</target>
-            </trans-unit>       
+            </trans-unit>
            <trans-unit id="3171">
                 <source>Active</source>
                 <target>Active</target>
-            </trans-unit>       
+            </trans-unit>
            <trans-unit id="3172">
                 <source>Closed</source>
                 <target>Closed</target>
-            </trans-unit>       
+            </trans-unit>
            <trans-unit id="3173">
                 <source>InformationOnly</source>
                 <target>Information Only</target>
-            </trans-unit>       
+            </trans-unit>
            <trans-unit id="3174">
                 <source>IntakeRepresentative</source>
                 <target>Intake Representative</target>
-            </trans-unit>    
+            </trans-unit>
            <trans-unit id="3175">
                 <source>MyTasks</source>
                 <target>Tasks</target>
-            </trans-unit>            
+            </trans-unit>
            <trans-unit id="3176">
                 <source>AssignedToMe</source>
                 <target>Assigned To Me</target>
-            </trans-unit>              
+            </trans-unit>
            <trans-unit id="3177">
                 <source>ClientIntake</source>
-                <target>Disaster Survivor Intake</target>
-            </trans-unit>     
+                <target>Repatriate Intake</target>
+            </trans-unit>
            <trans-unit id="3178">
                 <source>FamilyMembers</source>
                 <target>Family Members</target>
-            </trans-unit>     
+            </trans-unit>
            <trans-unit id="3179">
                 <source>SpecialAtRiskPopulation</source>
                 <target>Self-Reported Special/At Risk Population</target>
-            </trans-unit>     
+            </trans-unit>
            <trans-unit id="3180">
                 <source>CaseManager</source>
-                <target>IDCM Worker</target>
-            </trans-unit>     
+                <target>Case Manager</target>
+            </trans-unit>
            <trans-unit id="3181">
                 <source>ConsentForm</source>
-                <target>Consent Form</target>
-            </trans-unit>     
+                <target>Document(s)</target>
+            </trans-unit>
            <trans-unit id="3182">
                 <source>Upload</source>
                 <target>Upload</target>
-            </trans-unit>     
+            </trans-unit>
            <trans-unit id="3183">
                 <source>AlternativeAddress</source>
                 <target>Alternative Address</target>
-            </trans-unit>     
+            </trans-unit>
            <trans-unit id="3184">
                 <source>IdentifiedNeeds</source>
                 <target>Self-Identified Needs</target>
-            </trans-unit>      
+            </trans-unit>
            <trans-unit id="3185">
                 <source>AddAddress</source>
                 <target>Add Address</target>
-            </trans-unit>  
+            </trans-unit>
            <trans-unit id="3186">
                 <source>PrintRecoveryPlan</source>
                 <target>Print Recovery Plan</target>
-            </trans-unit>    
+            </trans-unit>
            <trans-unit id="3187">
                 <source>GenderNotCollected</source>
                 <target>Gender Not Collected</target>
-            </trans-unit>  
+            </trans-unit>
            <trans-unit id="3188">
                 <source>FEMANotCollected</source>
                 <target>FEMA # Not Collected</target>
-            </trans-unit>     
+            </trans-unit>
            <trans-unit id="3189">
                 <source>NoAddressListed</source>
                 <target>No Address Listed</target>
-            </trans-unit>   
+            </trans-unit>
            <trans-unit id="3190">
                 <source>Intake</source>
                 <target>Intake</target>
-            </trans-unit>     
+            </trans-unit>
            <trans-unit id="3191">
                 <source>AssignClientToMe</source>
-                <target>Assign Disaster Survivor To Me</target>
-            </trans-unit>       
+                <target>Assign Repatriate To Me</target>
+            </trans-unit>
            <trans-unit id="3192">
                 <source>LastAction</source>
                 <target>Last Action</target>
-            </trans-unit>         
+            </trans-unit>
            <trans-unit id="3193">
                 <source>EmailNotCollected</source>
                 <target>Email Not Collected</target>
-            </trans-unit>  
+            </trans-unit>
            <trans-unit id="3194">
                 <source>FEMANumber</source>
-                <target>FEMA #</target>
-            </trans-unit>            
+                <target>Passport #</target>
+            </trans-unit>
            <trans-unit id="3195">
                 <source>HeadOfHousehold</source>
                 <target>Head of Household</target>
-            </trans-unit>      
+            </trans-unit>
            <trans-unit id="3196">
                 <source>Not</source>
                 <target>Not</target>
-            </trans-unit>  
+            </trans-unit>
            <trans-unit id="3197">
                 <source>Unknown</source>
                 <target>Unknown</target>
-            </trans-unit>   
+            </trans-unit>
            <trans-unit id="3198">
                 <source>RecordClosed</source>
                 <target>Record Closed</target>
-            </trans-unit>            
+            </trans-unit>
            <trans-unit id="3200">
                 <source>AddFamilyMember</source>
                 <target>Add Family Member</target>
-            </trans-unit>         
+            </trans-unit>
            <trans-unit id="3201">
                 <source>caseStatus6</source>
                 <target>Transitioned</target>
-            </trans-unit>   	
+            </trans-unit>
             <trans-unit id="3202">
                 <source>Favorites</source>
                 <target>Favorites</target>
-            </trans-unit>		            	
+            </trans-unit>
             <trans-unit id="3203">
                 <source>Resources</source>
                 <target>Resources</target>
@@ -1088,7 +1088,7 @@
             <trans-unit id="3205">
                 <source>RegisteredCounty</source>
                 <target>Registered County</target>
-            </trans-unit>	      
+            </trans-unit>
             <trans-unit id="3206">
                 <source>DailyReport</source>
                 <target>Daily Report</target>
@@ -1096,15 +1096,15 @@
             <trans-unit id="3207">
                 <source>at</source>
                 <target>at</target>
-            </trans-unit>	      
+            </trans-unit>
             <trans-unit id="3208">
                 <source>ago</source>
                 <target>ago</target>
-            </trans-unit>	 
+            </trans-unit>
             <trans-unit id="3209">
                 <source>minutes</source>
                 <target>minutes</target>
-            </trans-unit>	  
+            </trans-unit>
             <trans-unit id="3210">
                 <source>hours</source>
                 <target>hours</target>
@@ -1112,7 +1112,7 @@
             <trans-unit id="3211">
                 <source>minute</source>
                 <target>minute</target>
-            </trans-unit>	  
+            </trans-unit>
             <trans-unit id="3212">
                 <source>hour</source>
                 <target>hour</target>
@@ -1120,7 +1120,7 @@
             <trans-unit id="3213">
                 <source>caseStatus99</source>
                 <target>Deleted</target>
-            </trans-unit>            	                                                 	                    
+            </trans-unit>
 		</body>
     </file>
 </xliff>

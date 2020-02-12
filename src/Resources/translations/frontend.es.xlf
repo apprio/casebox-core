@@ -3228,7 +3228,7 @@
             <trans-unit id="3166">
                 <source>Pending</source>
                 <target>Pendiente</target>
-            </trans-unit>	
+            </trans-unit>
             <trans-unit id="3167">
                 <source>Created</source>
                 <target>Creado</target>
@@ -3236,155 +3236,155 @@
             <trans-unit id="3168">
                 <source>caseStatus5</source>
                 <target>Sólo información</target>
-            </trans-unit>			
+            </trans-unit>
             <trans-unit id="3169">
                 <source>Information Only</source>
                 <target>Sólo información</target>
-            </trans-unit>	
+            </trans-unit>
             <trans-unit id="3170">
                 <source>Reports</source>
                 <target>Informes</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="3171">
                 <source>Dashboard</source>
                 <target>Tablero</target>
-            </trans-unit>        
+            </trans-unit>
             <trans-unit id="3172">
                 <source>ClientID</source>
                 <target>Número de solicitante</target>
-            </trans-unit>    
+            </trans-unit>
             <trans-unit id="3173">
                 <source>AssignedCM</source>
                 <target>MC asignado</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3174">
                 <source>FEMATier</source>
                 <target>Nivel de FEMA</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3175">
                 <source>IntakeRepresentative</source>
                 <target>Representante de entrada</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3176">
                 <source>AssignToYourself</source>
                 <target>Asignar a si mismo</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3177">
                 <source>ExportRecords</source>
                 <target>Registros de exportación</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3178">
                 <source>PrintRecoveryPlan</source>
                 <target>Imprimir plan de recuperación</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3179">
                 <source>SetAssignee</source>
                 <target>Establecer Asignado</target>
-            </trans-unit>     
+            </trans-unit>
             <trans-unit id="3180">
                 <source>Facesheet</source>
                 <target>Página de portada</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="3181">
                 <source>Assessments</source>
                 <target>Evaluaciones</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="3182">
                 <source>Referrals</source>
                 <target>Referidos</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3183">
                 <source>Recovery</source>
                 <target>Recuperación</target>
-            </trans-unit>     
+            </trans-unit>
             <trans-unit id="3184">
                 <source>Timeline</source>
                 <target>Cronograma</target>
-            </trans-unit>        
+            </trans-unit>
             <trans-unit id="3185">
                 <source>TaskStatus</source>
                 <target>Estado de la tarea</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3186">
                 <source>DueDate</source>
                 <target>Fecha de vencimiento</target>
-            </trans-unit>        
+            </trans-unit>
             <trans-unit id="3187">
                 <source>ClientAssessmentsNeeded</source>
                 <target>Evaluaciones de Solicitantes a ser completadas</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3188">
                 <source>ClientAssessmentsCompleted</source>
                 <target>Evaluaciones de solicitantes completadas</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3189">
                 <source>ToBeCreated</source>
                 <target>ser creado</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3190">
                 <source>ClientRecoveryNeeded</source>
                 <target>La recuperación del solicitante se completará</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3191">
                 <source>ClientReferrals</source>
                 <target>Referidos de solicitantes</target>
-            </trans-unit>                                                                   
+            </trans-unit>
             <trans-unit id="3192">
                 <source>ReferralsMade</source>
                 <target>Referidos hechas</target>
-            </trans-unit>       
+            </trans-unit>
             <trans-unit id="3193">
                 <source>CompletedReferrals</source>
                 <target>Referidos completadas</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="3194">
                 <source>RecoveryNotes</source>
                 <target>Notas de recuperación</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3195">
                 <source>ClientTasks</source>
                 <target>Tareas del solicitante</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="3196">
                 <source>TotalRecords</source>
                 <target>Registros totales</target>
-            </trans-unit>        
+            </trans-unit>
 			<trans-unit id="3197">
                 <source>SelectReport</source>
                 <target>Seleccionar informe</target>
-            </trans-unit>     
+            </trans-unit>
             <trans-unit id="3198">
                 <source>ReportFrom</source>
                 <target>De</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3199">
                 <source>ReportTo</source>
                 <target>A</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="3200">
                 <source>PrintReport</source>
                 <target>Imprimir reporte</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3201">
                 <source>ExportReport</source>
                 <target>Reporte de exportacion</target>
-            </trans-unit> 
+            </trans-unit>
 			<trans-unit id="3202">
                 <source>ResourceId</source>
                 <target>ID de recurso</target>
-            </trans-unit>       
+            </trans-unit>
 			<trans-unit id="3203">
                 <source>ResourceAgency</source>
                 <target>Recurso/Agencia</target>
-            </trans-unit>      
+            </trans-unit>
 			<trans-unit id="3204">
                 <source>ResourceType</source>
                 <target>Tipo de recurso</target>
-            </trans-unit>      
+            </trans-unit>
 			<trans-unit id="3205">
                 <source>AdditionalInformation</source>
                 <target>Información adicional / servicios proporcionados</target>
-            </trans-unit>      
+            </trans-unit>
 			<trans-unit id="3206">
                 <source>Street</source>
                 <target>Dirección</target>
@@ -3392,159 +3392,159 @@
 			<trans-unit id="3207">
                 <source>City</source>
                 <target>Ciudad</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3208">
                 <source>State</source>
                 <target>Estado</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3209">
                 <source>Zipcode</source>
                 <target>Código postal</target>
-            </trans-unit>  
+            </trans-unit>
 			<trans-unit id="3210">
                 <source>Eligibility</source>
                 <target>Calificaciones de elegibilidad</target>
-            </trans-unit>   
+            </trans-unit>
 			<trans-unit id="3211">
                 <source>Hours</source>
                 <target>Horas de operación</target>
-            </trans-unit> 
+            </trans-unit>
 			<trans-unit id="3212">
                 <source>ServiceArea</source>
                 <target>Área de servicio</target>
-            </trans-unit>     
+            </trans-unit>
 			<trans-unit id="3213">
                 <source>FacilityName</source>
                 <target>Nombre de Local</target>
-            </trans-unit>    
+            </trans-unit>
 			<trans-unit id="3214">
                 <source>FacilityType</source>
                 <target>Tipo de ubicación</target>
-            </trans-unit>    
+            </trans-unit>
  			<trans-unit id="3215">
                 <source>County</source>
                 <target>Municipio</target>
-            </trans-unit>    
+            </trans-unit>
  			<trans-unit id="3216">
                 <source>SessionAboutToExpire</source>
                 <target>Su sesión está a punto de caducar</target>
-            </trans-unit>  
+            </trans-unit>
  			<trans-unit id="3217">
                 <source>SessionExpireMessage</source>
                 <target>Su sesión caducará en un minuto. ¿Desea continuar su sesión?</target>
-            </trans-unit> 
+            </trans-unit>
  			<trans-unit id="3218">
                 <source>RequiredFieldsMessage</source>
                 <target>Por favor corrija los campos requeridos y vuelva a enviar</target>
-            </trans-unit>    
+            </trans-unit>
  			<trans-unit id="3219">
                 <source>Website</source>
                 <target>Sitio Web</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3220">
                 <source>caseStatus6</source>
                 <target>Transferido</target>
-            </trans-unit>   	
+            </trans-unit>
  	    	<trans-unit id="3221">
                 <source>Transitioned</source>
                 <target>Transferido</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3222">
                 <source>RecoveryPlan</source>
                 <target>Plan de recuperación</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3223">
                 <source>Name</source>
                 <target>Nombre</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3224">
                 <source>Address</source>
                 <target>Dirección</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3225">
                 <source>PhoneNumber</source>
                 <target>Número de teléfono</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3226">
                 <source>SecondaryPhoneNumber</source>
                 <target>Numero de telefono secundario</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3227">
                 <source>FEMARegistrationNumber</source>
                 <target>Número de registro de FEMA</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3228">
                 <source>CaseManager</source>
                 <target>Administrador de casos</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3229">
                 <source>EmailAddress</source>
                 <target>Dirección de correo electrónico</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3230">
                 <source>DisasterDeclaration</source>
                 <target>DR - Declaración de Desastre</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3231">
                 <source>ClientID</source>
                 <target>Identificación del solicitante</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3232">
                 <source>CMTelephoneNumber</source>
                 <target>Número de teléfono de CM</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3233">
                 <source>ClientPlanCreationDate</source>
                 <target>Fecha de creación del plan de solicitante</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3234">
-                <source>IDCMSiteAddress</source>
+                <source>RepatriationSiteAddress</source>
                 <target>Dirección del sitio de IDCM</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3235">
                 <source>RecoveryPlanDevelopment</source>
                 <target>Desarrollo del plan de recuperación</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3236">
                 <source>ReferralType</source>
                 <target>Tipo de referencia</target>
-            </trans-unit>       
+            </trans-unit>
  	    	<trans-unit id="3237">
                 <source>ReferralSubType</source>
                 <target>Subtipo de referencia</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3238">
                 <source>ResourceAgencyName</source>
                 <target>Nombre de la agencia de recursos</target>
-            </trans-unit>                                                               
+            </trans-unit>
    	    	<trans-unit id="3239">
                 <source>ResourceAgencyContactInformation</source>
                 <target>Información de contacto de la agencia de recursos</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3240">
                 <source>PointOfContact</source>
                 <target>Punto de contacto</target>
-            </trans-unit>  
+            </trans-unit>
   	    	<trans-unit id="3241">
                 <source>ReferralAppointmentDateTime</source>
                 <target>Fecha/hora de cita de referencia</target>
-            </trans-unit>   
+            </trans-unit>
  	    	<trans-unit id="3242">
                 <source>TargetCompletionDate</source>
                 <target>Fecha límite de finalización</target>
-            </trans-unit>         
+            </trans-unit>
  	    	<trans-unit id="3243">
                 <source>Comments</source>
                 <target>Comentarios</target>
-            </trans-unit>     
+            </trans-unit>
  	    	<trans-unit id="3244">
                 <source>CaseManagerSignature</source>
                 <target>Firma Administrador de casos</target>
-            </trans-unit>     
+            </trans-unit>
  	    	<trans-unit id="3245">
                 <source>ClientSignature</source>
                 <target>Firma del solicitante</target>
-            </trans-unit>  
+            </trans-unit>
  	    	<trans-unit id="3246">
                 <source>DateTime</source>
                 <target>Fecha y hora</target>
@@ -3552,7 +3552,7 @@
  	    	<trans-unit id="3247">
                 <source>Location</source>
                 <target>Ubicación</target>
-            </trans-unit>			
+            </trans-unit>
  	    	<trans-unit id="3248">
                 <source>Status</source>
                 <target>Estado</target>
@@ -3560,71 +3560,71 @@
  	    	<trans-unit id="3249">
                 <source>County</source>
                 <target>Municipio</target>
-            </trans-unit>	
+            </trans-unit>
 			<trans-unit id="3250">
                 <source>Gender</source>
                 <target>Género</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3251">
                 <source>AtRiskPopulation</source>
                 <target>Población en riesgo</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3252">
                 <source>IdentifiedNeeds</source>
                 <target>Necesidades Identificadas</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3253">
                 <source>AssessmentsNeeded</source>
                 <target>Evaluaciones Por Completar</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3254">
                 <source>AssessmentsComplete</source>
                 <target>Evaluaciones completadas</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3255">
                 <source>Services</source>
                 <target>Servicios</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3256">
                 <source>ReferralsNeeded</source>
                 <target>Referidos necesitados</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3257">
                 <source>Language</source>
                 <target>Idioma</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3258">
                 <source>MaritalStatus</source>
                 <target>Estado Civil</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3259">
                 <source>HeadOfHousehold</source>
                 <target>Jefe de Familia</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3260">
                 <source>Creator</source>
                 <target>Creador</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3261">
                 <source>ClientRace</source>
                 <target>Raza del solicitante</target>
-            </trans-unit>		
+            </trans-unit>
  	    	<trans-unit id="3262">
                 <source>Ethnicity</source>
                 <target>Grupo etnico</target>
-            </trans-unit>				
+            </trans-unit>
  	    	<trans-unit id="3263">
                 <source>Client</source>
                 <target>Solicitante</target>
-            </trans-unit>		
+            </trans-unit>
  	    	<trans-unit id="3264">
                 <source>Resource</source>
                 <target>Recurso</target>
-            </trans-unit>	
+            </trans-unit>
  	    	<trans-unit id="3265">
                 <source>ApplicationFeedback</source>
                 <target>Comentarios de ECMRS</target>
-            </trans-unit>		            			
+            </trans-unit>
 		</body>
     </file>
 </xliff>

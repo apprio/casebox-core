@@ -7,15 +7,15 @@
     </head>
     <body>
         <div class="container box-container">
-        	<?php 
-        	use \koolreport\widgets\koolphp\Table; 
+        	<?php
+        	use \koolreport\widgets\koolphp\Table;
 			use \koolreport\widgets\google\BarChart;
-			use \koolreport\widgets\google\ColumnChart;     
+			use \koolreport\widgets\google\ColumnChart;
 ?>
 
 <div class="text-center">
     <h1><?php echo($this->params['title']);?></h1>
-    <h4><?php echo($this->params['secondarytitle']);?></h4>
+    <h4><?php echo(isset($this->params['secondarytitle'])?$this->params['secondarytitle']:'');?></h4>
 </div>
 <hr/>
 			<?php
@@ -32,7 +32,7 @@
 			{
 				if (isset($this->params['table']['title']))
 				{
-					echo("<h2>".(isset($this->params['table']['title'])?$this->params['table']['title']:'')."</h2>");	
+					echo("<h2>".(isset($this->params['table']['title'])?$this->params['table']['title']:'')."</h2>");
 				}
 				echo("<div class=\"table-responsive\">");
 				$this->params['table']['dataStore'] = $this->dataStore('reportDs');
