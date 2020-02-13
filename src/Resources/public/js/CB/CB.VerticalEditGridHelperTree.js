@@ -208,6 +208,10 @@ Ext.define('CB.VerticalEditGridHelperTree', {
 							{
 								v = App.loginData.data[v];							
 							}
+							else if (record.get('type') == "_objects") //it's not a number so mark blank
+							{
+								v = "";
+							}							
                         }      
                         nodeValues[0].value = v;
                     }
