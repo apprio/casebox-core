@@ -36,15 +36,15 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
         $output = new SymfonyStyle($input, $output);
 
         $container = $this->getContainer();
-		
+
 		$state = $input->getOption('state');
 		$county = $input->getOption('county');
-		$tier = $input->getOption('tier');				
-        
+		$tier = $input->getOption('tier');
+
         // Bootstrap
         $system = new System();
         $system->bootstrap($container);
-		
+
 		$session = $container->get('session');
 
         $dbs = Cache::get('casebox_dbs');
@@ -73,7 +73,7 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 		$exportSql = !empty($configService->get('export_sql'))?$configService->get('export_sql'):'select * from dual';
 		$exportSql = $exportSql . ((isset($state)) ? ' AND state="'.$state.'"':'') . ((isset($tier)) ? ' AND fema_tier="'.$tier.'"':'') . ((isset($county)) ? ' AND county="'.$county.'"':'');
 		$log->addInfo('Process ecmrs:database:export - sql:' . $exportSql);
-		
+
 		$res = $dbs->query($exportSql
 			);
 		while ($r = $res->fetch()) {
@@ -111,43 +111,43 @@ class ECMRSDatabaseExportCommand extends ContainerAwareCommand
 			$log->addInfo('Process ecmrs:database:export - running report: parameters:' . var_export($p,true));
 			$export = new Instance();
 			$log->addInfo('Process ecmrs:database:export - getting full export for folder:' . $folder);
-			$rez = $export->getFullExport($p);			
+			$rez = $export->getFullExport($p);
 			file_put_contents($folder.'/records.csv',implode("\n", $rez));
 			$log->addInfo('Process ecmrs:database:export - added records.csv to folder:' . $folder);
 			array_shift($rez);
-			foreach ($rez as &$r) 
+			foreach ($rez as &$r)
 			{
 				$arr = explode(",", $r);
 				$clientId = $arr[0];
 				$zipcode = (!empty($arr[27]) && is_numeric($arr[27]))?$arr[27]:$arr[8];
-				
+
 				$filePlugin = new \Casebox\CoreBundle\Service\Objects\Plugins\Files();
 				$files = $filePlugin->getData($clientId);
 
 				foreach ($files['data'] as $file) {
-					$fileId = $file['id'];
-				}		
-				
-				$fid = (isset($fileId)?Files::read($fileId):null);
-				if (!empty($fid)) {
-					$content = FilesContent::read($fid['content_id']);
-					$file = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
-					if (file_exists($file) && !is_dir($file))
-					{
-						copy($file, $folder .'/'.$zipcode. '_'.$clientId.'_consentform.pdf');
-					}
+    			$fileId = $file['id'];
+          $fid = (isset($fileId)?Files::read($fileId):null);
+      		if (!empty($fid)) {
+            $content = FilesContent::read($fid['content_id']);
+            $fileContent = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
+            if (file_exists($fileContent) && !is_dir($fileContent))
+  					{
+  						copy($fileContent, $folder .'/'.$zipcode. '_'.$clientId.'_'.$file['name']);
+  					}
+      		}
 				}
+
 				//$log->addInfo('Finished ecmrs:database:export clientId:'.$clientId);
 				$html = $export->getPDFContent($clientId,"","-en");
-				
+
 				$dompdf = new Dompdf();
 				$dompdf->loadHtml($html);
 				$dompdf->setPaper('A4', 'landscape');
 				$dompdf->render();
-				$recoveryPlan = $dompdf->output();		
-				file_put_contents($folder .'/'.$zipcode. '_'.$clientId.'_recoveryplan.pdf',$recoveryPlan);			
+				$recoveryPlan = $dompdf->output();
+				file_put_contents($folder .'/'.$clientId.'_recoveryplan.pdf',$recoveryPlan);
 			}
-				
+
 		}
 		$log->addInfo('Finished ecmrs:database:export process');
         $output->success('command ecmrs:database:export');

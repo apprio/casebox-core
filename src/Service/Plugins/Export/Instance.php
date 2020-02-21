@@ -606,7 +606,14 @@ class Instance
         foreach ($records as &$r) {
             	$record = [];
             	foreach ($res['colOrder'] as $t) {
-                	$t = strip_tags($r[$t]);
+                  if (isset($r[$t]))
+            			{
+            				$t = strip_tags($r[$t]);
+            			}
+            			else
+            			{
+            				$t = '';
+            			}
 
                 	if (!empty($t) && !is_numeric($t)) {
                     $t = str_replace(
@@ -636,15 +643,13 @@ class Instance
 
 		foreach ($files['data'] as $file) {
 			$fileId = $file['id'];
+      $fid = (isset($fileId)?Files::read($fileId):null);
+  		if (!empty($fid)) {
+        $content = FilesContent::read($fid['content_id']);
+        $fileContent = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
+        $zip->addFile($fileContent, $clientId.'_'.$file['name']);
+  		}
 		}
-
-		$fid = Files::read($fileId);
-		if (!empty($fid)) {
-            $content = FilesContent::read($fid['content_id']);
-			$file = $configService->get('files_dir').$content['path'].DIRECTORY_SEPARATOR.$content['id'];
-			$zip->addFile($file, $clientId.'consentform.pdf');
-		}
-
 		$export = new Instance();
 
 		$html = $export->getPDFContent($clientId,$r['zipcode_s']);
@@ -670,7 +675,7 @@ class Instance
 						'_notetype' => [
 								'value'=>603,
 								'childs' =>[
-										'_transferlocation' => 'Harris County'
+										'_transferlocation' => 'Transfer'
 								]
 						]
 				],
