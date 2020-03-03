@@ -661,7 +661,7 @@ class Cases extends CBObject
         if (!$this->loaded) {
             $this->load();
         }
-
+        error_log("Debugging: Activated");
         $this->markActive();
 
         unset($this->data['sys_data']['task_u_done']);
@@ -1314,6 +1314,29 @@ class Cases extends CBObject
             }
         }
 
+
+        //Log Current Time, ECMRS ID of record, Full name of record, User ID, User Full name, User role
+        $owner = $this->getOwner();
+        $userData = User::getUserData($owner);
+        $data = $this->getData();
+
+        $userRole = $userData['groups'];
+        $userRole = str_replace('315', 'Administrator', $userRole);
+        $userRole = str_replace('22', 'Worker', $userRole);
+        $userRole = str_replace('30', 'Supervisor', $userRole);
+        $userRole = str_replace('34', 'Resource Manager', $userRole);
+
+        Cache::get('symfony.container')->get('logger')->error(
+			'Viewing:',
+			array(
+				'date' => date("Y/m/d"),
+				'time' => date("h:i:sa"),
+				'ecmrsId' => $data['id'],
+				'userId' => User::getID(),
+				'userFullName' => User::getDisplayName(User::getID()),
+				'userRole' => $userRole
+			)
+		);	
 
 
 
