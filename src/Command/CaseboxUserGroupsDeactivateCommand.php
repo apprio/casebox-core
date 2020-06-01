@@ -29,7 +29,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output = new SymfonyStyle($input, $output);
-		$emailTo = (!empty($input->getOption('emailTo'))) ? explode(" ", $input->getOption('emailTo')) : ['ca.ecmrshelpdesk@apprioinc.com'];	
+		$emailTo = (!empty($input->getOption('emailTo'))) ? explode(" ", $input->getOption('emailTo')) : ['ecmrshelpdesk@apprioinc.com'];	
         $container = $this->getContainer();
         $system = new System();
 		$coreName = ucfirst($container->getParameter('kernel.environment'));
@@ -42,7 +42,7 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 
 		if ($days == 0)
 		{
-			$days = 60;
+			$days = 60; 
 		}
 		
 		$session = $container->get('session');
@@ -72,8 +72,8 @@ class CaseboxUserGroupsDeactivateCommand extends ContainerAwareCommand
 		    and u.system = 0
 			and u.enabled = 1
 		    and from_unixtime(IFNULL(last_login, cdate)) < DATE_SUB(NOW(), INTERVAL $1 DAY)
-	  ',
-				 $days
+	  		',
+		 	$days
         );
 
 		

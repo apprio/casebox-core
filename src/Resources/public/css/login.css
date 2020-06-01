@@ -54,7 +54,7 @@ border-radius: 3px;
 .form_login label{margin-bottom: 7px;position: relative;}
 .form_login label [class*="icon-"]{top: 10px;position: absolute;left: 16px;opacity: 0.85;-moz-opacity: 0.85;-khtml-opacity: 0.85;}
 
-.form_login {width: 304px;min-height: 330px;position: absolute;top: 40%;margin-top: -195px;left: 50%;margin-left: -222px;background-color: #f5f5f5;-moz-border-radius: 6px;-webkit-border-radius: 6px;-moz-border-radius: 6px;border: 1px solid #dbe0e3;padding: 0 70px 20px;-moz-box-shadow: 0 0 20px rgba(0,0,0,0.05);-webkit-box-shadow: 0 0 20px rgba(0,0,0,0.05);box-shadow: 0 0 20px rgba(0,0,0,0.05);}
+.form_login {width: 500px;min-height: 330px;position: absolute;top: 45%;margin-top: -195px;left: 45%;margin-left: -222px;background-color: #f5f5f5;-moz-border-radius: 6px;-webkit-border-radius: 6px;-moz-border-radius: 6px;border: 1px solid #dbe0e3;padding: 0 70px 20px;-moz-box-shadow: 0 0 20px rgba(0,0,0,0.05);-webkit-box-shadow: 0 0 20px rgba(0,0,0,0.05);box-shadow: 0 0 20px rgba(0,0,0,0.05);}
 
 .form_login input[type="text"], .form_login input[type="password"], .form_login input[type="email"]{
     height: 38px !important;font-size: 18px !important;

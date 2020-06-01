@@ -72,7 +72,7 @@ class Repatriates extends Base
         }
         switch ($id) {
             case 'cases':
-                return $this->trans('Repatriates');
+                return $this->trans('Disaster Survivors');
             case 2:
                 return $this->trans('MyClients');
             case 3:
@@ -117,7 +117,7 @@ class Repatriates extends Base
         return [
             'data' => [
                 [
-                    'name' => $this->trans('Repatriates').$count,
+                    'name' => $this->trans('Disaster Survivors').$count,
                     'id' => $this->getId('cases'),
                     'iconCls' => 'icon-case',
                     'cls' => 'tree-header',

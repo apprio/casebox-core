@@ -1412,6 +1412,8 @@ class Cases extends CBObject
           //  '<table class="obj-preview'.$rtl.'"><tbody>'.
 	//		'<tr class="prop-header"><th colspan="3" style>Recovery</td></tr>'.
          //   '<tbody></table>';
+         $pb[6] = $data;
+		 $pb[7] = $sd;
 		return $pb;
     }
 

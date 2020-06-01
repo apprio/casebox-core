@@ -886,7 +886,7 @@ Ext.define('CB.VerticalEditGrid', {
             } else if(context.value == 1577){
                 infoOnly = true;
             }
-                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Repatriate Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number","Other Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
+            var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Repatriate Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"];
 
             for(var i = 0; i < reqEntryTitles.length; i++){
                 var curr = reqEntryTitles[i];
@@ -910,7 +910,7 @@ Ext.define('CB.VerticalEditGrid', {
                 onCorrectPage = true;
             }
             if(onCorrectPage){
-                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Repatriate Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number","Other Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"]
+                var reqEntryTitles = ["Current Facility", "First Name", "Last Name", "Disaster Survivor Age", "Repatriate Age", "Gender", "Marital Status", "Ethnicity", "Race", "English Speaker", "Preferred Language", "Address", "Address Type", "Head of Household?", "Number of other individuals in household", "Email Address", "Best Phone Number", "Self-Reported Special/At-Risk Populations", "Self-Identified Unmet Needs", "FEMA Tier", "FEMA Registration Number"];
 
                 for(var i = 0; i < reqEntryTitles.length; i++){
                     var curr = reqEntryTitles[i];
@@ -998,7 +998,7 @@ Ext.define('CB.VerticalEditGrid', {
                                     femaValue = "DECLINEDREGISTER";
                                     break;
                                   case 247073:
-                                    femaValue = "NOTUSCITIZEN"
+                                    femaValue = "NOTUSCITIZEN";
                                     break;
                                   case 1545:
                                     femaValue = "";
