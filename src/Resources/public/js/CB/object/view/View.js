@@ -323,6 +323,7 @@
 					tbdAssessmentData[a].ago_text = L.ToBeCreated;
 					tbdAssessmentData[a].user = '';
 					tbdAssessmentData[a].id = null;
+					tbdAssessmentData[a].infoOnly = r.data.objectProperties.data.preview[6].data._clientstatus;
 					//rez += '<img class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
 				}
 				tbdAssessments.data =tbdAssessmentData;

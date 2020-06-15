@@ -191,6 +191,7 @@ Ext.define('CB.object.plugin.ContentItems', {
         var d = b.config.data;
         d.pid = this.params.id;
         d.path = this.params.path;
+        d.infoOnly = this.params.infoOnly; 
         App.mainViewPort.fireEvent('createobject', d, e);
     }
 });

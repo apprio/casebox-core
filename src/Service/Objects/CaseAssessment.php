@@ -147,19 +147,18 @@ class CaseAssessment extends CBObject
 					$case->markTransitioned();
 				}
 				
-				else //Follow Up (246806) note - need to create task
+				else //Follow Up (246807) note - need to create task
 				{
 					$caseSd['taskCreated'] = [];
 					// Auto Create Task
-					$items = [
-						'notetype_s',
-						'fematier'
-					];
 					
 					$objService = new Objects();
 					$name = $caseData['name'];
 					$ecmrsId = $caseData['id'];
-					$tier = $caseSd['fematier'];
+					
+					if (isset($caseSd['fematier'])) {
+						$tier = $caseSd['fematier'];
+					}
 					
 					if (isset($caseData['data']['assigned'])) {
 						$assignee = $caseData['data']['assigned'];
@@ -167,31 +166,31 @@ class CaseAssessment extends CBObject
 						$assignee = '';
 					}
 					
-					if ($tier == "Tier 4") {
-						$importance = 57;
-					} else {
-						$importance = 56;
+					if (isset($tier)) {
+						if ($tier == "Tier 4") {
+							$importance = 57;
+						} else {
+							$importance = 56;
+						}
+						
+						date_default_timezone_set('America/New_York');
+						if ($tier == "Tier 1") { //'Y-m-d H:i:s'
+							$dueDate = Date('Y-m-d H:i:s', strtotime('+21 days')); // Tier 1 +21 Days
+						} elseif ($tier == "Tier 2") {
+							$dueDate = Date('Y-m-d H:i:s', strtotime('+14 days')); // Tier 2 +14 Days
+						} elseif ($tier == "Tier 3") {
+							$dueDate = Date('Y-m-d H:i:s', strtotime('+10 days')); // Tier 3 +10 Days
+						} else {
+							$dueDate = Date('Y-m-d H:i:s', strtotime('+4 days')); // Tier 4 +7 Days
+						}
+						$dueTime = Date('H:i:s', time()); //Rounded to nearest quarter hour
 					}
 					
-					date_default_timezone_set('America/New_York');
-					if ($tier == "Tier 1") { //'Y-m-d H:i:s'
-						$dueDate = Date('Y-m-d H:i:s', strtotime('+21 days')); // Tier 1 +21 Days
-					} elseif ($tier == "Tier 2") {
-						$dueDate = Date('Y-m-d H:i:s', strtotime('+14 days')); // Tier 2 +14 Days
-					} elseif ($tier == "Tier 3") {
-						$dueDate = Date('Y-m-d H:i:s', strtotime('+10 days')); // Tier 3 +10 Days
-					} else {
-						$dueDate = Date('Y-m-d H:i:s', strtotime('+4 days')); // Tier 4 +7 Days
-					}
-					$dueTime = Date('H:i:s', time()); //Rounded to nearest quarter hour
-					
-					foreach ($items as $item) 
-					{
-						if (!empty($caseSd['solr'][$item]))
+						if (!empty($p['data']['_notetype']))
 						{ 
-							if ($caseSd['solr'][$item] == 'Follow Up')
-								{ 
-									if (!in_array($item, $caseSd['taskCreated']))
+							if ( (in_array('246807', $p['data']['_notetype'])) && ($caseSd['case_status'] != 'Information Only'))
+								{
+									if (!in_array('_notetype', $caseSd['taskCreated']))
 									{ 
 											//CREATE TASK HERE
 											$data = [
@@ -215,14 +214,13 @@ class CaseAssessment extends CBObject
 					                                    'description' => 'Follow up with the linked record due to Tier follow up requirements.' //
 					                                ],
 					                            ];
-												//print_r($data);
 					                            $newTask = $objService->create($data);
-												//print_r($newTask);
-												$caseSd['taskCreated'][] = $item;
-										}
+												$caseSd['taskCreated'][] = '_notetype';
+									}
 								}
 						}
-					}
+
+
 				}
 			}
 
@@ -270,70 +268,8 @@ class CaseAssessment extends CBObject
 						{
 							$caseSd['referrals_started'][] = $objectId;
 						}
-						// Create task if referral started and appointment_dt is set
-						$caseSd['referralTaskCreated'] = [];
-						
-						$objService = new Objects();
-						$name = $caseData['name'];
-						$ecmrsId = $caseData['id'];
-						$tier = $caseSd['fematier'];
-						
-						if (isset($caseData['data']['assigned'])) {
-							$assignee = $caseData['data']['assigned'];
-						} else {
-							$assignee = '';
-						}
-						
-						if ($tier == "Tier 4") {
-							$importance = 57;
-						} else {
-							$importance = 56;
-						}
-						
-						date_default_timezone_set('America/New_York');
-						if ($tier == "Tier 1") { //'Y-m-d H:i:s'
-							$dueDate = Date('Y-m-d H:i:s', strtotime('+21 days')); // Tier 1 +21 Days
-						} elseif ($tier == "Tier 2") {
-							$dueDate = Date('Y-m-d H:i:s', strtotime('+14 days')); // Tier 2 +14 Days
-						} elseif ($tier == "Tier 3") {
-							$dueDate = Date('Y-m-d H:i:s', strtotime('+10 days')); // Tier 3 +10 Days
-						} else {
-							$dueDate = Date('Y-m-d H:i:s', strtotime('+4 days')); // Tier 4 +7 Days
-						}
-						$dueTime = Date('H:i:s', time()); //Rounded to nearest quarter hour
-					
-						if (!empty($caseSd['appointment_dt']))
-						{
-							if (!in_array('appointment_dt', $caseSd['referralTaskCreated']))
-								{ 
-									//CREATE TASK HERE
-									$data = [
-						            	'pid' => 246835,
-						                'path' => '/Development/System/Tasks/',
-						                'template_id' => 7,
-						                'type' => 'task',
-						                'isNew' => 'true',
-						                'data' => [
-						                	'ecmrs_id' => $ecmrsId, // id
-						                    'survivor_name' => $name, // name
-						                    'task_type' => 'Follow Up: ' . $tier, // Follow Up: Tier 
-						                    'time_expended' => '', 
-						                    'case' => $ecmrsId, // Linked case
-						                    'task_status' => 1906, // Open
-						                    '_task' => $ecmrsId . ' Follow Up: ' . $tier, // [ECMRS ID autofill] + Follow Up: Tier
-						                    'due_date' => $dueDate, // [time of auto task creation + days by Tier]
-						                    'due_time' => $dueTime, // [time of auto task creation]
-						                    'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
-						                    'importance' => $importance, // For Tiers 1, 2, 3: [56 - High] , for Tier 4: [57 - CRITICAL]
-						                    'description' => 'Follow up with the linked record due to Tier follow up requirements.' //
-						                 ],
-						             ];
-						             $newTask = $objService->create($data);
-									 //print_r($newTask);
-									 $caseSd['referralTaskCreated'][] = 'appointment_dt';
-								}
-						 }
 					}
+						
 					
 					if (isset($p['data']['_result']))
 					{
@@ -381,6 +317,69 @@ class CaseAssessment extends CBObject
 						 	$p['data']['_resourcename'] = 'Not Identified';
 						    $p['data']['_resourcelocation'] = '';
 						    //$p['data']['_resourcecounty'] = '';
+						 }
+						 
+						 
+					// Create task if record has referrals, appointment date is set, and is not Information Only
+						$caseSd['referralTaskCreated'] = [];
+						
+						$objService = new Objects();
+						$name = $caseData['name'];
+						$ecmrsId = $caseData['id'];
+						
+						if (isset($caseSd['fematier'])) {
+							$tier = $caseSd['fematier'];
+						}
+						
+						if (isset($caseData['data']['assigned'])) {
+							$assignee = $caseData['data']['assigned'];
+						} else {
+							$assignee = '';
+						}
+						
+						if (isset($tier)) {
+							if ($tier == "Tier 4") {
+								$importance = 57;
+							} else {
+								$importance = 56;
+							}
+						}
+					
+						if (!empty($caseSd['appointment_ss']) && ($caseSd['case_status'] != 'Information Only'))
+						{ 
+							if (count($caseSd['appointment_ss'])+1 == count($caseSd['referralservice_ss'])) {
+								array_push($caseSd['appointment_ss'], $p['data']['_appointmentdate']);
+								$maxAppointment = max($caseSd['appointment_ss']);
+								
+								date_default_timezone_set('America/New_York');
+								$dueDate = Date('Y-m-d H:i:s', strtotime($maxAppointment . '+2 days'));
+								$dueTime = Date('H:i:s', time()); //Rounded to nearest quarter hour
+								
+								//CREATE TASK HERE
+									$data = [
+						            	'pid' => 246835,
+						                'path' => '/Development/System/Tasks/',
+						                'template_id' => 7,
+						                'type' => 'task',
+						                'isNew' => 'true',
+						                'data' => [
+						                	'ecmrs_id' => $ecmrsId, // id
+						                    'survivor_name' => $name, // name
+						                    'task_type' => 'Follow Up: Appointment', // Follow Up: Tier 
+						                    'time_expended' => '', 
+						                    'case' => $ecmrsId, // Linked case
+						                    'task_status' => 1906, // Open
+						                    '_task' => $ecmrsId . ' Follow Up: Appointments Completed', // [ECMRS ID autofill] + Follow Up: Tier
+						                    'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+						                    'due_time' => $dueTime, // [time of auto task creation]
+						                    'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+						                    'importance' => $importance, // For Tiers 1, 2, 3: [56 - High] , for Tier 4: [57 - CRITICAL]
+						                    'description' => 'Follow up with the linked record because the last scheduled Referral appointment was scheduled to be completed on' . ' '. $maxAppointment //
+						                 ],
+						             ];
+						             $newTask = $objService->create($data);
+									 $caseSd['referralTaskCreated'][] = $maxAppointment;
+							} 
 						 }
 
 			}

@@ -664,6 +664,50 @@ Ext.define('CB.VerticalEditGrid', {
             context.objectPid = pw.data.pid;
             context.path = pw.data.path;
         }
+        
+        // If survivor's status is Information Only, set required fields to false
+        if (tr.data.name == '_linkedsurvivor') {
+        if(pw.data.infoOnly == 1577){
+        		var infoOnly = true;
+	           
+	            var reqEntryTitles = ["Assessment Date", "Referral Needed?", "Is disaster survivor or anyone in the household in distress?", "Would disaster survivor or anyone in the household like to speak to someone about coping with disaster-related stress?",
+	            					"Is the disaster survivor caring for a foster child(ren)?", "Prior to the disaster, was the disaster survivor's child in a Head Start Program?", "Prior to the disaster, was the disaster survivor's child in childcare?",
+	            					"Does disaster survivor currently have a need for child care?", "Prior to the disaster, did disaster survivor get voucher assistance for child care?", "Was disaster survivor receiving child support payments before the disaster?", 
+	            					"Are the disaster survivor's children currently in school?", "Has your child missed any scheduled checkups or immunizations since the disaster?", "Does disaster survivor have concerns about how his/her child is coping post-disaster?",
+	            					"Did any of the household members lose clothing as a result of the disaster?", "Does disaster survivor/family have useable clothing and shoes for work or school?", "Does disaster survivor/family have cold-weather clothing (e.g.,coats, hats, gloves)?",
+	            					"Does disaster survivor have a FEMA registration number?", "Disaster Survivor has submitted SBA application", "Disaster Survivor has submitted claim for FEMA Individual Assistance", "Disaster Survivor has received Non-Comp Notice from FEMA IA",
+	            					"Disaster Survivor has received FEMA IA Benefit", "Disaster Survivor has received MAX Grant from FEMA", "Disaster Survivor has applied for FEMA Other Needs Assistance", "Disaster Survivor has received ONA", "Disaster Survivor was denied for ONA",
+	            					"Does disaster survivor have enough food to feed all members of the household?", "Pre-Disaster, was disaster survivor or any household member receiving food assistance?", "Since the disaster, has disaster survivor requested help with food from anyone?",
+	            					"Did disaster survivor have furniture or home appliances destroyed in the disaster?", "Do you have Health Insurance?", "Was this insurance lost as a result of the disaster?", "Where did the disaster survivor live pre-disaster?", "In the disaster, was disaster survivor home damaged or affected?", 
+	            					"Is the disaster survivor able to access the home?", "Does disaster survivor consider home livable or inhabitable?", "Disaster Survivor Damage Rating", "Was disaster survivor relocated/evacuated?", "Do all of disaster survivor's utilities work?", 
+	            					"Details of Disaster Impacts to Home", "Pre-disaster housing insurance status", "Pre-Disaster, was disaster survivor receiving language services?", "Is disaster survivor currently having difficulty accessing services due to language concerns?",
+	            					"As a result of the disaster, disaster survivor lost language services?", "Prior to the disaster, was anyone in the household living in senior housing, assisted living, or in a nursing home?", "Applicant has a move out date", "Move In Date", "Owner/Renter",
+	            					"Pre Disaster HUD Housing such as Section 8, subsidized housing, etc.", "Pre Disaster Homeless", "Identified Available Rental", "Plan to return to Pre-Disaster Residence", "Will Live with Family or Friends", "Waiting on DD (Damaged Dwelling) to become accessible",
+	            					"Inaccessible due to Road Closure", "Inaccessible due to Water Receding", "Identified available housing or hotel resource but not within reasonable commuting distance ", "Cannot find affordable housing resource", "Cannot find short term lease ", "Transportation issues -- Transportation disaster damage, need assistance for repairs",
+	            					"No desire to relocate out of state within 50 - 100 mile radius", "Need specialized medical equipment (sensory, mobility, accessibility, etc.)", "Transportation issues -- cannot meet with inspector", "Transportation issues -- cannot get to desired area to look for housing",
+	            					"Need funds to move household belongings", "Utilities not currently operable", "Electricity not currently operable", "Nowhere for my pet to board", "Pet Type", "Need voluntary agencies to assist with mucking out home", "# Children (Under 18)", "Consent to Share", "Number of Adults (18+)",
+	            					"Notes", "What was the disaster survivor's primary mode of transportation prior to the disaster?", "Employed?", "Did you lose your job because of the disaster?", "Looking for additional employment/increased hours?"];
+	            
+	            for(var i = 0; i < reqEntryTitles.length; i++){
+	                var curr = reqEntryTitles[i];
+	                for(var j = 0; j < this.store.data.length; j++){
+	                    var r = this.store.getAt(j);
+	                    if(curr == r.data.title){
+	                        var n = this.helperTree.getNode(r.get('id'));
+	                        n.data.templateRecord.get('cfg').required = !infoOnly;
+	                	}
+	            	}
+        		}
+        	}
+        }
+        
+        if (tr.data.name == '_linkedsurvivor') {
+        	if (context.objectPid) {
+        		tr.data.cfg.value = context.objectPid;
+        		context.value = context.objectPid;
+        		//tr.data.cfg.readOnly = true;
+        	}
+        }
 
         /* get and set pidValue if dependent */
         if( (Ext.isDefined(tr.get('cfg').dependency) ) && !Ext.isEmpty(tr.get('pid')) ) {
@@ -878,6 +922,7 @@ Ext.define('CB.VerticalEditGrid', {
             var n = this.helperTree.getNode(r.get('id'));
             n.data.templateRecord.get('cfg').required = !open;
         }
+        
 
         if(tr.data.name == "_clientstatus"){
             var infoOnly;
