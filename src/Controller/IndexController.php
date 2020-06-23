@@ -309,7 +309,7 @@ class IndexController extends Controller
     }
 
 
-/**
+/* DISABLING FOR VULNERABILITY
      * @Route("/c/{coreName}/reports/", name="app_core_reports", requirements = {"coreName": "[a-z0-9_\-]+"})
      * @param Request $request
      * @param string $coreName
@@ -317,7 +317,7 @@ class IndexController extends Controller
      *
      * @return Response
      * @throws \Exception
-     */
+
     public function coreReportsAction(Request $request, $coreName)
     {
         $auth = $this->container->get('casebox_core.service_auth.authentication');
@@ -342,7 +342,8 @@ class IndexController extends Controller
         return $this->render('CaseboxCoreBundle::reports.html.twig', $vars);
     }
 
-/**
+
+
      * @Route("/c/{coreName}/report/{id}/", name="app_core_report", requirements = {"coreName": "[a-z0-9_\-]+"})
      * @param Request $request
      * @param string $coreName
@@ -350,7 +351,7 @@ class IndexController extends Controller
      *
      * @return Response
      * @throws \Exception
-     */
+
     public function reportAction(Request $request, $coreName, $id)
     {
 
@@ -363,14 +364,14 @@ class IndexController extends Controller
         $auth = $this->container->get('casebox_core.service_auth.authentication');
         $user = $auth->isLogged(false);
 
-        /* Check if user is logged in */
+        /* Check if user is logged in
         if (!$user) {
             $this->get('session')->set('redirectUrl', 'app_core_report');
             $this->get('session')->set('redirectId', $id);
             return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
         }
 
-        /* Get reports config */
+        /* Get reports config 
         $reports = $configService->get('Reports');
         if (empty($id) || (!isset($reports[$id]) && !is_numeric($id))) {
             $result['message'] = $this->trans(('Object_not_found'));
@@ -424,7 +425,7 @@ class IndexController extends Controller
 
         return new Response(json_encode($result), 200, $headers);
     }
-
+    */
     /**
      * @Route("/c/{coreName}/bulkupload", name="app_core_bulk_upload")
      * @Route("/c/{coreName}/bulkupload/", name="app_core_bulk_upload_slash")

@@ -82,20 +82,20 @@ class CaseboxAuth
      */
     public function authenticate($username, $password)
     {
-		$failedMessage = "Invalid Username/Password Entered";
+		$failedMessage = "Invalid Credentials";
 		$disabledMessage = "You have exceeded the amount of login attempts. Please contact the system administrator to have your password reset.";
 		$user = $this->getEm()->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername($username);
 
         if (!$user instanceof UsersGroupsEntity) {
             return $failedMessage;
         }
-		
+
 		if (!$user->getEnabled())
 		{
 		    //Should probably send some message instead of just null - i.e. account has been disabled
 			return $disabledMessage;
 		}
-		
+
         $roles = $user->getRoles();
         if (empty($roles)) {
             $roles = [UsersGroupsEntity::ROLE_USER => UsersGroupsEntity::ROLE_USER];
@@ -126,7 +126,7 @@ class CaseboxAuth
 		$user->setLastLogin(time());
 		$this->getEm()->flush();
         $session = $this->getSession();
-        
+
         $env = $this->container->getParameter('kernel.environment');
         $token = new UsernamePasswordToken($user, $password, $env, $roles);
         $this->getSecurityContext()->setToken($token);
@@ -153,8 +153,8 @@ class CaseboxAuth
         }
 		$user->setLastLogout(time());
 		$this->getEm()->flush();
-	
-	
+
+
         $anonToken = new AnonymousToken('theTokensKey', 'anon.', []);
         $this->getSecurityContext()->setToken($anonToken);
         $this->getSession()->invalidate();
@@ -211,7 +211,7 @@ class CaseboxAuth
         $p['action_id'] = DM\Log::create($params);
         }
     }
-	
+
     /**
      * @param bool $throw Throw an exception if user nor found
      *
