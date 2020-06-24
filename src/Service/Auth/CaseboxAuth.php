@@ -73,6 +73,11 @@ class CaseboxAuth
         return $this->container->get('session');
     }
 
+    public function getNewSession()
+    {
+        $this->getSession()->migrate();
+    }
+
     /**
      * @param string $username
      * @param string $password
@@ -157,7 +162,6 @@ class CaseboxAuth
 
         $anonToken = new AnonymousToken('theTokensKey', 'anon.', []);
         $this->getSecurityContext()->setToken($anonToken);
-        $this->getSession()->invalidate();
 
         return true;
     }
@@ -220,6 +224,9 @@ class CaseboxAuth
      */
     public function isLogged($throw = true)
     {
+        // Regenerate Session
+        $newSession = $this->getNewSession();
+
         $user = null;
 
         if (!$this->getSecurityContext() instanceof TokenStorage) {
