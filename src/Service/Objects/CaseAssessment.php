@@ -47,7 +47,6 @@ class CaseAssessment extends CBObject
         return parent::deleteCustomData($p);
 
 	}
-//test
 
     protected function unSetParamsFromData(&$p)
     {
