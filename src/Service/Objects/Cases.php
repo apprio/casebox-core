@@ -1336,9 +1336,20 @@ class Cases extends CBObject
 				'userFullName' => User::getDisplayName(User::getID()),
 				'userRole' => $userRole
 			)
-		);	
+		);
 
-
+      // Log into action_log table in the DB
+      $this->logViewAction('view',
+      array(
+        'template' => 'Disaster Survivor',
+        'date' => date("Y/m/d"),
+        'time' => date("h:i:sa"),
+        'survivorId' => $data['id'],
+        'survivorName' => $data['name'],
+        'userId' => User::getID(),
+        'userFullName' => User::getDisplayName(User::getID()),
+        'userRole' => $userRole
+      ));
 
         $pb[0] = '<table class="obj-preview"><tbody>'.
             $dateLines.

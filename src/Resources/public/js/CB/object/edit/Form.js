@@ -5,7 +5,7 @@ Ext.define('CB.object.edit.Form', {
 
     ,alias: 'widget.CBEditObject'
     ,xtype: 'CBObjectEditForm'
-
+    ,api: 'CB_Objects.getPluginsData'
     ,tbarCssClass: 'x-panel-white'
     ,padding: 0
     ,scrollable: false
@@ -105,6 +105,10 @@ Ext.define('CB.object.edit.Form', {
     }
 
     ,load: function(objectData) {
+      console.log(objectData);
+        this.api = CB_Objects.getPluginsData;
+        this.api(objectData, this.processLoadData, this);
+
         if(Ext.isEmpty(objectData)) {
             return;
         }
@@ -113,6 +117,7 @@ Ext.define('CB.object.edit.Form', {
             objectData = {id: objectData};
         }
         this.loadData(objectData);
+
     }
 
     ,loadData: function(objectData) {
@@ -280,7 +285,7 @@ Ext.define('CB.object.edit.Form', {
     ,restoreScroll: function() {
         this.ownerCt.body.setScrollLeft(this.lastScroll.left);
         this.ownerCt.body.setScrollTop(this.lastScroll.top);
-		
+
     }
 
     /**
@@ -304,7 +309,7 @@ Ext.define('CB.object.edit.Form', {
 				  if (fieldType == 'H' || fieldType == 'date')
 				  {
       					this.grid.getSelectionModel().select({row: 1, column: colIdx});
-		             		this.grid.getNavigationModel().setPosition(1, colIdx);					  
+		             		this.grid.getNavigationModel().setPosition(1, colIdx);
 					this.grid.editingPlugin.startEditByPosition({row: 1, column: colIdx});
 				  }
 				  else
@@ -420,14 +425,14 @@ Ext.define('CB.object.edit.Form', {
         if(!this._isDirty) {
             return;
         }
-	
+
 	var rez = this.isValid();	//check if valid before saving from main page
 	if (!rez)
 	{
 		Ext.Msg.alert(L.Error, L.RequiredFieldsMessage);
 		return false;
 	}
-	    
+
         this.readValues();
 
         if(callback) {
