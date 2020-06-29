@@ -324,6 +324,7 @@
 					tbdAssessmentData[a].user = '';
 					tbdAssessmentData[a].id = null;
 					tbdAssessmentData[a].infoOnly = r.data.objectProperties.data.preview[6].data._clientstatus;
+					tbdAssessmentData[a].survivorName = r.data.objectProperties.data.name;
 					//rez += '<img class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
 				}
 				tbdAssessments.data =tbdAssessmentData;

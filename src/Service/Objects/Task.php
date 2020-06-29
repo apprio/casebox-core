@@ -208,11 +208,11 @@ class Task extends CBObject
         if (!empty($caseId) && !empty($case))
         {
         	$p['data']['_clientname'] = $case->getHtmlSafeName();
-        }        
-        
+        }
+
         $sd['task_due_date'] = $this->getFieldValue('due_date', 0)['value'];
         $sd['task_due_time'] = $this->getFieldValue('due_time', 0)['value'];
-		
+
         $sd['task_allday'] = empty($sd['task_due_time']);
 
         //set date_end to be saved in tree table
@@ -238,11 +238,11 @@ class Task extends CBObject
 
         $status = static::$STATUS_ACTIVE;
 		$userSetStatus = $this->getFieldValue('task_status', 0)['value'];
-		
+
 			Cache::get('symfony.container')->get('logger')->error(
 			'sup'.$userSetStatus,
 			$sd
-		);	
+		);
 			if ($userSetStatus == 1907 && empty($sd['task_d_closed']))
 			{
 				$status = static::$STATUS_CLOSED;
@@ -254,7 +254,7 @@ class Task extends CBObject
 				unset($sd['task_d_closed']);
 				$status = static::$STATUS_ACTIVE;
 			}
-		
+
 		if (!empty($sd['task_d_closed'])) {
 			$status = static::$STATUS_CLOSED;
         } elseif (!empty($dateEnd)) {
@@ -415,11 +415,11 @@ class Task extends CBObject
         $d = &$this->data;
         $sd = &$d['sys_data'];
 
-        if (in_array($userId, $sd['task_u_ongoing'])) {
+        if (in_array($userId, $sd['task_u_ongoing']) || !is_null($sd['task_u_ongoing'])) {
             return static::$USERSTATUS_ONGOING;
         }
 
-        if (in_array($userId, $sd['task_u_done'])) {
+        if (in_array($userId, $sd['task_u_done']) || !is_null($sd['task_u_done'])) {
             return static::$USERSTATUS_DONE;
         }
 
@@ -680,6 +680,29 @@ class Task extends CBObject
 
         $rtl = empty($this->configService->get('rtl')) ? '' : ' drtl';
 
+        // Log into action_log table in the DB
+        $owner = $this->getOwner();
+        $userData = User::getUserData($owner);
+        $data = $this->getData();
+
+        $userRole = $userData['groups'];
+        $userRole = str_replace('315', 'Administrator', $userRole);
+        $userRole = str_replace('22', 'Worker', $userRole);
+        $userRole = str_replace('30', 'Supervisor', $userRole);
+        $userRole = str_replace('34', 'Resource Manager', $userRole);
+
+        $this->logViewAction('view',
+        array(
+          'template' => 'Task',
+          'date' => date("Y/m/d"),
+          'time' => date("h:i:sa"),
+          'taskId' => $data['id'],
+          'taskName' => $data['name'],
+          'userId' => User::getID(),
+          'userFullName' => User::getDisplayName(User::getID()),
+          'userRole' => $userRole
+        ));
+/*
         $pb[0] = $this->getPreviewActionsRow().
             '<table class="obj-preview'.$rtl.'"><tbody>'.
             $dateLines.
@@ -689,6 +712,6 @@ class Task extends CBObject
             $contentRow.
             '<tbody></table>';
 
-        return $pb;
+        return $pb;*/
     }
 }

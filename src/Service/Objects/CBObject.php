@@ -2040,6 +2040,23 @@ class CBObject
         }
     }
 
+    protected function logViewAction($type, $data)
+    {
+    	if (!Cache::get('disable_logs', false)) {
+    		$uid = User::getId();
+    		$params = [
+    				'object_id' => 10,
+    				'object_pid' => 10,
+    				'user_id' => $uid,
+    				'action_type' => $type,
+    				'data' => Util\jsonEncode($data),
+    				'activity_data_db' => Util\jsonEncode($uid),
+    		];
+
+        $p['action_id'] = DM\Log::create($params);
+    	}
+    }
+
     public function getLastActionData()
     {
         $data = $this->getData();

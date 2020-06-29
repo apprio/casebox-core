@@ -60,8 +60,8 @@ class AuthController extends Controller
                 if ($user instanceof UsersGroups) {
                     // Check two step auth
                     $auth = $this->get('casebox_core.service_auth.two_step_auth')->authenticate($user, $request->get('c'));
-					
-                    
+
+
                     if ($user->getRecoverHash() != null) //require password change
                     {
                     	$vars = [
@@ -72,11 +72,11 @@ class AuthController extends Controller
                     	$this->get('casebox_core.service_auth.authentication')->logout();
                     	return $this->render('CaseboxCoreBundle:forms:reset-password.html.twig', $vars);
                     }
-                    
+
         			if (!$user->getSystem() && !$user->getDdate()) { //isn't a system user and isn't exempt from 2Factor
                     	if (is_array($auth)) { //Send to 2 Factor - we have the configuration for it
                         	$this->get('session')->set('auth', serialize($user));
-                        	
+
                         	return $this->render('CaseboxCoreBundle:forms:authenticator.html.twig', $vars);
                     	}
                     	else // Two factor not set up
@@ -89,7 +89,7 @@ class AuthController extends Controller
             					'url' => $tsv['data']['url'],
             					'sd' => $tsv['data']['sd'],
             				];
-                        	return $this->render('CaseboxCoreBundle:forms:authenticatorsetup.html.twig', $vars);                    	
+                        	return $this->render('CaseboxCoreBundle:forms:authenticatorsetup.html.twig', $vars);
                     	}
         			}
 		    		$this->get('session')->remove('auth'); //remove user switch after two factor problem DS 9/16/17
@@ -109,8 +109,8 @@ class AuthController extends Controller
                 }
 
                 break;
-                
-                
+
+
              case '2stepsetup':
                 $auth = ['TSV' => true];
 
@@ -140,7 +140,7 @@ class AuthController extends Controller
 
                 return $this->redirectToRoute('app_core', $vars);
 
-                break;    
+                break;
 
             case '2step':
                 $auth = ['TSV' => true];
@@ -192,14 +192,14 @@ class AuthController extends Controller
         return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
     }
 
-    /**
+    /** DISABLING FOR VULNERABILITY SCANS
      * @Route("/c/{coreName}/recover/forgot-password", name="app_core_recovery")
      * @Method({"GET", "POST"})
      * @param Request $request
      * @param string  $coreName
      *
      * @return Response
-     */
+
     public function recoveryAction(Request $request, $coreName)
     {
         $configService = $this->get('casebox_core.service.config');
@@ -241,6 +241,7 @@ class AuthController extends Controller
 
         return $this->render('CaseboxCoreBundle:forms:forgot-password.html.twig', $vars);
     }
+	*/
 
     /**
      * @Route("/c/{coreName}/recover/reset-password", name="app_core_reset")
@@ -291,7 +292,7 @@ class AuthController extends Controller
 
                 return $this->redirectToRoute('app_core_reset', $vars);
             }
-			
+
             // Update password
             $params = [
                 'id' => $user->getId(),
