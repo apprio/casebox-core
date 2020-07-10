@@ -167,7 +167,7 @@ Ext.define('CB.ViewPort', {
                 this.breadcrumb
                 ,this.searchField
                 ,this.buttons.toggleNotificationsView  //Dumbing down Apprio
-				,this.buttons.toggleNotificationsReports				
+				,this.buttons.toggleNotificationsReports
                 ,{
                     scale: 'large'
                     ,arrowVisible: false
@@ -208,7 +208,7 @@ Ext.define('CB.ViewPort', {
                 ,height: 25
                 ,trayItems: [
                     //{xtype: 'notewindowbutton'},
-                    //'-',                
+                    //'-',
                     {xtype: 'uploadwindowbutton'},
 					'-',
                     {xtype: 'prawindowbutton'}
@@ -253,14 +253,14 @@ Ext.define('CB.ViewPort', {
                 ,scale: 'large'
                 ,scope: this
                 ,handler: this.onToggleNotificationsReportsClick
-            })			
-			
+            })
+
             ,toggleNotificationsView: new Ext.Action({
-                tooltip: L.Dashboard
+                tooltip: L.Notifications
                 ,itemId: 'toggleNotifications'
                 // ,enableToggle: true
-		,hidden:(!App.loginData.manage) //permissions for viewing reports/charts    
-                ,iconCls: 'im-sort'
+		//,hidden:(!App.loginData.manage) //permissions for viewing reports/charts
+                ,iconCls: 'im-notifications'
                 ,cls: 'numbersButton'
                 ,text: ''
                 ,scale: 'large'
@@ -283,7 +283,7 @@ Ext.define('CB.ViewPort', {
             toggleLeftRegion: new Ext.Button(this.actions.toggleLeftRegion)
             ,toggleFilterPanel: new Ext.Button(this.actions.toggleFilterPanel)
             ,toggleNotificationsView: new Ext.Button(this.actions.toggleNotificationsView)
-			,toggleNotificationsReports: new Ext.Button(this.actions.toggleNotificationsReports)			
+			,toggleNotificationsReports: new Ext.Button(this.actions.toggleNotificationsReports)
             ,create: new Ext.Button({
                 qtip: L.New
                 ,itemId: 'create'
@@ -324,7 +324,7 @@ Ext.define('CB.ViewPort', {
     ,onToggleFilterPanelClick: function(b, e) {
 	if (b.pressed)
 	{
-		App.mainLPanel.expand(); //Added DS	
+		App.mainLPanel.expand(); //Added DS
 	}
         this.buttons.toggleFilterPanel.setPressed(b.pressed);
 
@@ -355,24 +355,32 @@ Ext.define('CB.ViewPort', {
     }
 
     ,onToggleNotificationsViewClick: function(b, e) {
-		var VC = App.explorer;
-		var AV = VC.getActiveView();	
+      var cpl = App.explorer.containersPanel.getLayout()//App.explorer.getLayout()
+            ,hideNotifications = cpl.activeItem.isXType('CBNotificationsView');
+
+        cpl.setActiveItem(
+            hideNotifications
+            ? Ext.valueFrom(App.explorer.previousActiveView, 0)
+            : 1
+        );
+  	/*var VC = App.explorer;
+		var AV = VC.getActiveView();
 		if (AV.title != null)
 		{
 			if (AV.title !== 'Charts')
 			{
 				VC.onCardItemChangeClick({
-				viewIndex: 2});	
+				viewIndex: 2});
 				VC.viewToolbar.setVisible(true);
 			}
 			else
 			{
 				VC.onCardItemChangeClick({
-				viewIndex: 0});	
-			}	
-		}
+				viewIndex: 0});
+			}
+		}*/
     }
-	
+
     ,onToggleNotificationsReportsClick: function(b, e) {
         var cpl = App.explorer.containersPanel.getLayout()
             ,hideNotifications = cpl.activeItem.isXType('CBNotificationsReports');
@@ -382,7 +390,7 @@ Ext.define('CB.ViewPort', {
             ? Ext.valueFrom(App.explorer.previousActiveView, 0)
             : 3
         );
-    }	
+    }
 
     ,onLogin: function(){
         /* adding menu items */
@@ -452,7 +460,7 @@ Ext.define('CB.ViewPort', {
                 text: L.ApplicationFeedback
                 ,iconCls: 'i-settings'
                 ,handler: this.onApplicationFeedbackClick, scope: this
-            }       
+            }
             ,'-'
             ,{
                 text: L.Exit
@@ -575,7 +583,7 @@ Ext.define('CB.ViewPort', {
     ,onApplicationFeedbackClick: function(b, e) {
     	window.open('https://docs.google.com/forms/d/e/1FAIpQLSeKOGxkShixaLA_9ORpMTND0RkC0HxEuAyxtcLL0y9wjUg62A/viewform?c=0');
     }
-    
+
     ,onLeftRibbonButtonClick: function(b, e) {
         App.openPath(b.path);
     }

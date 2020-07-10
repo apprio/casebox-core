@@ -490,7 +490,7 @@ Ext.define('CB.notifications.View', {
     ,onLogin: function() {
         this.store.load();
 
-        this.checkNotificationsTask.delay(1000 * 60 * 1); //1 minute
+        //this.checkNotificationsTask.delay(1000 * 60 * 1); //1 minute
 
         //add listeners for object panel to toggle preview action
         var op = App.explorer.objectPanel;
@@ -527,7 +527,7 @@ Ext.define('CB.notifications.View', {
             ,this
         );
 
-        this.checkNotificationsTask.delay(1000 * 60 * 1); //1 min
+        //this.checkNotificationsTask.delay(1000 * 60 * 1); //1 min
     }
 
     ,processGetNew: function(r, e) {

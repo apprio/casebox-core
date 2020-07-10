@@ -43,7 +43,7 @@ class Notifications
         ];
 
 		$rez = $this->getReport($p);
-		
+
         /*return [
             'success' => true,
             'lastSeenActionId' => User::getUserConfigParam('lastSeenActionId', 0),
@@ -51,8 +51,8 @@ class Notifications
         ];*/
 		$rez['success'] = true;
         return $rez;
-		
-		
+
+
     }
 
 	protected function rtrim_str($str, $trim) {
@@ -61,7 +61,7 @@ class Notifications
 	  }
 	  return $str; // String not present at end
 	}
-	
+
     /**
      * get new notification records
      *
@@ -104,10 +104,10 @@ class Notifications
      */
     public function getReport($p)
     {
-		$obj = Objects::getCachedObject($p['reportId']);		
+		$obj = Objects::getCachedObject($p['reportId']);
 		$objData = $obj->getData();
 		$configuration = \GuzzleHttp\json_decode($objData['data']['value'], true);
-		
+
 		if (!empty($configuration['DC'])) {
             $columns = [];
 			$fl = [];
@@ -117,21 +117,21 @@ class Notifications
                     if (isset($col['solr_column_name']))
                     {
 			$fl[] = $col['solr_column_name'];
-		    }			
+		    }
                 }
             }
         }
-       
+
          if (!empty($p['teamId']))
          {
-         	$p['fq'] = ['team_i:'.$p['teamId']];	
+         	$p['fq'] = ['team_i:'.$p['teamId']];
          }
-         
+
 		 if (strpos($configuration['title'], 'FEMA') !== false || strpos($configuration['title'], 'OHSEPR') !== false)
 		 {
 			if (empty($p['startDate']) && empty($p['endDate']))
 			{
-				$p['fq'] = ['report_dt:[NOW-7DAY/DAY TO NOW]'];	
+				$p['fq'] = ['report_dt:[NOW-7DAY/DAY TO NOW]'];
 				$begin = new \DateTime( date("Y-m-d") );
 				$end = new \DateTime(date("Y-m-d")  );
 				$end->setTimestamp(strtotime("-1 week +1 day"));
@@ -155,24 +155,24 @@ class Notifications
 				{
 					$end = new \Datetime( $p['endDate'] );
 					$p['endDate'] = $p['endDate'] . 'T00:00:00.000Z';
-				}				
+				}
 				$p['fq'] = ['report_dt:['.$p['startDate'].' TO '.$p['endDate'].']'];
 			}
-			
-			
+
+
 			if (!empty($configuration['sql'])){
 				$dbs = Cache::get('casebox_dbs');
 				$res = $dbs->query($configuration['sql']);
 				$mysqlrecords = [];
-				
+
 				while ($r = $res->fetch()) {
 					$mysqlrecords[] = $r;
 				}
 				$rez['data'] = $mysqlrecords;
 			}
 			else
-			{			
-			
+			{
+
 				$p['id'] = '11-Admin';
 				$p['from'] = 'grid';
 				$p['rows'] = 7000;
@@ -189,7 +189,7 @@ class Notifications
 				$p['fq'] = $fq;
 				$p['fl'] = implode(',',$fl);
 				$s = new Search();
-				$rez = $s->query($p);		
+				$rez = $s->query($p);
 			}
 			$colTitles = [];
 			$colOrder = [];
@@ -201,16 +201,16 @@ class Notifications
 			$newcolumns['title'] = ["solr_column_name"=>'title',"title"=>'Title',"label"=>'Title',"width"=>200];
 
 			$interval = \DateInterval::createFromDateString('1 day');
-			$end->modify( '+1 day' ); 
+			$end->modify( '+1 day' );
 			$period = new \DatePeriod($begin, $interval, $end);
 			foreach ( $period as $dt )
 			{
-				$newcolumns[$dt->format( "Y-m-d" ).'T00:00:00Z'] = ["solr_column_name"=>$dt->format( "Y-m-d" ).'T00:00:00Z',"title"=>substr($dt->format( "Y-m-d" ),0,10),"label"=>substr($dt->format( "Y-m-d" ),0,10),"width"=>100];						
+				$newcolumns[$dt->format( "Y-m-d" ).'T00:00:00Z'] = ["solr_column_name"=>$dt->format( "Y-m-d" ).'T00:00:00Z',"title"=>substr($dt->format( "Y-m-d" ),0,10),"label"=>substr($dt->format( "Y-m-d" ),0,10),"width"=>100];
 			}
-						
+
 			if(isset($configuration['groupField']))
 			{
-				$newcolumns['area_s'] = ["solr_column_name"=>'area_s',"title"=>'Area',"label"=>'Area',"width"=>200];	
+				$newcolumns['area_s'] = ["solr_column_name"=>'area_s',"title"=>'Area',"label"=>'Area',"width"=>200];
 					$out = array();
 					foreach ($rez['data'] as $row) {
 						$out[$row['area_s']] = $row;
@@ -230,7 +230,7 @@ class Notifications
 				{
 					if ($t['solr_column_name'] !== 'report_dt' && $t['solr_column_name'] !== 'area_s') {
 					$record = [];
-					$record['number'] =  $i++;		
+					$record['number'] =  $i++;
 					$record['title'] = $t['title'];
 					$record['area_s'] = isset($area['area_s'])?$area['area_s']:$area;
 					foreach($rez['data'] as &$r)
@@ -262,25 +262,25 @@ class Notifications
 			}
 			$newcolumns['total'] = ["solr_column_name"=>'total',"title"=>'Total',"label"=>'Total',"width"=>100];
 			unset($rez['data']);
-			$rez['data'] = $records;		
+			$rez['data'] = $records;
 			$columns = $newcolumns;
 		 }
 		 else
 		 {
-		 
+
 			if (!empty($configuration['sql'])){
 				$dbs = Cache::get('casebox_dbs');
 				$res = $dbs->query($configuration['sql']);
 				$mysqlrecords = [];
-				
+
 				while ($r = $res->fetch()) {
 					$mysqlrecords[] = $r;
 				}
 				$rez['data'] = $mysqlrecords;
 			}
 			else
-			{		 
-			 
+			{
+
 				$p['id'] = '11-Admin';
 				$p['from'] = 'grid';
 				$p['rows'] = 7000;
@@ -296,7 +296,7 @@ class Notifications
 				$p['fq'] = $fq;
 				$p['fl'] = implode(',',$fl);
 				$s = new Search();
-				$rez = $s->query($p);			 
+				$rez = $s->query($p);
 			}
 		 }
 
@@ -313,19 +313,19 @@ class Notifications
 		{
 			$r[$name] = $configValue;
 		}
-            }           		
+            }
         }
-		
+
 		$rez['title'] = $configuration['title'];
 		$rez['groupField'] = isset($configuration['groupField'])?$configuration['groupField']:null;
 		$rez['columns'] = $columns;
 		$rez['colTitles'] = $colTitles;
 		$rez['colOrder'] = $colOrder;
-		
+
         return $rez;
-    }	
-	
-	
+    }
+
+
     /**
      * update last seen laction id
      * @return array response
@@ -524,7 +524,7 @@ class Notifications
 
             ];
 
-            if (in_array($r['action_type'], ['create', 'update', 'comment'])) {
+            if (in_array($r['action_type'], ['create', 'update', 'comment', 'task'])) {
                 $record['expandable'] = true;
             }
 
@@ -591,6 +591,7 @@ class Notifications
             case 'create':
             case 'update':
             case 'delete':
+            case 'task':
             case 'complete':
             case 'close':
             case 'rename':
@@ -652,7 +653,7 @@ class Notifications
         $id = $data['id'];
         $tid = $data['template_id'];
         $name = $data['name'];
-        
+
         return '<a class="click obj-ref" itemid="'.$id.'" templateid="'.$tid.'" title="'.$name.'">'.$name.'</a>';
     }
 
@@ -697,6 +698,8 @@ class Notifications
                 $rez .= static::getCommentMailBody($action, $userData);
                 break;
 
+            case 'task':
+            case 'create':
             case 'create':
             case 'delete':
             case 'move':
