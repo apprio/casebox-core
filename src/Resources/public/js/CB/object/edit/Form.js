@@ -5,7 +5,7 @@ Ext.define('CB.object.edit.Form', {
 
     ,alias: 'widget.CBEditObject'
     ,xtype: 'CBObjectEditForm'
-    ,api: 'CB_Objects.getPluginsData'
+    //,api: 'CB_Objects.getPluginsData'
     ,tbarCssClass: 'x-panel-white'
     ,padding: 0
     ,scrollable: false
@@ -105,9 +105,8 @@ Ext.define('CB.object.edit.Form', {
     }
 
     ,load: function(objectData) {
-      console.log(objectData);
-        this.api = CB_Objects.getPluginsData;
-        this.api(objectData, this.processLoadData, this);
+        //this.api = CB_Objects.getPluginsData;
+        //this.api(objectData, this.processLoadData, this);
 
         if(Ext.isEmpty(objectData)) {
             return;
