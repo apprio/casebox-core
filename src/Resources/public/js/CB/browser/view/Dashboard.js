@@ -75,7 +75,6 @@ Ext.define('CB.browser.view.Dashboard',{
 
     ,addItems: function() {
         var vc = this.rawData.view;
-        console.log(this.rawData.folderProperties.template_type)
 
       if (this.rawData.folderProperties.template_type == 'fidastub') {
         this.objectViewStub = new CB.object.view.Stub({
