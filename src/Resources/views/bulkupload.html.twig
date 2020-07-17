@@ -6,32 +6,33 @@
     <link rel="stylesheet" type="text/css" href="/css/bs/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/css/bs/css/bootstrap-responsive.min.css"/>
     <title></title>
-    <link rel="stylesheet" href="/d/css/bootstrap.light.min.css" title="Light">
-    <link rel="stylesheet" href="/d/css/timepicker.css">
-    <link rel="stylesheet" href="/d/css/animate.min.css">
-    <link rel="stylesheet" href="/d/css/normalize.min.css">
-    <link rel="stylesheet" href="/d/css/rotate.css">
+    <link rel="stylesheet" href="/css/bootstrap.light.min.css" title="Light">
+    <link rel="stylesheet" href="/css/timepicker.css">
+    <link rel="stylesheet" href="/css/animate.min.css">
+    <link rel="stylesheet" href="/css/normalize.min.css">
+    <link rel="stylesheet" href="/css/rotate.css">
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <!-- load the root require context -->
-    <script src="/d/vendor/jquery/jquery-1.12.1.js"></script>
+    <script src="/css/bs/js/jquery-1.12.1.js"></script>
     <style>
     .highlight
 	{
 	   border-color : red;
 	}
     </style>
-    
-    <link type='text/css' rel="stylesheet" href="/css/login.css"/>
-	<style id="antiClickjack">body{display:none !important;}</style>
 
-	<script type="text/javascript">
-	   if (self === top) {
-		   var antiClickjack = document.getElementById("antiClickjack");
-		   antiClickjack.parentNode.removeChild(antiClickjack);
-	   } else {
-		   top.location = self.location;
-	   }
-       $( document ).ready(function() {
+    <link type='text/css' rel="stylesheet" href="/css/login.css"/>
+ 	<style id="antiClickjack">body{display:none !important;}</style>
+
+ 	<script type="text/javascript">
+ 	   if (self === top) {
+ 		   var antiClickjack = document.getElementById("antiClickjack");
+ 		   antiClickjack.parentNode.removeChild(antiClickjack);
+ 	   } else {
+ 		   top.location = self.location;
+ 	   }
+        jQuery(document).ready(function(){
+        //$( document ).ready(function() {
             console.log( "ready!" );
             if ($('#step').val() == 1)
             {
@@ -77,22 +78,22 @@
 	              else
 	              {
 	                    $('#submitit2').attr('disabled', 'disabled');
-	              }		          
+	              }
             });
-            
+
             $('#isTab').bind('change',function() {
                 if ($('#isTab').prop('checked') == true)
                 {
                  	$('#pasteCSV').html('Paste TAB Delimited Content Here');
-					$('#importCSV').html('Upload TAB Delimited Import File');                         
+					$('#importCSV').html('Upload TAB Delimited Import File');
                 }
                 else
                 {
                  	$('#pasteCSV').html('Paste CSV Delimited Content Here');
-					$('#importCSV').html('Upload CSV Delimited Import File');                 	
+					$('#importCSV').html('Upload CSV Delimited Import File');
                 }
             });
-            
+
             $('#templateId, #file, #csvContent').bind('change keyup', function() {
                 var filled = true;
                 if ($('#templateId').val() == '')
@@ -111,12 +112,12 @@
                 {
                     $('#submitit1').attr('disabled', 'disabled');
                 }
-               
+
             });
             $('select[name="csvHeader[]"]').first().change();
             $('#templateId').change();
         });
-	</script>	
+	</script>
 </head>
 
 <body>
@@ -130,7 +131,7 @@
           <span class="brand">
             <a href="#" class="pull-left"><img src="/logo.png" style="display:none"></a>{{projectName}} Admin
           </span>
-          
+
           <ul class="nav pull-right ng-scope">
           		<li><a bs-tooltip="'Bulkupload'" data-placement="bottom" href="/c/{{coreName}}/bulkupload" class="ng-scope ng-binding" data-original-title="" title="">Bulk Upload</a></li>
           		<li><a href="/d/index.html">Reports</a></li>
@@ -138,7 +139,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="container-fluid main">
 
 
@@ -149,7 +150,7 @@
                 </div>
             {% endfor %}
         {% endfor %}
-            
+
 <form action="/c/{{ coreName }}/bulkupload/" method="post" enctype="multipart/form-data">
 <input type="hidden" name="step" id="step" value="{{step}}"/>
 <div id="step3" style="display:none">
@@ -159,7 +160,7 @@
   <div class="form-group" style="clear:both;text-align:center">
     <label for="hasHeader">Process File?</label>
     <input type="checkbox" name="processFile" class="form-control" id="processFile" checked></textarea>
-  </div>  
+  </div>
  <br/><br/>
 <table class="table">
 <thead>
@@ -193,7 +194,7 @@ Valid
 {% endif %}
 {% for col in record.data %}
 <td>
-        {% if (col != attribute(record.old, header[loop.index-1]) and attribute(record.old, header[loop.index-1]) != "") %}        
+        {% if (col != attribute(record.old, header[loop.index-1]) and attribute(record.old, header[loop.index-1]) != "") %}
             NEW VALUE:{{col}} OLD:{{attribute(record.old, header[loop.index-1])}}
         {% else %}
           {{col}}
@@ -222,7 +223,7 @@ Valid
     <option value="{{ obj.id }}" {% if selected %}selected{% endif %}>
     {{ obj.id }} - {{ obj.name }}
          {% endfor %}
-  
+
     </select>
   </div>
 {% else %}
@@ -287,23 +288,23 @@ Valid
     <option value="{{ template.id }}" {% if selected %}selected{% endif %}>
     {{ template.name }}
          {% endfor %}
-  
+
     </select>
   </div>
 <br/>
   <div class="form-group">
     <label for="isTab">Tab Delimited?</label>
     <input type="checkbox" name="isTab" class="form-control" id="isTab"></textarea>
-  </div>  
+  </div>
   <br/>
   <div class="form-group">
     <label for="hasHeader">Has Header?</label>
     <input type="checkbox" name="hasHeader" class="form-control" id="hasHeader" checked></textarea>
-  </div>   
-</fieldset>  
+  </div>
+</fieldset>
   <br/>
 <fieldset style="clear:both">
-<legend>Upload Content</legend>  
+<legend>Upload Content</legend>
  <div class="form-group">
     <label for="file" style="font-weight:bold" id="importCSV">Upload CSV Import File</label>
     <input type="file" class="form-control-file" id="file" name="file" accept=".xlsx, .xls, .csv, .txt, .pc*">
@@ -314,11 +315,11 @@ Valid
     <label for="csvContent" id="pasteCSV">Paste CSV Content Here</label>
     <textarea class="form-control" id="csvContent" rows="3" name="csvContent"></textarea>
   </div>
-</fieldset>    
- <br/><br/> 
+</fieldset>
+ <br/><br/>
 </div>
-</form>		
-    	
+</form>
+
        {% block form %}{% endblock %}
 
 </div>
@@ -328,4 +329,3 @@ Valid
 </div>
 </body>
 </html>
-

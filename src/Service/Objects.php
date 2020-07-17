@@ -370,8 +370,8 @@ class Objects
 					if ($obj->getType() == 'case')
 					{
 						$obj->setUserStatus(1, $userId);
-						$rez = ['success' => true, 'data' => $userId ];							
-						return $rez;	
+						$rez = ['success' => true, 'data' => $userId ];
+						return $rez;
 					}
 					else
 					{
@@ -593,10 +593,14 @@ class Objects
                 return new Objects\Cases($objectId);
                 break;
 
-			case 'caseassessment':
+			      case 'caseassessment':
                 return new Objects\CaseAssessment($objectId);
                 break;
-				
+                
+            case 'fidastub':
+                return new Objects\FIDAStub($objectId);
+                break;
+
             case 'template':
                 return new Objects\Template($objectId);
                 break;

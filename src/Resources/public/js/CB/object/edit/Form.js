@@ -5,7 +5,7 @@ Ext.define('CB.object.edit.Form', {
 
     ,alias: 'widget.CBEditObject'
     ,xtype: 'CBObjectEditForm'
-    ,api: 'CB_Objects.getPluginsData'
+
     ,tbarCssClass: 'x-panel-white'
     ,padding: 0
     ,scrollable: false

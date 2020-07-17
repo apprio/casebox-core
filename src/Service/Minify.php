@@ -197,6 +197,7 @@ class Minify
                 'js/CB/object/view/Preview.js',
                 'js/CB/object/view/Properties.js',
                 'js/CB/object/view/View.js',
+                'js/CB/object/view/Stub.js',
                 'js/CB/object/edit/Form.js',
                 'js/CB/object/edit/Window.js',
                 'js/CB/object/edit/View.js',
@@ -243,7 +244,7 @@ class Minify
                 'js/CB/object/field/editor/Tag.js',
                 'js/CB/view/BoundListKeyNav.js',
                 'js/CB/notifications/View.js',
-                'js/CB/notifications/Reports.js',				
+                'js/CB/notifications/Reports.js',
                 'js/CB/notifications/SettingsWindow.js',
             ],
 
