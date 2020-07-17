@@ -902,13 +902,13 @@ Ext.define('CB.browser.ViewContainer', {
 		// Fix the view for cases
 		if(!Ext.isEmpty(result.view))
 		{
-			if (result.view.type == 'dashboard' && this.folderProperties.case_id == null)
+			if (result.view.type == 'dashboard' && (this.folderProperties.template_type != 'fidastub' || this.folderProperties.template_type != 'case'))
 			{
 				result.view.type = 'grid';
 				this.userViewSet = false;
 				var params = {view: 'grid'};
 				this.fireEvent('changeparams', params);
-			} else if (this.folderProperties.case_id != null && result.view.type == 'grid')
+			} else if ((this.folderProperties.template_type == 'fidastub' || this.folderProperties.template_type == 'case') && result.view.type == 'grid')
 			{
 				result.view.type = 'dashboard';
 				this.userViewSet = false;

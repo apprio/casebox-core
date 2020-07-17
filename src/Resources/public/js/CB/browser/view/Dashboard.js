@@ -36,7 +36,7 @@ Ext.define('CB.browser.view.Dashboard',{
     }
 
     ,updateToolbarButtons: function() {
-		
+
         this.refOwner.fireEvent(
             'settoolbaritems'
             ,[
@@ -75,19 +75,31 @@ Ext.define('CB.browser.view.Dashboard',{
 
     ,addItems: function() {
         var vc = this.rawData.view;
+        console.log(this.rawData.folderProperties.template_type)
 
-		this.objectViewView = new CB.object.view.View({
-             border: false
-             ,scrollable: true
-             ,bodyStyle: 'padding: 5px'
-         });
+      if (this.rawData.folderProperties.template_type == 'fidastub') {
+        this.objectViewStub = new CB.object.view.Stub({
+                 border: false
+                 ,scrollable: true
+                 ,bodyStyle: 'padding: 5px'
+             });
 
-		this.add(this.objectViewView);
-		this.objectViewView.load(this.rawData.folderProperties);
+    		this.add(this.objectViewStub);
+    		this.objectViewStub.load(this.rawData.folderProperties);
+      } else {
+        this.objectViewView = new CB.object.view.View({
+                 border: false
+                 ,scrollable: true
+                 ,bodyStyle: 'padding: 5px'
+             });
+
+    		this.add(this.objectViewView);
+    		this.objectViewView.load(this.rawData.folderProperties);
+      }
     }
-	
+
     ,onActivate: function() {
-	Ext.state.Manager.set('active_tab', 0);	    
+	Ext.state.Manager.set('active_tab', 0);
         this.fireEvent(
             'settoolbaritems'
             ,[
