@@ -97,7 +97,7 @@ class FIDAStub extends Base
     {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-        $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name';
+        $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s';
 		    $p['rows'] = 0;
 
         $s = new Search();
@@ -136,7 +136,7 @@ class FIDAStub extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s,phonenumber_s';
         $p['fq'] = $this->fq;
         $p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2 OR 5)';
@@ -182,7 +182,7 @@ class FIDAStub extends Base
         } else {
             $p['fq'][] = 'cid:'.$userId;
         }
-		$p['fl'] ='id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		$p['fl'] ='id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s';
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
 
@@ -262,7 +262,7 @@ class FIDAStub extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s';
 
         $parent = $this->lastNode->parent;
 
@@ -351,7 +351,7 @@ class FIDAStub extends Base
 
         $user_id = $this->lastNode->id;
         $p['fq'][] = 'fidastatus_s:('.str_replace('&&','/',str_replace(' ', '\ ', $user_id)).')';
-		    $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		    $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s,_phonenumber';
         $s = new Search();
 
         $sr = $s->query($p);
