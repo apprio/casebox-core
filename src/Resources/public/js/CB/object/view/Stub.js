@@ -301,6 +301,7 @@ Ext.define('CB.object.view.Stub', {
 
     items.push(c);
 
+
     // Assessments
   if (r.data.objectProperties.data.preview[7]['fidastatus_s'] == 'Convert to ECMRS Record') {
     c= Ext.create('Ext.panel.Panel', {
