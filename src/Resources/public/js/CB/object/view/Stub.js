@@ -301,6 +301,134 @@ Ext.define('CB.object.view.Stub', {
 
     items.push(c);
 
+
+    // Assessments
+  if (r.data.objectProperties.data.preview[7]['fidastatus_s'] == 'Convert to ECMRS Record') {
+    c= Ext.create('Ext.panel.Panel', {
+      title: L.Assessments + ' [' +assessmentData.data.length+']',
+      layout: {
+        align: 'stretch',
+        type: 'vbox'
+      },
+    });
+
+    content = Ext.create('CBObjectPluginObjectProperties',{params:params});
+    r.data.objectProperties.data.preview[0] = r.data.objectProperties.data.preview[3];
+    content.onLoadData(r.data.objectProperties);
+    c.add(content);
+
+
+    if(!Ext.isEmpty(r.data.objectProperties.data.can.assessments)) {
+      //assessmentMenu = r.data.objectProperties.data.can.assessments;
+      var templatesStore = CB.DB.templates;
+      var tbdAssessmentData = [];
+      var tbdAssessments = {};
+      for(var a = 0; a < r.data.objectProperties.data.can.assessments.length; a++){
+        tbdAssessmentData[a] = {};
+        var templateId = r.data.objectProperties.data.can.assessments[a];
+        var templateName = templatesStore.getProperty(templateId,'title');
+        var iconCls = CB.DB.templates.getIcon(templateId);
+        tbdAssessmentData[a].template_id = templateId;
+        tbdAssessmentData[a].name = templateName;
+        tbdAssessmentData[a].pid = r.data.objectProperties.data.id;
+        tbdAssessmentData[a].ago_text = L.ToBeCreated;
+        tbdAssessmentData[a].user = '';
+        tbdAssessmentData[a].id = null;
+        tbdAssessmentData[a].infoOnly = r.data.objectProperties.data.preview[6].data._clientstatus;
+        tbdAssessmentData[a].survivorName = r.data.objectProperties.data.name;
+        //rez += '<img class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
+      }
+      tbdAssessments.data =tbdAssessmentData;
+      tbdAssessments.limit = 100;
+      content  = Ext.create('CBObjectPluginContentItems',{params: params})
+      content.createMenu = assessmentMenu;
+      content.updateTitle(L.ClientAssessmentsNeeded);
+      content.onLoadData(tbdAssessments);
+      c.add(content);
+    }
+    content  = Ext.create('CBObjectPluginContentItems',{params: params})
+    content.createMenu = assessmentMenu;
+    content.updateTitle(L.ClientAssessmentsCompleted);
+    content.onLoadData(assessmentData);
+    c.add(content);
+    items.push(c);
+
+    // Recovery
+
+    c= Ext.create('Ext.panel.Panel', {
+      title: L.Referrals + '/' + L.Recovery + ' [' + (parseInt(recoveryReferralData.data.length) + parseInt(recoveryCompletedData.data.length)) +']',
+      layout: {
+        align: 'stretch',
+        type: 'vbox'
+      },
+    });
+
+    content = Ext.create('CBObjectPluginObjectProperties',{params:params});
+    r.data.objectProperties.data.preview[0] = r.data.objectProperties.data.preview[5];
+    content.onLoadData(r.data.objectProperties);
+    c.add(content);
+
+    if(!Ext.isEmpty(r.data.objectProperties.data.can.recovery)) {
+      var templatesStore = CB.DB.templates;
+      var tbdRecoveryData = [];
+      var tbdRecovery = {};
+      for(var a = 0; a < r.data.objectProperties.data.can.recovery.length; a++){
+        tbdRecoveryData[a] = {};
+        var templateId = r.data.objectProperties.data.can.recovery[a];
+        var templateName = templatesStore.getProperty(templateId,'title');
+        var iconCls = CB.DB.templates.getIcon(templateId);
+        tbdRecoveryData[a].template_id = templateId;
+        tbdRecoveryData[a].name = templateName;
+        tbdRecoveryData[a].pid = r.data.objectProperties.data.id;
+        tbdRecoveryData[a].ago_text = L.ToBeCreated;
+        tbdRecoveryData[a].user = '';
+        tbdRecoveryData[a].id = null;
+        //rez += '<img class="i16u ' + iconCls + '" src="/css/i/s.gif">'+templateName +'';
+      }
+      tbdRecovery.data =tbdRecoveryData;
+      content  = Ext.create('CBObjectPluginContentItems',{params: params})
+      content.createMenu = recoveryMenu;
+      content.updateTitle(L.ClientRecoveryNeeded);
+      content.onLoadData(tbdRecovery);
+      c.add(content);
+    }
+
+    content  = Ext.create('CBObjectPluginContentItems',{params: params})
+    content.createMenu = referralMenu;
+    //content.actions.add.setHidden(true);
+    content.updateTitle(L.ClientReferrals);
+    content.onLoadData(referralData);
+    c.add(content);
+
+    content  = Ext.create('CBObjectPluginContentItems',{params: params})
+    content.createMenu = referralMenu;
+    //content.actions.add.setHidden(true);
+    content.updateTitle(L.ReferralsMade);
+    content.onLoadData(recoveryReferralData);
+    c.add(content);
+
+    content  = Ext.create('CBObjectPluginContentItems',{params: params})
+    content.createMenu = referralMenu;
+    //content.actions.add.setHidden(true);
+    content.updateTitle(L.CompletedReferrals);
+    content.onLoadData(recoveryCompletedData);
+    c.add(content);
+
+    content  = Ext.create('CBObjectPluginContentItems',{params: params})
+    content.createMenu = recoveryMenu;
+    content.updateTitle(L.RecoveryNotes);
+    content.onLoadData(recoveryData);
+
+    c.add(content);
+    content  = Ext.create('CBObjectPluginContentItems',{params: params})
+    content.createMenu = taskMenu;
+    content.updateTitle(L.ClientTasks);
+
+    content.onLoadData(r.data.tasks);
+    c.add(content);
+    items.push(c);
+  }
+
     // Timeline
 
     c= Ext.create('Ext.panel.Panel', {

@@ -979,390 +979,407 @@ class FIDAStub extends CBObject
      */
      public function getPreviewBlocks()
      {
-         $pb = parent::getPreviewBlocks();
+       $pb = parent::getPreviewBlocks();
 
-         $data = $this->getData();
-         $sd = &$data['sys_data'];
+       $data = $this->getData();
+       $sd = &$data['sys_data'];
 
-         $template = $this->getTemplate();
+       $template = $this->getTemplate();
 
- 		//$actionsLine = '';
- 		$addressLine = '';
- 		$addresscityLine = '';
-         $demographicsLine = '';
- 		$femaLine = '';
- 		$dateLines = '';
-         $ownerRow = '';
-         $assigneeRow = '';
-         $closureReason = '';
- 		$identifiedNeedsLine = '';
- 		$atRiskLine = '';
+   //$actionsLine = '';
+   $addressLine = '';
+   $addresscityLine = '';
+       $demographicsLine = '';
+   $femaLine = '';
+   $dateLines = '';
+       $ownerRow = '';
+       $assigneeRow = '';
+       $closureReason = '';
+   $identifiedNeedsLine = '';
+   $atRiskLine = '';
+   $checklistLine = '';
+       $coreUri = $this->configService->get('core_uri');
+
+   /*if (!empty($sd['solr']['assessments_completed']))
+   {
+     $actionsLine = count($sd['solr']['assessments_completed']) . " Assessments Completed -";
+   }
+
+   if (!empty($sd['solr']['assessments_needed'])) {
+     $actionsLine = count($sd['solr']['assessments_needed']) . " Assessments Needed - ";
+   }*/
+   $demographicsLine = '#'.$data['id']. " - ";
+   if (!empty($sd['solr']['gender'])) {
+     $demographicsLine = $demographicsLine . $sd['solr']['gender'] . " - ";
+   }
+   else
+   {
+     $demographicsLine = $demographicsLine . $this->trans('GenderNotCollected') . " - ";
+   }
+   if (!empty($sd['solr']['race'])) {
+     $demographicsLine = $demographicsLine . $sd['solr']['race'] . " - ";
+   }
+
+   if (!empty($sd['solr']['ethnicity'])) {
+     $demographicsLine = $demographicsLine . $sd['solr']['ethnicity'] . " - ";
+   }
+
+   if (!empty($sd['solr']['closurereason_s'])) {
+     $closureReason = '<b>'. $sd['solr']['closurereason_s'] .'</b><br/>';
+   }
+
+   if (!empty($sd['solr']['headofhousehold'])) {
+     if ($sd['solr']['headofhousehold'] == "No")
+     {
+       $addressLine = $addressLine . $this->trans('Not') . ' ' . $this->trans('HeadOfHousehold') . ' - ';
+     }
+     else if ($sd['solr']['headofhousehold'] == "Yes")
+     {
+       $addressLine = $addressLine . $this->trans('HeadOfHousehold') .' - ';
+     }
+     else
+     {
+       $addressLine = $addressLine . $this->trans('Unknown') . ' ' . $this->trans('HeadOfHousehold') .' - ';
+     }
+   }
+
+   if (!empty($sd['solr']['femanumber_s'])) {
+     if (!is_numeric($sd['solr']['femanumber_s']))
+     {
+       $femaLine = $femaLine . '<span style="color:red;font-weight:bold;">' . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . "</span> - ";
+     }
+     else {
+       $femaLine = $femaLine . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . " - ";
+     }
+   }
+   else
+   {
+     $femaLine = $femaLine . $this->trans('FEMANotCollected') ." - ";
+   }
+
+   if (!empty($sd['solr']['fematier'])) {
+     $femaLine = $femaLine . $sd['solr']['fematier'] . " - ";
+   }
+
+   if (!empty($sd['solr']['clientage_i'])) {
+     $demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " " . $this->trans('yrs') ." - ";
+   }
+
+   if (!empty($sd['solr']['language'])) {
+     $demographicsLine = $demographicsLine . $sd['solr']['language'] . " - ";
+   }
+
+   if (!empty($sd['solr']['emailaddress_s'])) {
+     $emailLine = $sd['solr']['emailaddress_s'] . " - ";
+   }
+   else
+   {
+     $emailLine = $this->trans('EmailNotCollected') . " - ";
+   }
+
+   if (!empty($sd['solr']['phonenumber_s'])) {
+     $emailLine = $emailLine . $sd['solr']['phonenumber_s'] . " - ";
+   }
+
+   if (!empty($sd['solr']['maritalstatus'])) {
+     $emailLine =  $emailLine .$sd['solr']['maritalstatus'] . " - ";
+   }
+
+   if (!empty($sd['solr']['full_address'])) {
+     $addressLine = $addressLine . str_replace(", United States","",$sd['solr']['full_address']) . (!empty($sd['solr']['zipcode_s'])?' '. $sd['solr']['zipcode_s']:''). " - ";
+   }
+   else
+   {
+     $addressLine = $addressLine. $this->trans('NoAddressListed') . " - ";
+   }
+   if (!empty($sd['solr']['county_s'])) {
+     $addressLine = $addressLine . $sd['solr']['county_s']. " - ";
+   }
+   elseif (!empty($sd['solr']['county'])) {
+     $addressLine = $addressLine . ' ' . $this->trans('RegisteredCounty').':'.$sd['solr']['county']. " - ";
+   }
+
+   if (!empty($sd['solr']['location_type'])) {
+     $addressLine = $addressLine . $sd['solr']['location_type']. " - ";
+   }
+
+   /*
+    * Intake location commented out until otherwise noted.
+
+   if (!empty($data['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type'])))
+     {
+       $objService = new Objects();
+       $location = $objService->load(['id' => is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type']]);
+       $addressLine = $addressLine . $location['data']['data']['_locationcity'];
+     }
+   */
+
+     $fileCount = 0;
+     $filePlugin = new Files();
+     $files = $filePlugin->getData($data['id']);
+
+     //$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' Form</a>'; //need to change this to be parameterized - multiple forms vs one
+     $fileInfo = '';
+     foreach ($files['data'] as $file) {
+       $fileInfo = $fileInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr>';
+       $fileCount++;
+     }
+     $contentItems = new ContentItems();
+     $items = $contentItems->getData($data['id']);
+
+     $addressInfo = '';
+     $familyMemberInfo = '';
+     $emergencyContactInfo = '';
      $checklistLine = '';
-         $coreUri = $this->configService->get('core_uri');
+     $contentRow = '';
+     $familyMemberCount = 0;
+     $emergencyContactCount = 0;
+     $addressCount = 0;
+     if (!isset($data['udate']))
+     {
+       $data['udate'] = $data['cdate'];
+     }
+     foreach ($items['data'] as $item) {
+       if ($item['template_id'] == 289)
+       {
+          $familyMemberInfo = $familyMemberInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="289" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"> <a class="bt item-action click" myName="Family Member" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"><span title="Remove Address" class="click icon-cross" myName="Famly Member" action="removeContent" myPid="'.$data['id'].'" templateId="289" myId="'.$item['id'].'"></span></a></td></tr>';
+          $familyMemberCount++;
+       }
+       if ($item['template_id'] == 311)
+       {
+          $addressInfo = $addressInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-address icon-padding" src="/css/i/s.gif">    </td>    <td width="90%"><a class="bt item-action click" action="editContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"><a class="bt item-action click" myName="Address" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"><span title="Remove Address" class="click icon-cross" myName="Address" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"></span></a></td><td width="5%" class="obj" style="background-color:white !important;"></td></tr>';
+          $addressCount++;
+       }
+       if ($item['template_id'] == 247090)
+       {
+          $emergencyContactInfo = $emergencyContactInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-committee-phase icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="247090" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"> <a class="bt item-action click" myName="Family Member" action="removeContent" myPid="'.$data['id'].'" templateId="247090" myId="'.$item['id'].'"><span title="Remove Emergency Contact" class="click icon-cross" myName="Emergency Contact" action="removeContent" myPid="'.$data['id'].'" templateId="247090" myId="'.$item['id'].'"></span></a></td></tr>';
+          $emergencyContactCount++;
+       }
+       if (isset($data['udate']) && isset($item['cdate']))
+       {
+       if (Util\getDatesDiff($data['udate'],$item['cdate']) > 0)
+       {
+         $data['udate'] = $item['cdate'];
+       }
+       }
+       if (isset($data['udate']) && isset($item['udate']))
+       {
+       if (Util\getDatesDiff($data['udate'],$item['udate']) > 0)
+       {
+         $data['udate'] = $item['udate'];
+       }
+       }
+     }
 
- 		/*if (!empty($sd['solr']['assessments_completed']))
- 		{
- 			$actionsLine = count($sd['solr']['assessments_completed']) . " Assessments Completed -";
- 		}
-
- 		if (!empty($sd['solr']['assessments_needed'])) {
- 			$actionsLine = count($sd['solr']['assessments_needed']) . " Assessments Needed - ";
- 		}*/
- 		$demographicsLine = '#'.$data['id']. " - ";
- 		if (!empty($sd['solr']['gender'])) {
- 			$demographicsLine = $demographicsLine . $sd['solr']['gender'] . " - ";
- 		}
- 		else
- 		{
- 			$demographicsLine = $demographicsLine . $this->trans('GenderNotCollected') . " - ";
- 		}
- 		if (!empty($sd['solr']['race'])) {
- 			$demographicsLine = $demographicsLine . $sd['solr']['race'] . " - ";
- 		}
-
- 		if (!empty($sd['solr']['ethnicity'])) {
- 			$demographicsLine = $demographicsLine . $sd['solr']['ethnicity'] . " - ";
- 		}
-
- 		if (!empty($sd['solr']['closurereason_s'])) {
- 			$closureReason = '<b>'. $sd['solr']['closurereason_s'] .'</b><br/>';
- 		}
-
- 		if (!empty($sd['solr']['headofhousehold'])) {
- 			if ($sd['solr']['headofhousehold'] == "No")
- 			{
- 				$addressLine = $addressLine . $this->trans('Not') . ' ' . $this->trans('HeadOfHousehold') . ' - ';
- 			}
- 			else if ($sd['solr']['headofhousehold'] == "Yes")
- 			{
- 				$addressLine = $addressLine . $this->trans('HeadOfHousehold') .' - ';
- 			}
- 			else
- 			{
- 				$addressLine = $addressLine . $this->trans('Unknown') . ' ' . $this->trans('HeadOfHousehold') .' - ';
- 			}
- 		}
-
- 		if (!empty($sd['solr']['femanumber_s'])) {
- 			if (!is_numeric($sd['solr']['femanumber_s']))
- 			{
- 				$femaLine = $femaLine . '<span style="color:red;font-weight:bold;">' . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . "</span> - ";
- 			}
- 			else {
- 				$femaLine = $femaLine . $this->trans('FEMANumber') . $sd['solr']['femanumber_s'] . " - ";
- 			}
- 		}
- 		else
- 		{
- 			$femaLine = $femaLine . $this->trans('FEMANotCollected') ." - ";
- 		}
-
- 		if (!empty($sd['solr']['fematier'])) {
- 			$femaLine = $femaLine . $sd['solr']['fematier'] . " - ";
- 		}
-
- 		if (!empty($sd['solr']['clientage_i'])) {
- 			$demographicsLine = $demographicsLine . $sd['solr']['clientage_i'] . " " . $this->trans('yrs') ." - ";
- 		}
-
- 		if (!empty($sd['solr']['language'])) {
- 			$demographicsLine = $demographicsLine . $sd['solr']['language'] . " - ";
- 		}
-
- 		if (!empty($sd['solr']['emailaddress_s'])) {
- 			$emailLine = $sd['solr']['emailaddress_s'] . " - ";
- 		}
- 		else
- 		{
- 			$emailLine = $this->trans('EmailNotCollected') . " - ";
- 		}
-
- 		if (!empty($sd['solr']['phonenumber_s'])) {
- 			$emailLine = $emailLine . $sd['solr']['phonenumber_s'] . " - ";
- 		}
-
- 		if (!empty($sd['solr']['maritalstatus'])) {
- 			$emailLine =  $emailLine .$sd['solr']['maritalstatus'] . " - ";
- 		}
-
- 		if (!empty($sd['solr']['full_address'])) {
- 			$addressLine = $addressLine . str_replace(", United States","",$sd['solr']['full_address']) . (!empty($sd['solr']['zipcode_s'])?' '. $sd['solr']['zipcode_s']:''). " - ";
- 		}
- 		else
- 		{
- 			$addressLine = $addressLine. $this->trans('NoAddressListed') . " - ";
- 		}
- 		if (!empty($sd['solr']['county_s'])) {
- 			$addressLine = $addressLine . $sd['solr']['county_s']. " - ";
- 		}
- 		elseif (!empty($sd['solr']['county'])) {
- 			$addressLine = $addressLine . ' ' . $this->trans('RegisteredCounty').':'.$sd['solr']['county']. " - ";
- 		}
-
- 		if (!empty($sd['solr']['location_type'])) {
- 			$addressLine = $addressLine . $sd['solr']['location_type']. " - ";
- 		}
-
- 		/*
- 		 * Intake location commented out until otherwise noted.
-
- 		if (!empty($data['data']['_location_type']) && !empty(Objects::getCachedObject(is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type'])))
- 			{
- 				$objService = new Objects();
- 				$location = $objService->load(['id' => is_array($data['data']['_location_type']) ? $data['data']['_location_type']['value'] : $data['data']['_location_type']]);
- 				$addressLine = $addressLine . $location['data']['data']['_locationcity'];
- 			}
- 		*/
-
-       $fileCount = 0;
- 			$filePlugin = new Files();
- 			$files = $filePlugin->getData($data['id']);
-
- 			//$fileInfo = '<a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' Form</a>'; //need to change this to be parameterized - multiple forms vs one
-       $fileInfo = '';
- 			foreach ($files['data'] as $file) {
- 				$fileInfo = $fileInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember file-pdf icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" action="file" fid="'.$file['id'].'">'.$file['name'].'</a></td></tr>';
-         $fileCount++;
- 			}
- 			$contentItems = new ContentItems();
- 			$items = $contentItems->getData($data['id']);
-
- 			$addressInfo = '';
- 			$familyMemberInfo = '';
-       $emergencyContactInfo = '';
-       $checklistLine = '';
- 			$contentRow = '';
- 			$familyMemberCount = 0;
- 			$emergencyContactCount = 0;
- 			$addressCount = 0;
- 			if (!isset($data['udate']))
- 			{
- 				$data['udate'] = $data['cdate'];
- 			}
- 			foreach ($items['data'] as $item) {
- 				if ($item['template_id'] == 289)
- 				{
- 					 $familyMemberInfo = $familyMemberInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="289" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"> <a class="bt item-action click" myName="Family Member" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"><span title="Remove Address" class="click icon-cross" myName="Famly Member" action="removeContent" myPid="'.$data['id'].'" templateId="289" myId="'.$item['id'].'"></span></a></td></tr>';
- 					 $familyMemberCount++;
- 				}
- 				if ($item['template_id'] == 311)
- 				{
- 					 $addressInfo = $addressInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-address icon-padding" src="/css/i/s.gif">    </td>    <td width="90%"><a class="bt item-action click" action="editContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"><a class="bt item-action click" myName="Address" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"><span title="Remove Address" class="click icon-cross" myName="Address" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"></span></a></td><td width="5%" class="obj" style="background-color:white !important;"></td></tr>';
- 					 $addressCount++;
- 				}
-         if ($item['template_id'] == 247090)
- 				{
- 					 $emergencyContactInfo = $emergencyContactInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-committee-phase icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="247090" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"> <a class="bt item-action click" myName="Family Member" action="removeContent" myPid="'.$data['id'].'" templateId="247090" myId="'.$item['id'].'"><span title="Remove Emergency Contact" class="click icon-cross" myName="Emergency Contact" action="removeContent" myPid="'.$data['id'].'" templateId="247090" myId="'.$item['id'].'"></span></a></td></tr>';
- 					 $emergencyContactCount++;
- 				}
- 				if (isset($data['udate']) && isset($item['cdate']))
- 				{
- 				if (Util\getDatesDiff($data['udate'],$item['cdate']) > 0)
- 				{
- 					$data['udate'] = $item['cdate'];
- 				}
- 				}
- 				if (isset($data['udate']) && isset($item['udate']))
- 				{
- 				if (Util\getDatesDiff($data['udate'],$item['udate']) > 0)
- 				{
- 					$data['udate'] = $item['udate'];
- 				}
- 				}
- 			}
-
-       if ($fileCount ==0)
- 			{
- 				$fileInfo = $fileInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '</a></td></tr>'; //need to change this to be parameterized - multiple forms vs one
- 			}
- 			else
- 			{
- 				$fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$fileInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a '. (($fileCount > 4)?'style="display:none"':'') .' class="bt item-action click" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" action="upload" uid="'.User::getId().'"">   <img alt="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" class="i16u icon-plus"  action="upload" id="'.User::getId().'" src="/css/i/s.gif"> </a></td></tr>';
- 			}
+     if ($fileCount ==0)
+     {
+       $fileInfo = $fileInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="upload" uid="'.User::getId().'">'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '</a></td></tr>'; //need to change this to be parameterized - multiple forms vs one
+     }
+     else
+     {
+       $fileInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$fileInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a '. (($fileCount > 4)?'style="display:none"':'') .' class="bt item-action click" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" action="upload" uid="'.User::getId().'"">   <img alt="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" title="'. $this->trans('Upload') . ' '. $this->trans('ConsentForm'). '" class="i16u icon-plus"  action="upload" id="'.User::getId().'" src="/css/i/s.gif"> </a></td></tr>';
+     }
 
 
-       if ($emergencyContactCount ==0)
- 			{
- 				$emergencyContactInfo = $emergencyContactInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="247090" myPid="'.$data['id'].'">Add Emergency Contact/Next of Kin</a></td></tr>';
- 			}
- 			else
- 			{
- 				$emergencyContactInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$emergencyContactInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Emergency Concat" action="addContent" templateId="247090" myPid="'.$data['id'].'">   <img alt="Add Emergency Contact" title="Add Emergency Contact/Next of Kin" class="i16u icon-plus"  action="addContent" templateId="247090" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
- 			}
+     if ($emergencyContactCount ==0)
+     {
+       $emergencyContactInfo = $emergencyContactInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="247090" myPid="'.$data['id'].'">Add Emergency Contact/Next of Kin</a></td></tr>';
+     }
+     else
+     {
+       $emergencyContactInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$emergencyContactInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Emergency Concat" action="addContent" templateId="247090" myPid="'.$data['id'].'">   <img alt="Add Emergency Contact" title="Add Emergency Contact/Next of Kin" class="i16u icon-plus"  action="addContent" templateId="247090" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
+     }
 
- 			if ($familyMemberCount ==0)
- 			{
- 				$familyMemberInfo = $familyMemberInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="289" myPid="'.$data['id'].'">'.$this->trans('AddFamilyMember').'</a></td></tr>';
- 			}
- 			else
- 			{
- 				$familyMemberInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$familyMemberInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Family Member" action="addContent" templateId="289" myPid="'.$data['id'].'">   <img alt="Add Family Member" title="Add Family Member" class="i16u icon-plus"  action="addContent" templateId="289" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
- 			}
- 			if ($addressCount ==0)
- 			{
- 				$addressInfo = $addressInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr><td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="311" myPid="'.$data['id'].'">'.$this->trans('AddAddress').'</a></td></tr>';
- 			}
- 			else
- 			{
- 				$addressInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$addressInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Address" action="addContent" templateId="311" myPid="'.$data['id'].'">   <img alt="Add Address" title="Add Address" class="i16u icon-plus"  action="addContent" templateId="311" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
- 			}
- 			$emergencyContactInfo = $emergencyContactInfo . '</table>';
- 			$familyMemberInfo = $familyMemberInfo . '</table>';
-       $fileInfo = $fileInfo.'</table>';
- 			$addressInfo = $addressInfo . '</table>';
-         $userService = Cache::get('symfony.container')->get('casebox_core.service.user');
+     if ($familyMemberCount ==0)
+     {
+       $familyMemberInfo = $familyMemberInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr> <td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="289" myPid="'.$data['id'].'">'.$this->trans('AddFamilyMember').'</a></td></tr>';
+     }
+     else
+     {
+       $familyMemberInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$familyMemberInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Family Member" action="addContent" templateId="289" myPid="'.$data['id'].'">   <img alt="Add Family Member" title="Add Family Member" class="i16u icon-plus"  action="addContent" templateId="289" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
+     }
+     if ($addressCount ==0)
+     {
+       $addressInfo = $addressInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr><td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="311" myPid="'.$data['id'].'">'.$this->trans('AddAddress').'</a></td></tr>';
+     }
+     else
+     {
+       $addressInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$addressInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Address" action="addContent" templateId="311" myPid="'.$data['id'].'">   <img alt="Add Address" title="Add Address" class="i16u icon-plus"  action="addContent" templateId="311" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
+     }
+     $emergencyContactInfo = $emergencyContactInfo . '</table>';
+     $familyMemberInfo = $familyMemberInfo . '</table>';
+     $fileInfo = $fileInfo.'</table>';
+     $addressInfo = $addressInfo . '</table>';
+       $userService = Cache::get('symfony.container')->get('casebox_core.service.user');
 
-         //create date and status row
-         $ed = $this->getEndDate();
+       //create date and status row
+       $ed = $this->getEndDate();
 
-         if (!empty($ed)) {
-             $endDate = Util\formatTaskTime($ed, !$sd['task_allday']);
+       if (!empty($ed)) {
+           $endDate = Util\formatTaskTime($ed, !$sd['task_allday']);
 
-             $dateLines = '<tr><td class="prop-key">'.$this->trans('Due').':</td><td>'.$endDate.'</td></tr>';
-             // $dateLine .= '<div class="date">' . $endDate . '</div>';
-         }
+           $dateLines = '<tr><td class="prop-key">'.$this->trans('Due').':</td><td>'.$endDate.'</td></tr>';
+           // $dateLine .= '<div class="date">' . $endDate . '</div>';
+       }
 
-         if (!empty($sd['task_d_closed'])) {
-             $dateLines .= '<tr><td class="prop-key">'.
-                 $this->trans('Completed').':</td><td>'.
-                 Util\formatAgoTime($sd['task_d_closed']).'</td></tr>';
-         }
+       if (!empty($sd['task_d_closed'])) {
+           $dateLines .= '<tr><td class="prop-key">'.
+               $this->trans('Completed').':</td><td>'.
+               Util\formatAgoTime($sd['task_d_closed']).'</td></tr>';
+       }
 
-         if (!empty($sd['transferred_dt'])) {
-         	$dateLines .= '<tr><td class="prop-key">'.
-         			$this->trans('Transitioned').':</td><td>'.
-         			Util\formatAgoTime($sd['transferred_dt']).'</td></tr>';
-         }
-
-
-         // Create owner row
-         $v = $this->getOwner();
-         if (!empty($v)) {
-             $cn = User::getDisplayName($v);
-             $cdt = Util\formatAgoTime($data['cdate']);
-             $cd = Util\formatDateTimePeriod(
-                 $data['cdate'],
-                 null,
-                 @Cache::get('session')->get('user')['cfg']['timezone']
-             );
-
-             $ownerRow = '<tr><td class="prop-key" width="15%" style="width:15%">'.$this->trans(
-                     'IntakeRepresentative'
-                 ).':</td><td width="35%">'.
-                 '<table  style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%" class="prop-val people"><tbody>'.
-                 '<tr><td class="user"><img alt="User Photo" class="photo32" src="'.
-                 $coreUri.'photo/'.$v.'.jpg?32='.$userService->getPhotoParam($v).
-                 '" style="width:32px; height: 32px" alt="'.$cn.'" title="'.$cn.'"></td>'.
-                 '<td>'.$cn.'<p class="gr">Intake: '.
-                 '<span class="dttm" title="'.$cd.'">'.$cdt.'</span></p></td></tr>';
-         }
-
-         // Create assignee row
-         $v = $this->getFieldValue('assigned', 0);
- 		if (empty($v['value'])) {
- 			$assigneeRow .= '<td class="prop-key" width="15%" style="width:15%">'.$this->trans(
-                     'CaseManager'
-                 ).':</td><td width="35%"><table  style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%" class="prop-val"><tbody><tr><td>'.
- 				'<a class="bt item-action click" action="assign" uid="'.User::getId().
- 				'">' . $this->trans('AssignClientToMe') .'</a></td>';
- 		}
-         else // (!empty($v['value'])) {
- 			{
-             $assigneeRow .= '<td class="prop-key" width="15%" style="width:15%">'.$this->trans(
-                     'CaseManager'
-                 ).':</td><td width="35%"><table class="prop-val people"><tbody>';
-             $v = Util\toNumericArray($v['value']);
-
-             $dateFormat = Util\getOption('long_date_format').' H:i:s';
-
-             foreach ($v as $id) {
-                 $un = User::getDisplayName($id);
-                 $completed = !empty($sd['task_d_closed']);
-                 $transferred = !empty($sd['transferred_dt']);
-
-                 $cdt = ''; //completed date title
-                 $dateText = '';
-
-                 if ($transferred) {
-                 	$tdt = Util\formatMysqlDate($sd['transferred_dt'], $dateFormat);
-                 	$tdateText = ': '.Util\formatAgoTime($sd['transferred_dt']);
-                 }
-
-                 if ($completed) {
-                     $cdt = Util\formatMysqlDate($sd['task_d_closed'], $dateFormat);
-                     $dateText = ': '.Util\formatAgoTime($sd['task_d_closed']);
-                 }
- 				else
- 				{
- 					$dateText = '' .Util\formatAgoTime($data['udate']).$contentRow;
- 				}
-
-                 $assigneeRow .= '<td class="user"><div style="position: relative">'.
-                     '<img alt="User Photo" class="photo32" src="'.$coreUri.'photo/'.$id.'.jpg?32='.$userService->getPhotoParam($id).
-                     '" style="width:32px; height: 32px" alt="'.$un.'" title="'.$un.'">'.
-                     ($completed ? '<img class="done icon icon-tick-circle" src="/css/i/s.gif" />' : "").
-                     '</div></td><td>'.$un.''.
-                     '<p class="gr" title="'.$cdt.'">'.(
-                     $transferred
-                         ? $this->trans('Transitioned').$tdateText.'<br/>'
-                         : ''
-                     ).(
-                     $completed
-                         ? $this->trans('Closed').$dateText
-                         : $this->trans('LastAction').': '.$dateText
-                     ).'</td></tr>';
-             }
-         }
+       if (!empty($sd['transferred_dt'])) {
+         $dateLines .= '<tr><td class="prop-key">'.
+             $this->trans('Transitioned').':</td><td>'.
+             Util\formatAgoTime($sd['transferred_dt']).'</td></tr>';
+       }
 
 
-         //Log Current Time, ECMRS ID of record, Full name of record, User ID, User Full name, User role
-         $owner = $this->getOwner();
-         $userData = User::getUserData($owner);
-         $data = $this->getData();
+       // Create owner row
+       $v = $this->getOwner();
+       if (!empty($v)) {
+           $cn = User::getDisplayName($v);
+           $cdt = Util\formatAgoTime($data['cdate']);
+           $cd = Util\formatDateTimePeriod(
+               $data['cdate'],
+               null,
+               @Cache::get('session')->get('user')['cfg']['timezone']
+           );
 
-         $userRole = $userData['groups'];
-         $userRole = str_replace('315', 'Administrator', $userRole);
-         $userRole = str_replace('22', 'Worker', $userRole);
-         $userRole = str_replace('30', 'Supervisor', $userRole);
-         $userRole = str_replace('34', 'Resource Manager', $userRole);
+           $ownerRow = '<tr><td class="prop-key" width="15%" style="width:15%">'.$this->trans(
+                   'IntakeRepresentative'
+               ).':</td><td width="35%">'.
+               '<table  style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%" class="prop-val people"><tbody>'.
+               '<tr><td class="user"><img alt="User Photo" class="photo32" src="'.
+               $coreUri.'photo/'.$v.'.jpg?32='.$userService->getPhotoParam($v).
+               '" style="width:32px; height: 32px" alt="'.$cn.'" title="'.$cn.'"></td>'.
+               '<td>'.$cn.'<p class="gr">Intake: '.
+               '<span class="dttm" title="'.$cd.'">'.$cdt.'</span></p></td></tr>';
+       }
 
-         Cache::get('symfony.container')->get('logger')->error(
- 			'Viewing:',
- 			array(
- 				'date' => date("Y/m/d"),
- 				'time' => date("h:i:sa"),
- 				'ecmrsId' => $data['id'],
- 				'userId' => User::getID(),
- 				'userFullName' => User::getDisplayName(User::getID()),
- 				'userRole' => $userRole
- 			)
- 		);
+       // Create assignee row
+       $v = $this->getFieldValue('assigned', 0);
+   if (empty($v['value'])) {
+     $assigneeRow .= '<td class="prop-key" width="15%" style="width:15%">'.$this->trans(
+                   'CaseManager'
+               ).':</td><td width="35%"><table  style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%" class="prop-val"><tbody><tr><td>'.
+       '<a class="bt item-action click" action="assign" uid="'.User::getId().
+       '">' . $this->trans('AssignClientToMe') .'</a></td>';
+   }
+       else // (!empty($v['value'])) {
+     {
+           $assigneeRow .= '<td class="prop-key" width="15%" style="width:15%">'.$this->trans(
+                   'CaseManager'
+               ).':</td><td width="35%"><table class="prop-val people"><tbody>';
+           $v = Util\toNumericArray($v['value']);
 
-       // Log into action_log table in the DB
-       $this->logViewAction('view',
-       array(
-         'template' => 'Disaster Survivor',
-         'date' => date("Y/m/d"),
-         'time' => date("h:i:sa"),
-         'survivorId' => $data['id'],
-         'survivorName' => $data['name'],
-         'userId' => User::getID(),
-         'userFullName' => User::getDisplayName(User::getID()),
-         'userRole' => $userRole
-       ));
+           $dateFormat = Util\getOption('long_date_format').' H:i:s';
 
-        $pb[0] = '<table class="obj-preview"><tbody>'.
-            $dateLines.
-            $ownerRow. '</tbody></table></td></tr><tr>'.
-            $assigneeRow. '</tbody></table></td></tr>'.
-            '<tbody></table>';
-        $pb[1] =
-            /*'<div width="100%">'.
-			'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr style="vertical-align:top"><td width="70%">'.
-			$demographicsLine.trim($femaLine, " - ").'<br/>'.
-			trim($emailLine.$addressLine, " - ").'<br/></td>'.
-			'<td width="30%" style="text-align:right;" align="right">'.$closureReason.'<a target="_new" href="get/?pdf='.$data['id'].'">' . $this->trans('PrintRecoveryPlan') .'</a></td></tr></table>';
-      */
+           foreach ($v as $id) {
+               $un = User::getDisplayName($id);
+               $completed = !empty($sd['task_d_closed']);
+               $transferred = !empty($sd['transferred_dt']);
+
+               $cdt = ''; //completed date title
+               $dateText = '';
+
+               if ($transferred) {
+                 $tdt = Util\formatMysqlDate($sd['transferred_dt'], $dateFormat);
+                 $tdateText = ': '.Util\formatAgoTime($sd['transferred_dt']);
+               }
+
+               if ($completed) {
+                   $cdt = Util\formatMysqlDate($sd['task_d_closed'], $dateFormat);
+                   $dateText = ': '.Util\formatAgoTime($sd['task_d_closed']);
+               }
+       else
+       {
+         $dateText = '' .Util\formatAgoTime($data['udate']).$contentRow;
+       }
+
+               $assigneeRow .= '<td class="user"><div style="position: relative">'.
+                   '<img alt="User Photo" class="photo32" src="'.$coreUri.'photo/'.$id.'.jpg?32='.$userService->getPhotoParam($id).
+                   '" style="width:32px; height: 32px" alt="'.$un.'" title="'.$un.'">'.
+                   ($completed ? '<img class="done icon icon-tick-circle" src="/css/i/s.gif" />' : "").
+                   '</div></td><td>'.$un.''.
+                   '<p class="gr" title="'.$cdt.'">'.(
+                   $transferred
+                       ? $this->trans('Transitioned').$tdateText.'<br/>'
+                       : ''
+                   ).(
+                   $completed
+                       ? $this->trans('Closed').$dateText
+                       : $this->trans('LastAction').': '.$dateText
+                   ).'</td></tr>';
+           }
+       }
+
+
+       //Log Current Time, ECMRS ID of record, Full name of record, User ID, User Full name, User role
+       $owner = $this->getOwner();
+       $userData = User::getUserData($owner);
+       $data = $this->getData();
+
+       $userRole = $userData['groups'];
+       $userRole = str_replace('315', 'Administrator', $userRole);
+       $userRole = str_replace('22', 'Worker', $userRole);
+       $userRole = str_replace('30', 'Supervisor', $userRole);
+       $userRole = str_replace('34', 'Resource Manager', $userRole);
+
+       Cache::get('symfony.container')->get('logger')->error(
+     'Viewing:',
+     array(
+       'date' => date("Y/m/d"),
+       'time' => date("h:i:sa"),
+       'ecmrsId' => $data['id'],
+       'userId' => User::getID(),
+       'userFullName' => User::getDisplayName(User::getID()),
+       'userRole' => $userRole
+     )
+   );
+
+     // Log into action_log table in the DB
+     $this->logViewAction('view',
+     array(
+       'template' => 'Disaster Survivor',
+       'date' => date("Y/m/d"),
+       'time' => date("h:i:sa"),
+       'survivorId' => $data['id'],
+       'survivorName' => $data['name'],
+       'userId' => User::getID(),
+       'userFullName' => User::getDisplayName(User::getID()),
+       'userRole' => $userRole
+     ));
+
+       $pb[0] = '<table class="obj-preview"><tbody>'.
+           $dateLines.
+           $ownerRow. '</tbody></table></td></tr><tr>'.
+           $assigneeRow. '</tbody></table></td></tr>'.
+           '<tbody></table>';
+       $pb[1] =
+           '<div width="100%">'.
+     '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%">
+     <tr style="vertical-align:top"><td width="70%" align="right"><a target="_new" href="get/?pdf='.$data['id'].'">' . $this->trans('PrintRecoveryPlan') .'</a></td></tr></table>';
+
+ $recoveryActions = [];
+       $flags = $this->getActionFlags();
+
+       foreach ($flags as $k => $v) {
+           if (!empty($v) && ($k == 'close' || $k == 'reopen')) {
+               $recoveryActions[] = "<a action=\"$k\" class=\"item-action ib-$k\">".$this->trans(ucfirst($k)).'</a>';
+           }
+       }
+
+       $recoveryActions = empty($recoveryActions) ? '' : '<div class="task-actions">'.implode(' ', $recoveryActions).'</div>';
+
+
+   // Create description row
+       $v = $this->getFieldValue('_checkpoint', 0);
+       if (!empty($v['value'])) {
+           $tf = $template->getField('_checkpoint');
+           $checklistLine = $template->formatValueForDisplay($tf, $v);
+       }
+
       $phone = '';
       $email = '';
       $address = '';
@@ -1424,6 +1441,7 @@ class FIDAStub extends CBObject
 
      $fematier = '';
      $fidastatus = '';
+     $modify = '';
      if (!empty($sd['fidastatus_s'])) {
        $fidastatus = $sd['fidastatus_s'];
      } else {
@@ -1435,6 +1453,27 @@ class FIDAStub extends CBObject
        $fematier = 'N/A';
      }
 
+     // Create description row
+     if ($fidastatus == "Convert to ECMRS Record") {
+       $v = $this->getFieldValue('identified_unmet_needs', 0);
+       if (!empty($v['value']) && $v['value'] != 246760) {
+           $tf = $template->getField('identified_unmet_needs');
+           $identifiedNeedsLine = $template->formatValueForDisplay($tf, $v);
+           $modify = '<a class="bt item-action click" action="edit"> MODIFY SELECTION </a>';
+       } else {
+           $identifiedNeedsLine = '<a class="bt item-action click" action="edit"><br> Select Self-Identified Needs </a>';
+       }
+
+       $v = $this->getFieldValue('at_risk_population', 0);
+       if (!empty($v['value']) && $v['value'] != 246760) {
+           $tf = $template->getField('at_risk_population');
+           $atRiskLine = $template->formatValueForDisplay($tf, $v);
+           $modify = '<a class="bt item-action click" action="edit"> MODIFY SELECTION </a>';
+       } else {
+           $atRiskLine = '<a class="bt item-action click" action="edit"><br> Select Self-Reported Special/At Risk Population </a>';
+       }
+     }
+
     $pb[8] =
       '<table class="obj-preview">
       <thead><tr><th colspan="4" align="left" style="padding: 8px; font-size: 12px; background-color: #F4F4F4">'."NEW INFORMATION FROM SUCCESSFUL CONTACT".'</th></tr></thead>
@@ -1442,12 +1481,10 @@ class FIDAStub extends CBObject
       '<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('FIDA Status') .':</td><td width="35%" style="width:35%" class="prop-val">'.$fidastatus.'</td>'.
       '<td class="prop-key" style="width:15%" width="15%">' . $this->trans('Fema Tier') .':</td><td class="prop-val" width="35%">'.$fematier.'</td></tr>'.
 
-      '<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('SpecialAtRiskPopulation') .':</td><td width="35%" style="width:35%" class="prop-val">'.$atRiskLine.'</td>'.
-      '<td class="prop-key" style="width:15%" width="15%">' . $this->trans('IdentifiedNeeds') .':</td><td class="prop-val" width="35%">'.$identifiedNeedsLine.'</td></tr>'.
+      '<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('SpecialAtRiskPopulation') .':</td><td width="35%">'.$modify.' '.$atRiskLine.'</td>'.
+      '<td class="prop-key" style="width:15%" width="15%">' . $this->trans('IdentifiedNeeds') .':</td><td width="35%">'.$modify.' '.$identifiedNeedsLine.'</td></tr>'.
       '<tbody></table>';
 		return $pb;
     }
-
-
 
 }

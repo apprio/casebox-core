@@ -105,10 +105,6 @@ Ext.define('CB.object.edit.Form', {
     }
 
     ,load: function(objectData) {
-      console.log(objectData);
-        this.api = CB_Objects.getPluginsData;
-        this.api(objectData, this.processLoadData, this);
-
         if(Ext.isEmpty(objectData)) {
             return;
         }

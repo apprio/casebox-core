@@ -47,7 +47,7 @@ class FIDAStub extends Base
             $rez = $this->getRootNodes();
         } else {
             switch ($this->lastNode->id) {
-                case 'cases':
+                case 'fida':
                     $rez = $this->getDepthChildren2();
                     break;
                 case 2:
@@ -90,16 +90,14 @@ class FIDAStub extends Base
                 }
         }
 
-        return 'none';
+        return $id;
     }
 
     protected function getRootNodes()
     {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-        $p['fq'][] = 'task_u_all:'.User::getId();
-        $p['fq'][] = 'task_status:(1 OR 2 OR 3)';
-        $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name';
+        $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s';
 		    $p['rows'] = 0;
 
         $s = new Search();
@@ -138,7 +136,7 @@ class FIDAStub extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s,phonenumber_s';
         $p['fq'] = $this->fq;
         $p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2 OR 5)';
@@ -148,31 +146,20 @@ class FIDAStub extends Base
             $p['rows'] = 0;
             $p['facet'] = true;
             $p['facet.field'] = [
-                '{!ex=task_u_assignee key=1assigned}task_u_assignee',
-                '{!ex=cid key=2cid}cid',
+                '{!ex=fidastatus_s key=fidastatus_s}fidastatus_s',
             ];
             $sr = $s->query($p);
             $rez = ['data' => []];
-            if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
-                $rez['data'][] = [
-                    'name' => $this->trans('AssignedToMe').$this->renderCount(
-                            $sr['facets']->facet_fields->{'1assigned'}->{$userId}
-                        ),
-                    'id' => $this->getId(2),
-                    'iconCls' => 'icon-user',
-                    'has_childs' => true,
-                ];
-            }
-            if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
-                $rez['data'][] = [
-                    'name' => $this->trans('CreatedByMe').$this->renderCount(
-                            $sr['facets']->facet_fields->{'2cid'}->{$userId}
-                        ),
-                    'id' => $this->getId(3),
-                    'iconCls' => 'icon-user',
-                    'has_childs' => true,
-                ];
-            }
+        if (!empty($sr['facets']->facet_fields->{'fidastatus_s'})) {
+				foreach ($sr['facets']->facet_fields->{'fidastatus_s'} as $k => $v) {
+					$r = [
+						'name' => $k.$this->renderCount($v),
+						'id' => $this->getId(str_replace('/', '&&', $k)),
+						'iconCls' => 'icon-briefcase',
+					];
+					$rez['data'][] = $r;
+				  }
+        }
 
             return $rez;
         }
@@ -195,7 +182,7 @@ class FIDAStub extends Base
         } else {
             $p['fq'][] = 'cid:'.$userId;
         }
-		$p['fl'] ='id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		$p['fl'] ='id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s';
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
 
@@ -275,7 +262,7 @@ class FIDAStub extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s';
 
         $parent = $this->lastNode->parent;
 
@@ -303,9 +290,7 @@ class FIDAStub extends Base
                 return $this->getAssigneeUsers();
                 break;
             default:
-                if (substr($this->lastNode->id, 0, 3) == 'au_') {
-                    return $this->getAssigneeTasks();
-                }
+                return $this->getAssigneeTasks();
         }
 
         if (@$this->requestParams['from'] == 'tree') {
@@ -344,7 +329,7 @@ class FIDAStub extends Base
                 $r = [
                     'name' => $this->getName($k).$this->renderCount($v),
                     'id' => $this->getId($k),
-                    'iconCls' => 'icon-user',
+                    'iconCls' => 'icon-briefcase',
                 ];
 
                 if (!empty($p['showFoldersContent']) ||
@@ -364,12 +349,9 @@ class FIDAStub extends Base
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
 
-        $p['fq'][] = 'cid:'.User::getId();
-        $p['fq'][] = 'task_status:[1 TO 2]';
-
-        $user_id = substr($this->lastNode->id, 3);
-        $p['fq'][] = 'task_u_ongoing:'.$user_id;
-		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s';
+        $user_id = $this->lastNode->id;
+        $p['fq'][] = 'fidastatus_s:('.str_replace('&&','/',str_replace(' ', '\ ', $user_id)).')';
+		    $p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,phonenumber_s,location_type_s,_phonenumber';
         $s = new Search();
 
         $sr = $s->query($p);
