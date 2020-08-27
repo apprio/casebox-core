@@ -1339,7 +1339,7 @@ class FIDAStub extends CBObject
    );
 
      // Log into action_log table in the DB
-     $this->logViewAction('view',
+     $this->logDataAction('view',
      array(
        'template' => 'Disaster Survivor',
        'date' => date("Y/m/d"),

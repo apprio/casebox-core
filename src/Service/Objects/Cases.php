@@ -120,6 +120,33 @@ class Cases extends CBObject
         }
         $this->data = $p;
 
+        // Log FEMA Tier
+        $owner = $this->getOwner();
+        $userData = User::getUserData($owner);
+        if (isset($p['sys_data']['fematier'])) {
+          $oldtier = $p['sys_data']['fematier'];
+        } else {
+          $oldtier = '';
+        }
+
+        $userRole = $userData['groups'];
+        $userRole = str_replace('315', 'Administrator', $userRole);
+        $userRole = str_replace('22', 'Worker', $userRole);
+        $userRole = str_replace('30', 'Supervisor', $userRole);
+        $userRole = str_replace('34', 'Resource Manager', $userRole);
+
+        $this->logDataAction('fematier',
+          array(
+            'date' => date("Y/m/d"),
+            'time' => date("h:i:sa"),
+            'survivorId' => $p['id'],
+            'survivorName' => $p['data']['_lastname'] . ', ' . $p['data']['_firstname'],
+            'fematier' => $p['data']['_fematier'],
+            'prevfematier' => $oldtier,
+            'userId' => User::getID(),
+            'userFullName' => User::getDisplayName(User::getID()),
+          ));
+
         $this->setParamsFromData($p);
 
         return parent::update($p);
@@ -1512,7 +1539,7 @@ class Cases extends CBObject
 		);
 
       // Log into action_log table in the DB
-      $this->logViewAction('view',
+      $this->logDataAction('view',
       array(
         'template' => 'Disaster Survivor',
         'date' => date("Y/m/d"),
