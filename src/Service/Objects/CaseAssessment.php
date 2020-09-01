@@ -20,42 +20,44 @@ class CaseAssessment extends CBObject
         if ($p === false) {
             $p = $this->data;
         }
-		$this->data = $p;
+				$this->data = $p;
 
 				//Log FEMA Tier
-				$caseId = $p['pid'];
-				if ($caseId) {
-					$case = Objects::getCachedObject($caseId);
-					$caseData = &$case->data;
-					$caseSd = &$caseData['sys_data'];
+				if ($p['data']['_notetype'] == 523)
+				{
+					$caseId = $p['pid'];
+					if ($caseId) {
+						$case = Objects::getCachedObject($caseId);
+						$caseData = &$case->data;
+						$caseSd = &$caseData['sys_data'];
 
-	        $owner = $this->getOwner();
-	        $userData = User::getUserData($owner);
-	        if (isset($caseSd['solr']['fematier'])) {
-	          $oldtier = $caseSd['solr']['fematier'];
-	        } else {
-	          $oldtier = '';
-	        }
+		        $owner = $this->getOwner();
+		        $userData = User::getUserData($owner);
+		        if (isset($caseSd['solr']['fematier'])) {
+		          $oldtier = $caseSd['solr']['fematier'];
+		        } else {
+		          $oldtier = '';
+		        }
 
-	        $userRole = $userData['groups'];
-	        $userRole = str_replace('315', 'Administrator', $userRole);
-	        $userRole = str_replace('22', 'Worker', $userRole);
-	        $userRole = str_replace('30', 'Supervisor', $userRole);
-	        $userRole = str_replace('34', 'Resource Manager', $userRole);
+		        $userRole = $userData['groups'];
+		        $userRole = str_replace('315', 'Administrator', $userRole);
+		        $userRole = str_replace('22', 'Worker', $userRole);
+		        $userRole = str_replace('30', 'Supervisor', $userRole);
+		        $userRole = str_replace('34', 'Resource Manager', $userRole);
 
-	        $this->logDataAction('fematier',
-	          array(
-	            'date' => date("Y/m/d"),
-	            'time' => date("h:i:sa"),
-	            'survivorId' => $caseId,
-	            'survivorName' => $caseData['data']['_lastname'] . ', ' . $caseData['data']['_firstname'],
-	            'fematier' => $p['data']['_notetype']['childs']['_fematier'],
-	            'prevfematier' => $oldtier,
-	            'userId' => User::getID(),
-	            'userFullName' => User::getDisplayName(User::getID()),
-	          ));
+		        $this->logDataAction('fematier',
+		          array(
+		            'date' => date("Y/m/d"),
+		            'time' => date("h:i:sa"),
+		            'survivorId' => $caseId,
+		            'survivorName' => $caseData['data']['_lastname'] . ', ' . $caseData['data']['_firstname'],
+		            'fematier' => $p['data']['_notetype']['childs']['_fematier'],
+		            'prevfematier' => $oldtier,
+		            'userId' => User::getID(),
+		            'userFullName' => User::getDisplayName(User::getID()),
+		          ));
+					}
 				}
-
 		$this->setParamsFromData($p);
 
 		return parent::create($p);
@@ -238,7 +240,7 @@ class CaseAssessment extends CBObject
 					                                'data' => [
 					                                    'ecmrs_id' => $ecmrsId, // id
 					                                    'survivor_name' => $name, // name
-					                                    'task_type' => 'Follow Up: ' . $tier, // Follow Up: Tier
+					                                    'task_type' => 248276,
 					                                    'time_expended' => '',
 					                                    'case' => $ecmrsId, // Linked case
 					                                    'task_status' => 1906, // Open
@@ -401,7 +403,7 @@ class CaseAssessment extends CBObject
 						                'data' => [
 						                	'ecmrs_id' => $ecmrsId, // id
 						                    'survivor_name' => $name, // name
-						                    'task_type' => 'Follow Up: Appointment', // Follow Up: Tier
+						                    'task_type' => 248277,
 						                    'time_expended' => '',
 						                    'case' => $ecmrsId, // Linked case
 						                    'task_status' => 1906, // Open

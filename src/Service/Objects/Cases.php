@@ -135,17 +135,29 @@ class Cases extends CBObject
         $userRole = str_replace('30', 'Supervisor', $userRole);
         $userRole = str_replace('34', 'Resource Manager', $userRole);
 
-        $this->logDataAction('fematier',
-          array(
-            'date' => date("Y/m/d"),
-            'time' => date("h:i:sa"),
-            'survivorId' => $p['id'],
-            'survivorName' => $p['data']['_lastname'] . ', ' . $p['data']['_firstname'],
-            'fematier' => $p['data']['_fematier'],
-            'prevfematier' => $oldtier,
-            'userId' => User::getID(),
-            'userFullName' => User::getDisplayName(User::getID()),
-          ));
+        if ($p['data']['_fematier'] == 1325) {
+          $newtier = 'Tier 1';
+        } elseif ($p['data']['_fematier'] == 1326) {
+          $newtier = 'Tier 2';
+        } elseif ($p['data']['_fematier'] == 1327) {
+          $newtier = 'Tier 3';
+        } else {
+          $newtier = 'Tier 4';
+        }
+
+        if ($oldtier != $newtier) {
+          $this->logDataAction('fematier',
+            array(
+              'date' => date("Y/m/d"),
+              'time' => date("h:i:sa"),
+              'survivorId' => $p['id'],
+              'survivorName' => $p['data']['_lastname'] . ', ' . $p['data']['_firstname'],
+              'fematier' => $newtier,
+              'prevfematier' => $oldtier,
+              'userId' => User::getID(),
+              'userFullName' => User::getDisplayName(User::getID()),
+            ));
+        }
 
         $this->setParamsFromData($p);
 
@@ -475,7 +487,7 @@ class Cases extends CBObject
                     'data' => [
                         'ecmrs_id' => $ecmrsId, // id
                         'survivor_name' => $name, // name
-                        'task_type' => 'FEMA Registration', // Follow Up: Tier
+                        'task_type' => 248280,
                         'time_expended' => '',
                         'case' => $ecmrsId, // Linked case
                         'task_status' => 1906, // Open
@@ -504,7 +516,7 @@ class Cases extends CBObject
                     'data' => [
                         'ecmrs_id' => $ecmrsId, // id
                         'survivor_name' => $name, // name
-                        'task_type' => 'FEMA Registration', // Follow Up: Tier
+                        'task_type' => 248281,
                         'time_expended' => '',
                         'case' => $ecmrsId, // Linked case
                         'task_status' => 1906, // Open
@@ -551,7 +563,7 @@ class Cases extends CBObject
                     'data' => [
                         'ecmrs_id' => $ecmrsId, // id
                         'survivor_name' => $name, // name
-                        'task_type' => 'Follow Up', // Follow Up: Tier
+                        'task_type' => 248278,
                         'time_expended' => '',
                         'case' => $ecmrsId, // Linked case
                         'task_status' => 1906, // Open
