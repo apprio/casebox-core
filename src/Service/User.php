@@ -400,6 +400,20 @@ class User
 
         $p['sex'] = (strlen($p['sex']) > 1) ? null : $p['sex'];
 
+        if ($p['data']['user_role']['value'] == 248274) {
+          if ($p['data']['user_role']['childs']['assignedworker']) {
+            // If assignedworkers are selected, assigned logged user's id in the assignedworker's data as their assignedsupervisor
+            $workerId = explode(',' , $p['data']['user_role']['childs']['assignedworker']);
+            foreach ($workerId as $worker) {
+              $params = [
+                  'id' => $worker,
+                  'data' => Util\jsonEncode(['assignedsupervisor' => $p['id']])
+              ];
+              DM\Users::update($params);
+            }
+          }
+        }
+
         if (!empty($p['email'])) {
             if (!filter_var($p['email'], FILTER_VALIDATE_EMAIL)) {
                 return ['success' => false, 'msg' => 'Invalid email address'];
