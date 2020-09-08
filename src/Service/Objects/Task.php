@@ -270,7 +270,7 @@ class Task extends CBObject
     /**
      * Mark the task active
      * @return void
-     */
+     *//*
     public function markActive()
     {
         $d = &$this->data;
@@ -279,7 +279,7 @@ class Task extends CBObject
         unset($sd['task_d_closed']);
 
         $this->setParamsFromData($d);
-    }
+    }*/
 
     /**
      * Mark the task active, reset done user list and update into db

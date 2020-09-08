@@ -2040,7 +2040,7 @@ class CBObject
         }
     }
 
-    protected function logViewAction($type, $data)
+    protected function logDataAction($type, $data)
     {
     	if (!Cache::get('disable_logs', false)) {
     		$uid = User::getId();

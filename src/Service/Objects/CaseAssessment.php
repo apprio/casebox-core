@@ -7,6 +7,7 @@ use Casebox\CoreBundle\Service\Objects;
 use Casebox\CoreBundle\Service\Util;
 use Casebox\CoreBundle\Service\Solr\Client;
 use Casebox\CoreBundle\Service\DataModel as DM;
+use Casebox\CoreBundle\Service\User;
 
 /**
  * Template class
@@ -15,10 +16,48 @@ class CaseAssessment extends CBObject
 {
 	public function create($p = false)
     {
+
         if ($p === false) {
             $p = $this->data;
         }
-		$this->data = $p;
+				$this->data = $p;
+
+				//Log FEMA Tier
+				if ($p['data']['_notetype'] == 523)
+				{
+					$caseId = $p['pid'];
+					if ($caseId) {
+						$case = Objects::getCachedObject($caseId);
+						$caseData = &$case->data;
+						$caseSd = &$caseData['sys_data'];
+
+		        $owner = $this->getOwner();
+		        $userData = User::getUserData($owner);
+		        if (isset($caseSd['solr']['fematier'])) {
+		          $oldtier = $caseSd['solr']['fematier'];
+		        } else {
+		          $oldtier = '';
+		        }
+
+		        $userRole = $userData['groups'];
+		        $userRole = str_replace('315', 'Administrator', $userRole);
+		        $userRole = str_replace('22', 'Worker', $userRole);
+		        $userRole = str_replace('30', 'Supervisor', $userRole);
+		        $userRole = str_replace('34', 'Resource Manager', $userRole);
+
+		        $this->logDataAction('fematier',
+		          array(
+		            'date' => date("Y/m/d"),
+		            'time' => date("h:i:sa"),
+		            'survivorId' => $caseId,
+		            'survivorName' => $caseData['data']['_lastname'] . ', ' . $caseData['data']['_firstname'],
+		            'fematier' => $p['data']['_notetype']['childs']['_fematier'],
+		            'prevfematier' => $oldtier,
+		            'userId' => User::getID(),
+		            'userFullName' => User::getDisplayName(User::getID()),
+		          ));
+					}
+				}
 		$this->setParamsFromData($p);
 
 		return parent::create($p);
@@ -116,7 +155,7 @@ class CaseAssessment extends CBObject
 		$objectId = isset($p['id'])?$p['id']:null;
 
 		if ($caseId) {
-            $case = Objects::getCachedObject($caseId);
+      $case = Objects::getCachedObject($caseId);
 			$caseData = &$case->data;
 			$caseSd = &$caseData['sys_data'];
 
@@ -130,7 +169,7 @@ class CaseAssessment extends CBObject
 					$case->markClosed();
 				}
 				if ($p['data']['_notetype']['value'] == 523) //FEMA tier
-				{
+				{ //print_r($p);
 					$femaTier = $p['data']['_notetype']['childs']['_fematier'];
 					$caseData['data']['_fematier'] = $femaTier;
 					$caseSd['fematier_i'] = $femaTier;
@@ -201,7 +240,7 @@ class CaseAssessment extends CBObject
 					                                'data' => [
 					                                    'ecmrs_id' => $ecmrsId, // id
 					                                    'survivor_name' => $name, // name
-					                                    'task_type' => 'Follow Up: ' . $tier, // Follow Up: Tier
+					                                    'task_type' => 248276,
 					                                    'time_expended' => '',
 					                                    'case' => $ecmrsId, // Linked case
 					                                    'task_status' => 1906, // Open
@@ -364,7 +403,7 @@ class CaseAssessment extends CBObject
 						                'data' => [
 						                	'ecmrs_id' => $ecmrsId, // id
 						                    'survivor_name' => $name, // name
-						                    'task_type' => 'Follow Up: Appointment', // Follow Up: Tier
+						                    'task_type' => 248277,
 						                    'time_expended' => '',
 						                    'case' => $ecmrsId, // Linked case
 						                    'task_status' => 1906, // Open

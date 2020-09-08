@@ -43,7 +43,7 @@ Ext.define('CB.NoteUploader', {
 
                 ]
             }
-        );		
+        );
         this.callParent(arguments);
 
         /* autoclose form if no activity in 5 minutes */
@@ -118,6 +118,7 @@ Ext.define('CB.NoteForm', {
         this.callParent(arguments);
 
         this.grid = this.items.getAt(0);
+        //this.grid.templateStore.data.items[3].hidden = true;
 
         this.enableBubble(['verify']);
     }
@@ -130,8 +131,46 @@ Ext.define('CB.NoteForm', {
             for (var i = 0; i < data.assocObjects.length; i++) {
                 data.assocObjects[i].iconCls = getItemIcon(data.assocObjects[i]);
             }
+            if (!data.assocObjects.includes({id:248273}) || !data.assocObjects.includes({id:248273})) {
+              if (App.loginData.groups == '22'){
+                // Worker Group, load assigned IDCM Supervisor
+                data.assocObjects.push({id: 248273, name: 'IDCM Worker'})
+                data.data.user_role = {value: 248273};
+                if (App.loginData.data.assignedsupervisor) {
+                  data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
+                }
+              } else if (App.loginData.groups == '30') {
+                // Supervisor Group, assign IDCM Workers
+                data.assocObjects.push({id: 248274, name: 'IDCM Worker Supervisor'});
+                data.data.user_role = {value: 248274};
+                if (App.loginData.data.user_role.childs.assignedworker) {
+                  data.data.user_role.childs = {assignedworker: App.loginData.data.user_role.childs.assignedworker};
+                }
+              }
+            }
             this.objectsStore.loadData(data.assocObjects);
             delete data.assocObjects;
+        } else {
+          if (App.loginData.groups == '22'){
+            // Worker Group, load assigned IDCM Supervisor
+            data.assocObjects = [];
+            data.assocObjects.push({id: 248273, name: 'IDCM Worker'});
+            data.data.user_role = {value: 248273};
+            if (App.loginData.data.assignedsupervisor) {
+              data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
+            }
+          } else if (App.loginData.groups == '30') {
+            // Supervisor Group, assign IDCM Workers
+            data.assocObjects = [];
+            data.assocObjects.push({id: 248274, name: 'IDCM Worker Supervisor'});
+            data.data.user_role = {value: 248274};
+            if (App.loginData.data.user_role) {
+              data.data.user_role.childs = {assignedworker: App.loginData.data.user_role.childs.assignedworker};
+            }
+          }
+
+          this.objectsStore.loadData(data.assocObjects);
+          delete data.assocObjects;
         }
 
         if(Ext.isDefined(data.language_id)) {
@@ -195,7 +234,7 @@ Ext.define('CB.NoteWindow', {
     // ,cls: 'upload-btn'
 
     ,initComponent: function(){
-       
+
 
         Ext.apply(this, {
             text: L.UserDetails
