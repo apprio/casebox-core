@@ -131,7 +131,7 @@ Ext.define('CB.NoteForm', {
             for (var i = 0; i < data.assocObjects.length; i++) {
                 data.assocObjects[i].iconCls = getItemIcon(data.assocObjects[i]);
             }
-            if (!data.assocObjects.includes({id:248273}) || !data.assocObjects.includes({id:248273})) {
+            if (!data.assocObjects.includes({id:248273}) || !data.assocObjects.includes({id:248274})) {
               if (App.loginData.groups == '22'){
                 // Worker Group, load assigned IDCM Supervisor
                 data.assocObjects.push({id: 248273, name: 'IDCM Worker'})
@@ -211,7 +211,8 @@ Ext.define('CB.NoteForm', {
     }
 
     ,onResetClick: function(){
-        this.getForm().reset();
+        this.getForm().setValues('');
+        this.grid.reload();
         this.loadData(this.data);
     }
 
