@@ -23,41 +23,44 @@ class CaseAssessment extends CBObject
 				$this->data = $p;
 
 				//Log FEMA Tier
-				if ($p['data']['_notetype'] == 523)
-				{
-					$caseId = $p['pid'];
-					if ($caseId) {
-						$case = Objects::getCachedObject($caseId);
-						$caseData = &$case->data;
-						$caseSd = &$caseData['sys_data'];
+				if (isset($p['data']['_notetype'])){
+					if ($p['data']['_notetype'] == 523)
+					{
+						$caseId = $p['pid'];
+						if ($caseId) {
+							$case = Objects::getCachedObject($caseId);
+							$caseData = &$case->data;
+							$caseSd = &$caseData['sys_data'];
 
-		        $owner = $this->getOwner();
-		        $userData = User::getUserData($owner);
-		        if (isset($caseSd['solr']['fematier'])) {
-		          $oldtier = $caseSd['solr']['fematier'];
-		        } else {
-		          $oldtier = '';
-		        }
+			        $owner = $this->getOwner();
+			        $userData = User::getUserData($owner);
+			        if (isset($caseSd['solr']['fematier'])) {
+			          $oldtier = $caseSd['solr']['fematier'];
+			        } else {
+			          $oldtier = '';
+			        }
 
-		        $userRole = $userData['groups'];
-		        $userRole = str_replace('315', 'Administrator', $userRole);
-		        $userRole = str_replace('22', 'Worker', $userRole);
-		        $userRole = str_replace('30', 'Supervisor', $userRole);
-		        $userRole = str_replace('34', 'Resource Manager', $userRole);
+			        $userRole = $userData['groups'];
+			        $userRole = str_replace('315', 'Administrator', $userRole);
+			        $userRole = str_replace('22', 'Worker', $userRole);
+			        $userRole = str_replace('30', 'Supervisor', $userRole);
+			        $userRole = str_replace('34', 'Resource Manager', $userRole);
 
-		        $this->logDataAction('fematier',
-		          array(
-		            'date' => date("Y/m/d"),
-		            'time' => date("h:i:sa"),
-		            'survivorId' => $caseId,
-		            'survivorName' => $caseData['data']['_lastname'] . ', ' . $caseData['data']['_firstname'],
-		            'fematier' => $p['data']['_notetype']['childs']['_fematier'],
-		            'prevfematier' => $oldtier,
-		            'userId' => User::getID(),
-		            'userFullName' => User::getDisplayName(User::getID()),
-		          ));
+			        $this->logDataAction('fematier',
+			          array(
+			            'date' => date("Y/m/d"),
+			            'time' => date("h:i:sa"),
+			            'survivorId' => $caseId,
+			            'survivorName' => $caseData['data']['_lastname'] . ', ' . $caseData['data']['_firstname'],
+			            'fematier' => $p['data']['_notetype']['childs']['_fematier'],
+			            'prevfematier' => $oldtier,
+			            'userId' => User::getID(),
+			            'userFullName' => User::getDisplayName(User::getID()),
+			          ));
+						}
 					}
 				}
+
 		$this->setParamsFromData($p);
 
 		return parent::create($p);
@@ -425,11 +428,11 @@ class CaseAssessment extends CBObject
 			//Assessments
 			if (!empty($p['data']['_assessmentdate']))
 			{
-				$caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);
+				/*$caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);
 				if (!in_array($templateId, $caseSd['assessments_completed']))
 				{
 					$caseSd['assessments_completed'][] = $templateId;
-				}
+				}*/
 			}
 			if (!empty($p['data']['_referralneeded'])) { //assessment
 			  /*  $caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);
@@ -439,6 +442,15 @@ class CaseAssessment extends CBObject
 				}*/
 				if ($p['data']['_referralneeded']['value'] == 686 || $p['data']['_referralneeded'] == 686)
 				{
+				if (isset($caseSd['referrals_needed'])) {
+					if (is_null($caseSd['referrals_needed'])) {
+						$caseSd['referrals_needed'] = [];
+					}
+				}
+				else {
+					$caseSd['referrals_needed'] = [];
+				}
+
 				if (!in_array($templateId, $caseSd['referrals_needed'])) {
 					$caseSd['referrals_needed'][] = $templateId;
 					if (!empty($p['data']['_referralneeded']['childs']['_referralservice']))

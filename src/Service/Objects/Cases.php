@@ -135,28 +135,32 @@ class Cases extends CBObject
         $userRole = str_replace('30', 'Supervisor', $userRole);
         $userRole = str_replace('34', 'Resource Manager', $userRole);
 
-        if ($p['data']['_fematier'] == 1325) {
-          $newtier = 'Tier 1';
-        } elseif ($p['data']['_fematier'] == 1326) {
-          $newtier = 'Tier 2';
-        } elseif ($p['data']['_fematier'] == 1327) {
-          $newtier = 'Tier 3';
-        } else {
-          $newtier = 'Tier 4';
+        if (isset($p['data']['_fematier'])) {
+          if ($p['data']['_fematier'] == 1325) {
+            $newtier = 'Tier 1';
+          } elseif ($p['data']['_fematier'] == 1326) {
+            $newtier = 'Tier 2';
+          } elseif ($p['data']['_fematier'] == 1327) {
+            $newtier = 'Tier 3';
+          } else {
+            $newtier = 'Tier 4';
+          }
         }
 
-        if ($oldtier != $newtier) {
-          $this->logDataAction('fematier',
-            array(
-              'date' => date("Y/m/d"),
-              'time' => date("h:i:sa"),
-              'survivorId' => $p['id'],
-              'survivorName' => $p['data']['_lastname'] . ', ' . $p['data']['_firstname'],
-              'fematier' => $newtier,
-              'prevfematier' => $oldtier,
-              'userId' => User::getID(),
-              'userFullName' => User::getDisplayName(User::getID()),
-            ));
+        if ($oldtier && $newtier) {
+          if ($oldtier != $newtier) {
+            $this->logDataAction('fematier',
+              array(
+                'date' => date("Y/m/d"),
+                'time' => date("h:i:sa"),
+                'survivorId' => $p['id'],
+                'survivorName' => $p['data']['_lastname'] . ', ' . $p['data']['_firstname'],
+                'fematier' => $newtier,
+                'prevfematier' => $oldtier,
+                'userId' => User::getID(),
+                'userFullName' => User::getDisplayName(User::getID()),
+              ));
+          }
         }
 
         $this->setParamsFromData($p);
