@@ -663,11 +663,11 @@ Ext.define('CB.VerticalEditGrid', {
             context.objectId = pw.data.id;
             context.objectPid = pw.data.pid;
             context.path = pw.data.path;
-            context.survivorName = pw.data.survivor;
+            context.survivorName = pw.data.survivorName;
         }
 
         // If survivor's status is Information Only, set required fields to false
-        if (tr.data.name == '_linkedsurvivor') {
+        if (tr.data.name == '_linkedsurvivor' || tr.data.name == '_linkedsurvivorname') {
         if(pw.data.infoOnly == 1577){
         		var infoOnly = true;
 
@@ -706,6 +706,7 @@ Ext.define('CB.VerticalEditGrid', {
         	if (context.objectPid) {
         		tr.data.cfg.value = context.objectPid;
         		context.value = context.objectPid;
+            node.data.value.value = context.objectPid;
         	}
         }
 
@@ -713,6 +714,7 @@ Ext.define('CB.VerticalEditGrid', {
         	if (context.objectPid) {
         		tr.data.cfg.value = context.survivorName;
         		context.value = context.survivorName;
+            node.data.value.value = context.survivorName;
         	}
         }
 
@@ -910,7 +912,11 @@ Ext.define('CB.VerticalEditGrid', {
             ,node = this.helperTree.getNode(nodeId)
             ,tr = node.data.templateRecord;
 
-            //When the Status of this task is switched to Closed, Time Expended becomes required.
+        if (tr.data.name == '_phonenumber') {
+          tr.data.cfg.validationRe = "^(\\([0-9]{3}\\)\\s*|[0-9]{3}\\-)[0-9]{3}-[0-9]{4}$";
+        }
+
+        //When the Status of this task is switched to Closed, Time Expended becomes required.
         if(tr.data.name == "task_status"){
             var open;
             if(context.value == 1907){
@@ -954,8 +960,14 @@ Ext.define('CB.VerticalEditGrid', {
                 for(var j = 0; j < this.store.data.length; j++){
                     var r = this.store.getAt(j);
                     if(curr == r.data.title){
+                      if (r.data.title == 'Best Phone Number'){
                         var n = this.helperTree.getNode(r.get('id'));
                         n.data.templateRecord.get('cfg').required = !infoOnly;
+                        n.data.templateRecord.get('cfg').validationRe = "";
+                      } else {
+                        var n = this.helperTree.getNode(r.get('id'));
+                        n.data.templateRecord.get('cfg').required = !infoOnly;
+                      }
                     }
                 }
             }
@@ -980,6 +992,7 @@ Ext.define('CB.VerticalEditGrid', {
                         if(curr == r.data.title){
                             var n = this.helperTree.getNode(r.get('id'));
                             n.data.templateRecord.get('cfg').required = !infoOnly;
+                            tr.data.cfg.required = !infoOnly;
                         }
                     }
                 }
