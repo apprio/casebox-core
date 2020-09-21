@@ -371,6 +371,11 @@ class FIDAStub extends CBObject
 			$sd['has_document_s'] = 'No';
 		}
 
+    if (!isset($sd['fidastatus_s']))
+		{
+			$sd['fidastatus_s'] = 'Open';
+		}
+
 		// Select only required properties for result
         $properties = [
             'race',
