@@ -42,7 +42,8 @@ class CaseAssessment extends CBObject
 
 			        $userRole = $userData['groups'];
 			        $userRole = str_replace('315', 'Administrator', $userRole);
-			        $userRole = str_replace('22', 'Worker', $userRole);
+			        $userRole = str_replace('575', 'Worker - Level I', $userRole);
+			        $userRole = str_replace('576', 'Worker - Level II', $userRole);
 			        $userRole = str_replace('30', 'Supervisor', $userRole);
 			        $userRole = str_replace('34', 'Resource Manager', $userRole);
 
