@@ -131,7 +131,8 @@ class Cases extends CBObject
 
         $userRole = $userData['groups'];
         $userRole = str_replace('315', 'Administrator', $userRole);
-        $userRole = str_replace('22', 'Worker', $userRole);
+        $userRole = str_replace('575', 'Worker - Level I', $userRole);
+        $userRole = str_replace('576', 'Worker - Level II', $userRole);
         $userRole = str_replace('30', 'Supervisor', $userRole);
         $userRole = str_replace('34', 'Resource Manager', $userRole);
 
@@ -418,6 +419,7 @@ class Cases extends CBObject
     $objService = new Objects();
 
     $caseTasks = [
+      // undefined
       '_femanumber',
       '_gender',
       '_ethnicity',
@@ -426,7 +428,28 @@ class Cases extends CBObject
       '_primarylanguage',
       '_addresstype',
       '_headofhousehold',
-      '_maritalstatus'
+      '_maritalstatus',
+      // blanks
+      '_firstname',
+      '_middlename',
+      '_lastname',
+      '_suffix',
+      '_alias',
+      '_clientage',
+      '_fulladdress',
+      '_addresstwo',
+      '_numberinhousehold',
+      '_emailaddress',
+      '_phonenumber',
+      '_otherphonenumber',
+      '_verificationdocumentation',
+      '_at_risk_population',
+      'identified_unmet_needs',
+      '_fematier',
+      '_femanumberquestion',
+      '_femanumber',
+      'assigned',
+      '_location_type'
     ];
     $sd['taskCreated'] = [];
 
@@ -481,7 +504,7 @@ class Cases extends CBObject
             if ($d[$caseTask] === "REGISTER")
             {
               if (!in_array($caseTask, $sd['taskCreated'])){
-                  //CREATE TASK HERE
+                  //CREATE TASK HERE - Register FEMA
                   $data = [
                     'pid' => 246835,
                     'path' => '/Development/System/Tasks/',
@@ -510,7 +533,7 @@ class Cases extends CBObject
             elseif ($d[$caseTask] === "FOLLOWUP")
             {
               if (!in_array($caseTask, $sd['taskCreated'])){
-                  //CREATE TASK HERE
+                  //CREATE TASK HERE - FollowUp FEMA
                   $data = [
                     'pid' => 246835,
                     'path' => '/Development/System/Tasks/',
@@ -539,24 +562,15 @@ class Cases extends CBObject
             elseif ($d[$caseTask] == 219 || $d[$caseTask] == 231 || $d[$caseTask] == 241 || $d[$caseTask] == 260 || $d[$caseTask] == 3110 || $d[$caseTask] == 3225 || $d[$caseTask] == 248196)
             {
               if (!in_array($caseTask, $sd['taskCreated'])){
-                  //CREATE TASK HERE
-                  if ($caseTask == '_gender') {
-                    $fieldname = 'Gender';
-                  } elseif ($caseTask == '_ethnicity') {
-                    $fieldname = 'Ethnicity';
-                  } elseif ($caseTask == '_race') {
-                    $fieldname = 'Race';
-                  } elseif ($caseTask == '_englishspeaker') {
-                    $fieldname = 'English Speaker';
-                  } elseif ($caseTask == '_primarylanguage') {
-                    $fieldname = 'Preferred Language';
-                  } elseif ($caseTask == '_addresstype') {
-                    $fieldname = 'Address Type';
-                  } elseif ($caseTask == '_headofhousehold') {
-                    $fieldname = 'Head of Household';
-                  } elseif ($caseTask == '_maritalstatus') {
-                    $fieldname = 'Marital Status';
-                  }
+                  //CREATE TASK HERE - Undetermined Fields
+                  $field = str_replace('_gender', 'Gender', $caseTask);
+                  $field = str_replace('_ethnicity', 'Ethnicity', $caseTask);
+                  $field = str_replace('_race', 'Race', $caseTask);
+                  $field = str_replace('_englishspeaker', 'English Speaker', $caseTask);
+                  $field = str_replace('_primarylanguage', 'Primary Language', $caseTask);
+                  $field = str_replace('_addresstype', 'Address Type', $caseTask);
+                  $field = str_replace('_headofhousehold', 'Head of Household?', $caseTask);
+                  $field = str_replace('_maritalstatus', 'Marital Status', $caseTask);
 
                   $data = [
                     'pid' => 246835,
@@ -583,6 +597,65 @@ class Cases extends CBObject
                     $sd['taskCreated'][] = $caseTask;
               }
             }
+         }
+         else{
+           if ($d['_clientstatus'] == 1578) {
+             if (!in_array($caseTask, $sd['taskCreated'])){
+                 //CREATE TASK HERE - Blank Fields
+                 $caseTask = str_replace('_firstname', 'First Name', $caseTask);
+                 $caseTask = str_replace('_middlename', 'Middle Name', $caseTask);
+                 $caseTask = str_replace('_lastname', 'Last Name', $caseTask);
+                 $caseTask = str_replace('_suffix', 'Suffix', $caseTask);
+                 $caseTask = str_replace('_alias', 'Alias', $caseTask);
+                 $caseTask = str_replace('_clientage', 'Disaster Survivor Age', $caseTask);
+                 $caseTask = str_replace('_fulladdress', 'Address', $caseTask);
+                 $caseTask = str_replace('_addresstwo', 'Apartment/Suite', $caseTask);
+                 $caseTask = str_replace('_numberinhousehold', 'Number of individuals in household', $caseTask);
+                 $caseTask = str_replace('_emailaddress', 'Email Address', $caseTask);
+                 $caseTask = str_replace('_phonenumber', 'Best Phone Number', $caseTask);
+                 $caseTask = str_replace('_otherphonenumber', 'Other Phone Number', $caseTask);
+                 $caseTask = str_replace('_verificationdocumentation', 'Verification Documentation', $caseTask);
+                 $caseTask = str_replace('_at_risk_population', 'Self-Reported Special/At-Risk Populations', $caseTask);
+                 $caseTask = str_replace('identified_unmet_needs', 'Self-Identified Unmet Needs', $caseTask);
+                 $caseTask = str_replace('_fematier', 'FEMA Tier', $caseTask);
+                 $caseTask = str_replace('_femanumberquestion', 'Does disaster survivor have a FEMA registration number?', $caseTask);
+                 $caseTask = str_replace('_femanumber', 'FEMA Registration Number', $caseTask);
+                 $caseTask = str_replace('assigned', 'Assigned IDCM Worker', $caseTask);
+                 $caseTask = str_replace('_location_type', 'Current Facility', $caseTask);
+                 $caseTask = str_replace('_gender', 'Gender', $caseTask);
+                 $caseTask = str_replace('_ethnicity', 'Ethnicity', $caseTask);
+                 $caseTask = str_replace('_race', 'Race', $caseTask);
+                 $caseTask = str_replace('_englishspeaker', 'English Speaker', $caseTask);
+                 $caseTask = str_replace('_primarylanguage', 'Primary Language', $caseTask);
+                 $caseTask = str_replace('_addresstype', 'Address Type', $caseTask);
+                 $caseTask = str_replace('_headofhousehold', 'Head of Household?', $caseTask);
+                 $caseTask = str_replace('_maritalstatus', 'Marital Status', $caseTask);
+
+                 $data = [
+                   'pid' => 246835,
+                   'path' => '/Development/System/Tasks/',
+                   'template_id' => 7,
+                   'type' => 'task',
+                   'isNew' => 'true',
+                   'data' => [
+                       'ecmrs_id' => $ecmrsId,
+                       'survivor_name' => $name,
+                       'task_type' => 248476,
+                       'time_expended' => '',
+                       'case' => $ecmrsId,
+                       'task_status' => 1906,
+                       '_task' => 'Blank Field: ' . $caseTask,
+                       'due_date' => $dueDate,
+                       'due_time' => $dueTime,
+                       'assigned' => $assignee,
+                       'importance' => 55,
+                       'description' => "Follow up with the disaster survivor to determine the " . $caseTask . " field"
+                     ],
+                   ];
+                   $newTask = $objService->create($data);
+                   $sd['taskCreated'][] = $caseTask;
+             }
+           }
          }
      }
     // End auto case tasks
@@ -1538,7 +1611,8 @@ class Cases extends CBObject
 
         $userRole = $userData['groups'];
         $userRole = str_replace('315', 'Administrator', $userRole);
-        $userRole = str_replace('22', 'Worker', $userRole);
+        $userRole = str_replace('575', 'Worker - Level I', $userRole);
+        $userRole = str_replace('576', 'Worker - Level II', $userRole);
         $userRole = str_replace('30', 'Supervisor', $userRole);
         $userRole = str_replace('34', 'Resource Manager', $userRole);
 
