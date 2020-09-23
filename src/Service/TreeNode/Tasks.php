@@ -100,7 +100,7 @@ class Tasks extends Base
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2)';
-        $p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+        $p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
         $p['rows'] = 0;
 
         $s = new Search();
@@ -170,10 +170,14 @@ class Tasks extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2)';
+        if (!isset($p['sort'])) {
+    			$p['sort'][0]['property'] = 'due_s';
+    			$p['sort'][0]['direction'] = 'asc';
+    		}
 
         if (@$this->requestParams['from'] == 'tree') {
             $s = new \Casebox\CoreBundle\Service\Search();
@@ -240,12 +244,16 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
         if ($this->lastNode->id == 2) {
             $p['fq'][] = 'task_u_ongoing:'.$userId;
         } else {
             $p['fq'][] = 'cid:'.$userId;
         }
+        if (!isset($p['sort'])) {
+    			$p['sort'][0]['property'] = 'due_s';
+    			$p['sort'][0]['direction'] = 'asc';
+    		}
 
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
@@ -317,7 +325,7 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s';
+		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
         $parent = $this->lastNode->parent;
 
         if ($parent->id == 2) {
@@ -325,6 +333,10 @@ class Tasks extends Base
         } else {
             $p['fq'][] = 'cid:'.$userId;
         }
+        if (!isset($p['sort'])) {
+    			$p['sort'][0]['property'] = 'due_s';
+    			$p['sort'][0]['direction'] = 'asc';
+    		}
 
         // please don't use numeric IDs for named folders: "Assigned to me", "Overdue" etc
         switch ($this->lastNode->id) {
