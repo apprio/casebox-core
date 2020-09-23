@@ -23,7 +23,7 @@ class CaseAssessment extends CBObject
 				$this->data = $p;
 
 				//Log FEMA Tier
-				if (isset($p['data']['_notetype'])){
+				if (isset($p['data']['_notetype'])){ 
 					if ($p['data']['_notetype'] == 523)
 					{
 						$caseId = $p['pid'];

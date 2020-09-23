@@ -400,7 +400,7 @@ class User
 
         $p['sex'] = (strlen($p['sex']) > 1) ? null : $p['sex'];
 
-        if (isset($p['data']['user_role']['value'])) {
+        if (isset($p['data']['user_role']['value'])) { 
           if ($p['data']['user_role']['value'] == 248274) {
             if ($p['data']['user_role']['childs']['assignedworker']) {
               // If assignedworkers are selected, assigned logged user's id in the assignedworker's data as their assignedsupervisor

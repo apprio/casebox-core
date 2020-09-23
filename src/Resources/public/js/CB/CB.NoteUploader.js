@@ -165,7 +165,7 @@ Ext.define('CB.NoteForm', {
             } else {
               data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
               data.data.user_role = {value: 248702};
-            }
+            } 
             if (App.loginData.data.assignedsupervisor) {
               data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
             }

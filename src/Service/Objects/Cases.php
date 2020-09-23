@@ -599,7 +599,7 @@ class Cases extends CBObject
             }
          }
          else{
-           if ($d['_clientstatus'] == 1578) {
+           if ($d['_clientstatus'] == 1578) { 
              if (!in_array($caseTask, $sd['taskCreated'])){
                  //CREATE TASK HERE - Blank Fields
                  $caseTask = str_replace('_firstname', 'First Name', $caseTask);
