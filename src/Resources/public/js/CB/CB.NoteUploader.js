@@ -131,11 +131,16 @@ Ext.define('CB.NoteForm', {
             for (var i = 0; i < data.assocObjects.length; i++) {
                 data.assocObjects[i].iconCls = getItemIcon(data.assocObjects[i]);
             }
-            if (!data.assocObjects.includes({id:248273}) || !data.assocObjects.includes({id:248273})) {
-              if (App.loginData.groups == '22'){
+            if (!data.assocObjects.includes({id:248273}) || !data.assocObjects.includes({id:248274})) {
+              if (App.loginData.groups == '575' || App.loginData.groups == '576'){
                 // Worker Group, load assigned IDCM Supervisor
-                data.assocObjects.push({id: 248273, name: 'IDCM Worker'})
-                data.data.user_role = {value: 248273};
+                if (App.loginData.groups == '575') {
+                  data.assocObjects.push({id: 248273, name: 'IDCM Worker - Level I'});
+                  data.data.user_role = {value: 248273};
+                } else {
+                  data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
+                  data.data.user_role = {value: 248702};
+                }
                 if (App.loginData.data.assignedsupervisor) {
                   data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
                 }
@@ -151,11 +156,16 @@ Ext.define('CB.NoteForm', {
             this.objectsStore.loadData(data.assocObjects);
             delete data.assocObjects;
         } else {
-          if (App.loginData.groups == '22'){
+          if (App.loginData.groups == '575' || App.loginData.groups == '576'){
             // Worker Group, load assigned IDCM Supervisor
             data.assocObjects = [];
-            data.assocObjects.push({id: 248273, name: 'IDCM Worker'});
-            data.data.user_role = {value: 248273};
+            if (App.loginData.groups == '575') {
+              data.assocObjects.push({id: 248273, name: 'IDCM Worker - Level I'});
+              data.data.user_role = {value: 248273};
+            } else {
+              data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
+              data.data.user_role = {value: 248702};
+            } 
             if (App.loginData.data.assignedsupervisor) {
               data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
             }
@@ -211,7 +221,8 @@ Ext.define('CB.NoteForm', {
     }
 
     ,onResetClick: function(){
-        this.getForm().reset();
+        this.getForm().setValues('');
+        this.grid.reload();
         this.loadData(this.data);
     }
 
