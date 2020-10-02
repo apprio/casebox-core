@@ -78,11 +78,11 @@ class Tasks extends Base
             case 3:
                 return $this->trans('CreatedByMe');
             case 4:
-                return lcfirst($this->trans('Overdue'));
+                return $this->trans('Overdue');
             case 5:
-                return lcfirst($this->trans('Ongoing'));
+                return $this->trans('Ongoing');
             case 6:
-                return lcfirst($this->trans('Closed'));
+                return $this->trans('Closed');
             case 'assignee':
                 return lcfirst($this->trans('Assignee'));
             default:
@@ -95,7 +95,7 @@ class Tasks extends Base
     }
 
     protected function getRootNodes()
-    {
+    { 
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.User::getId();
@@ -173,7 +173,7 @@ class Tasks extends Base
 		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.$userId;
-        $p['fq'][] = 'task_status:(1 OR 2)';
+        //$p['fq'][] = 'task_status:(1 OR 2)';
         if (!isset($p['sort'])) {
     			$p['sort'][0]['property'] = 'due_s';
     			$p['sort'][0]['direction'] = 'asc';
@@ -186,9 +186,28 @@ class Tasks extends Base
             $p['facet.field'] = [
                 '{!ex=task_u_assignee key=1assigned}task_u_assignee',
                 '{!ex=cid key=2cid}cid',
+                '{!ex=task_status key=0task_status}task_status',
             ];
             $sr = $s->query($p);
             $rez = ['data' => []];
+            if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'1'})) {
+                $rez['data'][] = [
+                    'name' => $this->trans('Overdue').$this->renderCount(
+                            $sr['facets']->facet_fields->{'0task_status'}->{'1'}
+                        ),
+                    'id' => $this->getId(4),
+                    'iconCls' => 'icon-task',
+                ];
+            }
+            if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'3'})) {
+                $rez['data'][] = [
+                    'name' => $this->trans('Closed').$this->renderCount(
+                            $sr['facets']->facet_fields->{'0task_status'}->{'3'}
+                        ),
+                    'id' => $this->getId(6),
+                    'iconCls' => 'icon-task',
+                ];
+            }
             if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
                 //Now, will still populate if empty
                 $rez['data'][] = [
@@ -230,6 +249,14 @@ class Tasks extends Base
             }
 
             return $rez;
+        } else {
+          $p['fq'][] = 'task_status:(1 OR 2)';
+
+          $s = new Search();
+          $rez = $s->query($p);
+          foreach ($rez['data'] as &$n) {
+              $n['has_childs'] = true;
+          }
         }
 
         // for other views
@@ -271,7 +298,7 @@ class Tasks extends Base
             $rez = ['data' => []];
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'1'})) {
                 $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Overdue')).$this->renderCount(
+                    'name' => $this->trans('Overdue').$this->renderCount(
                             $sr['facets']->facet_fields->{'0task_status'}->{'1'}
                         ),
                     'id' => $this->getId(4),
@@ -280,7 +307,7 @@ class Tasks extends Base
             }
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'2'})) {
                 $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Ongoing')).$this->renderCount(
+                    'name' => $this->trans('Open').$this->renderCount(
                             $sr['facets']->facet_fields->{'0task_status'}->{'2'}
                         ),
                     'id' => $this->getId(5),
@@ -289,7 +316,7 @@ class Tasks extends Base
             }
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'3'})) {
                 $rez['data'][] = [
-                    'name' => lcfirst($this->trans('Closed')).$this->renderCount(
+                    'name' => $this->trans('Closed').$this->renderCount(
                             $sr['facets']->facet_fields->{'0task_status'}->{'3'}
                         ),
                     'id' => $this->getId(6),
@@ -297,14 +324,14 @@ class Tasks extends Base
                 ];
             }
             // Add assignee node if there are any created tasks already added to result
-            if (($this->lastNode->id == 3) && !empty($rez['data'])) {
+            /*if (($this->lastNode->id == 3) && !empty($rez['data'])) { // Dont think we need this
                 $rez['data'][] = [
                     'name' => lcfirst($this->trans('Assignee')),
                     'id' => $this->getId('assignee'),
                     'iconCls' => 'icon-task',
                     'has_childs' => true,
                 ];
-            }
+            }*/
         } else {
             $p['fq'][] = 'task_status:(1 OR 2)';
 
