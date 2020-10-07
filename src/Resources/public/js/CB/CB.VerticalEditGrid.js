@@ -916,6 +916,15 @@ Ext.define('CB.VerticalEditGrid', {
           tr.data.cfg.validationRe = "^(\\([0-9]{3}\\)\\s*|[0-9]{3}\\-)[0-9]{3}-[0-9]{4}$";
         }
 
+        if (tr.data.name == 'case') {
+        		var caseId = context.value;
+            var r = this.store.getAt(1);
+
+            var n = this.helperTree.getNode(r.get('id'));
+            n.data.templateRecord.get('cfg').value = caseId;
+            n.data.value.value = caseId;
+        }
+
         //When the Status of this task is switched to Closed, Time Expended becomes required.
         if(tr.data.name == "task_status"){
             var open;

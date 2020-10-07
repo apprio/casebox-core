@@ -141,8 +141,8 @@ Ext.define('CB.NoteForm', {
                   data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
                   data.data.user_role = {value: 248702};
                 }
-                if (App.loginData.data.assignedsupervisor) {
-                  data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
+                if (App.loginData.data.user_role.childs.assignedsupervisor) {
+                  data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
                 }
               } else if (App.loginData.groups == '30') {
                 // Supervisor Group, assign IDCM Workers
@@ -165,9 +165,9 @@ Ext.define('CB.NoteForm', {
             } else {
               data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
               data.data.user_role = {value: 248702};
-            } 
-            if (App.loginData.data.assignedsupervisor) {
-              data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
+            }
+            if (App.loginData.data.user_role.childs.assignedsupervisor) {
+              data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
             }
           } else if (App.loginData.groups == '30') {
             // Supervisor Group, assign IDCM Workers

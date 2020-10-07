@@ -203,16 +203,19 @@ Ext.define('CB.VerticalEditGridHelperTree', {
                         if(v === 'now') {
                             v = new Date();
                         }
+                        else if(v === 'user') {
+                            v = App.loginData.id;
+                        }
 						else if(!Ext.isNumber(v)) {
 							if (Ext.isDefined(App.loginData.data[v]))
 							{
-								v = App.loginData.data[v];							
+								v = App.loginData.data[v];
 							}
 							else if (record.get('type') == "_objects") //it's not a number so mark blank
 							{
 								v = "";
-							}							
-                        }      
+							}
+                        }
                         nodeValues[0].value = v;
                     }
                     //set default condition for new objects

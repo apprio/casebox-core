@@ -24,6 +24,8 @@ use Casebox\CoreBundle\Service\Templates\SingletonCollection;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\PhpProcess;
 use Firebase\JWT\JWT;
+use Casebox\CoreBundle\Service\Solr\Client;
+use Casebox\CoreBundle\Service\Search;
 
 
 /**
@@ -371,7 +373,7 @@ class IndexController extends Controller
             return $this->redirectToRoute('app_core_login', ['coreName' => $coreName]);
         }
 
-        /* Get reports config 
+        /* Get reports config
         $reports = $configService->get('Reports');
         if (empty($id) || (!isset($reports[$id]) && !is_numeric($id))) {
             $result['message'] = $this->trans(('Object_not_found'));
@@ -597,7 +599,6 @@ class IndexController extends Controller
 
                     // parse data from csv file line by line
                     $objService = new Objects ();
-                    //print_r($csvData);
                     foreach ( $csvData as &$line ) {
                         $i = 0;
                         $oldValue = false;
@@ -620,6 +621,61 @@ class IndexController extends Controller
                                          $line['data'] = array_combine($keys, $line['data']);
                                      }
                                 }
+                                if ($templateData['type'] == 'fidastub') {
+                                    if ($line['data']['_femanumber'] == '') {
+                                      $line['data']['_femanumberquestion'] = 'FIDA Upload without FEMA Number';
+                                      $line['data']['_femanumber'] = 'FIDA NO NUMBER';
+                                    }
+                                    if ($value == '') {
+                                      $value = 'Unknown';
+                                    }
+                                    if ($line['data']['_femanumber'] == 'FIDA NO NUMBER') {
+                                      // FEMA NUMBER not filled
+                                      if ($line['data']['_lastname'] != '' && $line['data']['_firstname'] != '') {
+                                        $s = new Search();
+                                        $sr = $s->query([
+                                             'pid' => $templateData['cfg']['defaultPid'],
+                                             'fq' => ['firstname_s:' . $line['data']['_firstname'] . ' ' . 'lastname_s:' . $line['data']['_lastname']],
+                                             'sort' => 'cdate',
+                                             'dir' => 'desc',
+                                        ]);
+                                        foreach ($sr['data'] as $fema) {
+                                              $survivor = $fema['id'];
+                                              if (!is_null($survivor)){
+                                                $obj = $objService->load(['id' => $survivor]);
+                                                $line['id'] = $survivor;
+                                                $line['data']['id'] = $survivor;
+                                                $line['old'] = $obj['data']['data'];
+                                                $oldValue = true;
+                                                $line['pid'] = $obj['data']['pid'];
+                                                $line['data']['_fidaupload'] = 'Duplicate Name Found';
+                                              }
+                                         }
+                                      }
+                                    }
+                                    else {
+                                      // FEMA NUMBER Exists
+                                      $s = new Search();
+                    							    $sr = $s->query([
+                    							         'pid' => $templateData['cfg']['defaultPid'],
+                    							         'fq' => ['femanumber_s:' . $value],
+                    							         'sort' => 'cdate',
+                    							         'dir' => 'desc',
+                    							    ]);
+                    							    foreach ($sr['data'] as $fema) {
+                    							          $survivor = $fema['id'];
+                      											if (!is_null($survivor)){
+                      												$obj = $objService->load(['id' => $survivor]);
+                      												$line['id'] = $survivor;
+                      												$line['data']['id'] = $survivor;
+                      												$line['old'] = $obj['data']['data'];
+                      												$oldValue = true;
+                      												$line['pid'] = $obj['data']['pid'];
+                                              $line['data']['_fidaupload'] = 'Duplicate FEMA Number Found';
+                      											}
+                    							     }
+                                    }
+                  							}
                                 if ($columnHeader === "id") {
                                     $obj = Objects::getTemplateId($value);
                                     if ($templateData['id'] === $obj)
@@ -703,7 +759,6 @@ class IndexController extends Controller
                                         }
                                     }
                                 }
-                                //print_r($templateColumn);
                             }
                             $i++;
                         }
