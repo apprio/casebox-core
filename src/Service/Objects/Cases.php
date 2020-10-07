@@ -13,6 +13,7 @@ use Casebox\CoreBundle\Service\Solr\Client;
 use Casebox\CoreBundle\Service\Objects\Plugins\Files;
 use Casebox\CoreBundle\Service\Objects\Plugins\ContentItems;
 use Casebox\CoreBundle\Service\Objects\Plugins\Export;
+use Casebox\CoreBundle\Service\Objects\Plugins\CaseTasks;
 
 /**
  * Class Cases
@@ -57,8 +58,263 @@ class Cases extends CBObject
 		$p['pid']=150;
         $this->data = $p;
 
-        $this->setParamsFromData($p);
+    $this->setParamsFromData($p);
 		$createResult = parent::create($p);
+
+    // Create Tasks
+    if (isset($createResult)) {
+      $ecmrsId = $createResult;
+    } else {
+      $ecmrsId = '';
+    }
+
+    $objService = new Objects();
+
+    $caseTasks = [
+      // undefined
+      '_femanumber',
+      '_gender',
+      '_ethnicity',
+      '_race',
+      '_englishspeaker',
+      '_primarylanguage',
+      '_addresstype',
+      '_headofhousehold',
+      '_maritalstatus',
+      // blanks
+      '_firstname',
+      '_middlename',
+      '_lastname',
+      '_suffix',
+      '_alias',
+      '_clientage',
+      '_fulladdress',
+      '_addresstwo',
+      '_numberinhousehold',
+      '_emailaddress',
+      '_phonenumber',
+      '_otherphonenumber',
+      '_verificationdocumentation',
+      '_at_risk_population',
+      'identified_unmet_needs',
+      '_fematier',
+      '_femanumberquestion',
+      '_femanumber',
+      'assigned',
+      '_location_type'
+    ];
+
+    $p['sys_data']['taskCreated'] = [];
+
+    if (isset($p['data']['_lastname']) && isset($p['data']['_firstname'])) {
+      $name = $p['data']['_lastname'] . ', ' . $p['data']['_firstname'];
+    } elseif (isset($p['data']['_lastname']) && !isset($p['data']['_firstname'])) {
+      $name = $p['data']['_lastname'];
+    } elseif (!isset($p['data']['_lastname']) && isset($p['data']['_firstname'])) {
+      $name = $p['data']['_firstname'];
+    } else {
+      $name = '';
+    }
+
+    if (isset($p['data']['_fematier'])) {
+      $tier = $p['data']['_fematier'];
+    } else {
+      $tier = '';
+    }
+
+    if (isset($p['data']['assigned'])) {
+      $assignee = $p['data']['assigned'];
+    } else {
+      $assignee = '';
+    }
+
+    if ($tier != '') {
+      date_default_timezone_set('America/New_York');
+      if ($tier == 1325) { //'Y-m-d H:i:s'
+        $dueDate = Date('Y-m-d H:i:s', strtotime('+21 days')); // Tier 1 +21 Days
+      } elseif ($tier == 1326) {
+        $dueDate = Date('Y-m-d H:i:s', strtotime('+14 days')); // Tier 2 +14 Days
+      } elseif ($tier == 1327) {
+        $dueDate = Date('Y-m-d H:i:s', strtotime('+10 days')); // Tier 3 +10 Days
+      } else {
+        $dueDate = Date('Y-m-d H:i:s', strtotime('+4 days')); // Tier 4 +7 Days
+      }
+      $dueTime = Date('H:i:s', time());
+    } else {
+      $dueDate = '';
+      $dueTime = '';
+    }
+
+    foreach ($caseTasks as $caseTask) {
+        if (!empty($p['data'][$caseTask]))
+        {
+            if ($p['data'][$caseTask] === "REGISTER")
+            {
+              if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                //print_r(gettype($caseTask));
+                  //CREATE TASK HERE - Register FEMA
+                  $data = [
+                    'pid' => 246835,
+                    'path' => '/Development/System/Tasks/',
+                    'template_id' => 7,
+                    'type' => 'task',
+                    'isNew' => 'true',
+                    'data' => [
+                        'ecmrs_id' => $ecmrsId, // id
+                        'survivor_name' => $name, // name
+                        'task_type' => 248280,
+                        'time_expended' => '',
+                        'case' => $ecmrsId, // Linked case
+                        'task_status' => 1906, // Open
+                        '_task' => 'FEMA Number Register', // [ECMRS ID autofill} + Follow Up: Tier
+                        'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+                        'due_time' => $dueTime, // [time of auto task creation]
+                        'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+                        'importance' => 55,
+                        'description' => "Register the disaster survivor with FEMA and enter FEMA Number into the system."
+                      ],
+                    ];
+                    $newTask = $objService->create($data);
+                    $p['sys_data']['taskCreated'][] = $caseTask;
+              } else {
+                //print_r('exists in array');
+              }
+            }
+            elseif ($p['data'][$caseTask] === "FOLLOWUP")
+            {
+              if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                  //CREATE TASK HERE - FollowUp FEMA
+                  $data = [
+                    'pid' => 246835,
+                    'path' => '/Development/System/Tasks/',
+                    'template_id' => 7,
+                    'type' => 'task',
+                    'isNew' => 'true',
+                    'data' => [
+                        'ecmrs_id' => $ecmrsId, // id
+                        'survivor_name' => $name, // name
+                        'task_type' => 248281,
+                        'time_expended' => '',
+                        'case' => $ecmrsId, // Linked case
+                        'task_status' => 1906, // Open
+                        '_task' => 'FEMA Number Follow Up', // [ECMRS ID autofill} + Follow Up: Tier
+                        'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+                        'due_time' => $dueTime, // [time of auto task creation]
+                        'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+                        'importance' => 55,
+                        'description' => "Follow up with the disaster survivor to determine their FEMA Number and enter FEMA Number into the system."
+                      ],
+                    ];
+                    $newTask = $objService->create($data);
+                    $p['sys_data']['taskCreated'][] = $caseTask;
+              } else {
+                //
+              }
+            }
+            elseif ($p['data'][$caseTask] == 219 || $p['data'][$caseTask] == 231 || $p['data'][$caseTask] == 241 || $p['data'][$caseTask] == 260 || $p['data'][$caseTask] == 3110 || $p['data'][$caseTask] == 3225 || $p['data'][$caseTask] == 248196)
+            {
+              if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                  //CREATE TASK HERE - Undetermined Fields
+                  $field = $caseTask;
+                  $field = str_replace('_gender', 'Gender', $field);
+                  $field = str_replace('_ethnicity', 'Ethnicity', $field);
+                  $field = str_replace('_race', 'Race', $field);
+                  $field = str_replace('_englishspeaker', 'English Speaker', $field);
+                  $field = str_replace('_primarylanguage', 'Primary Language', $field);
+                  $field = str_replace('_addresstype', 'Address Type', $field);
+                  $field = str_replace('_headofhousehold', 'Head of Household?', $field);
+                  $field = str_replace('_maritalstatus', 'Marital Status', $field);
+
+                  $data = [
+                    'pid' => 246835,
+                    'path' => '/Development/System/Tasks/',
+                    'template_id' => 7,
+                    'type' => 'task',
+                    'isNew' => 'true',
+                    'data' => [
+                        'ecmrs_id' => $ecmrsId, // id
+                        'survivor_name' => $name, // name
+                        'task_type' => 248278,
+                        'time_expended' => '',
+                        'case' => $ecmrsId, // Linked case
+                        'task_status' => 1906, // Open
+                        '_task' => 'Follow Up: ' . $field, // [ECMRS ID autofill} + Follow Up: Tier
+                        'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+                        'due_time' => $dueTime, // [time of auto task creation]
+                        'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+                        'importance' => 55,
+                        'description' => "Follow up with the disaster survivor to determine the " . $field . " field"
+                      ],
+                    ];
+                    $newTask = $objService->create($data);
+                    $p['sys_data']['taskCreated'][] = $caseTask;
+              } else {
+                //
+              }
+            }
+         }
+         elseif (empty($p['data'][$caseTask]) && $p['data']['_clientstatus'] == 1578){
+             if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                 //CREATE TASK HERE - Blank Fields
+                 $field = $caseTask;
+                 $field = str_replace('_firstname', 'First Name', $field);
+                 $field = str_replace('_middlename', 'Middle Name', $field);
+                 $field = str_replace('_lastname', 'Last Name', $field);
+                 $field = str_replace('_suffix', 'Suffix', $field);
+                 $field = str_replace('_alias', 'Alias', $field);
+                 $field = str_replace('_clientage', 'Disaster Survivor Age', $field);
+                 $field = str_replace('_fulladdress', 'Address', $field);
+                 $field = str_replace('_addresstwo', 'Apartment/Suite', $field);
+                 $field = str_replace('_numberinhousehold', 'Number of individuals in household', $field);
+                 $field = str_replace('_emailaddress', 'Email Address', $field);
+                 $field = str_replace('_phonenumber', 'Best Phone Number', $field);
+                 $field = str_replace('_otherphonenumber', 'Other Phone Number', $field);
+                 $field = str_replace('_verificationdocumentation', 'Verification Documentation', $field);
+                 $field = str_replace('_at_risk_population', 'Self-Reported Special/At-Risk Populations', $field);
+                 $field = str_replace('identified_unmet_needs', 'Self-Identified Unmet Needs', $field);
+                 $field = str_replace('_fematier', 'FEMA Tier', $field);
+                 $field = str_replace('_femanumberquestion', 'Does disaster survivor have a FEMA registration number?', $field);
+                 $field = str_replace('_femanumber', 'FEMA Registration Number', $field);
+                 $field = str_replace('assigned', 'Assigned IDCM Worker', $field);
+                 $field = str_replace('_location_type', 'Current Facility', $field);
+                 $field = str_replace('_gender', 'Gender', $field);
+                 $field = str_replace('_ethnicity', 'Ethnicity', $field);
+                 $field = str_replace('_race', 'Race', $field);
+                 $field = str_replace('_englishspeaker', 'English Speaker', $field);
+                 $field = str_replace('_primarylanguage', 'Primary Language', $field);
+                 $field = str_replace('_addresstype', 'Address Type', $field);
+                 $field = str_replace('_headofhousehold', 'Head of Household?', $field);
+                 $field = str_replace('_maritalstatus', 'Marital Status', $field);
+
+                 $data = [
+                   'pid' => 246835,
+                   'path' => '/Development/System/Tasks/',
+                   'template_id' => 7,
+                   'type' => 'task',
+                   'isNew' => 'true',
+                   'data' => [
+                       'ecmrs_id' => $ecmrsId,
+                       'survivor_name' => $name,
+                       'task_type' => 248476,
+                       'time_expended' => '',
+                       'case' => $ecmrsId,
+                       'task_status' => 1906,
+                       '_task' => 'Blank Field: ' . $field,
+                       'due_date' => $dueDate,
+                       'due_time' => $dueTime,
+                       'assigned' => $assignee,
+                       'importance' => 55,
+                       'description' => "Follow up with the disaster survivor to determine the " . $field . " field"
+                     ],
+                   ];
+                   $newTask = $objService->create($data);
+                   $p['sys_data']['taskCreated'][] = $caseTask;
+             } else {
+               //
+             }
+         }
+     }
+    // End auto case tasks
 
 		if (!empty($p['data']['_numberinhousehold']))
 		{
@@ -163,6 +419,277 @@ class Cases extends CBObject
               ));
           }
         }
+
+        // Create Tasks
+        if (isset($p['id'])) {
+          $ecmrsId = $p['id'];
+        } else {
+          $ecmrsId = '';
+        }
+
+        $objService = new Objects();
+        $taskItems = new CaseTasks(); //Declare Content Items CBObject
+    		$tasksData = $taskItems->getData($ecmrsId);
+
+        $caseTasks = [
+          // undefined
+          '_femanumber',
+          '_gender',
+          '_ethnicity',
+          '_race',
+          '_englishspeaker',
+          '_primarylanguage',
+          '_addresstype',
+          '_headofhousehold',
+          '_maritalstatus',
+          // blanks
+          '_firstname',
+          '_middlename',
+          '_lastname',
+          '_suffix',
+          '_alias',
+          '_clientage',
+          '_fulladdress',
+          '_addresstwo',
+          '_numberinhousehold',
+          '_emailaddress',
+          '_phonenumber',
+          '_otherphonenumber',
+          '_verificationdocumentation',
+          '_at_risk_population',
+          'identified_unmet_needs',
+          '_fematier',
+          '_femanumberquestion',
+          '_femanumber',
+          'assigned',
+          '_location_type'
+        ];
+        $p['sys_data']['taskCreated'] = [];
+
+        if (isset($p['data']['_lastname']) && isset($p['data']['_firstname'])) {
+          $name = $p['data']['_lastname'] . ', ' . $p['data']['_firstname'];
+        } elseif (isset($p['data']['_lastname']) && !isset($p['data']['_firstname'])) {
+          $name = $d['_lastname'];
+        } elseif (!isset($p['data']['_lastname']) && isset($p['data']['_firstname'])) {
+          $name = $p['data']['_firstname'];
+        } else {
+          $name = '';
+        }
+
+        if (isset($p['data']['_fematier'])) {
+          $tier = $p['data']['_fematier'];
+        } else {
+          $tier = '';
+        }
+
+        if (isset($p['data']['assigned'])) {
+          $assignee = $p['data']['assigned'];
+        } else {
+          $assignee = '';
+        }
+
+        if ($tier != '') {
+          date_default_timezone_set('America/New_York');
+          if ($tier == 1325) { //'Y-m-d H:i:s'
+            $dueDate = Date('Y-m-d H:i:s', strtotime('+21 days')); // Tier 1 +21 Days
+          } elseif ($tier == 1326) {
+            $dueDate = Date('Y-m-d H:i:s', strtotime('+14 days')); // Tier 2 +14 Days
+          } elseif ($tier == 1327) {
+            $dueDate = Date('Y-m-d H:i:s', strtotime('+10 days')); // Tier 3 +10 Days
+          } else {
+            $dueDate = Date('Y-m-d H:i:s', strtotime('+4 days')); // Tier 4 +7 Days
+          }
+          $dueTime = Date('H:i:s', time());
+        } else {
+          $dueDate = '';
+          $dueTime = '';
+        }
+
+        foreach ($caseTasks as $caseTask) {
+            if (!empty($p['data'][$caseTask]))
+            {
+                if ($p['data'][$caseTask] === "REGISTER")
+                {
+                  if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                    //print_r(gettype($caseTask));
+                      //CREATE TASK HERE - Register FEMA
+                      $data = [
+                        'pid' => 246835,
+                        'path' => '/Development/System/Tasks/',
+                        'template_id' => 7,
+                        'type' => 'task',
+                        'isNew' => 'true',
+                        'data' => [
+                            'ecmrs_id' => $ecmrsId, // id
+                            'survivor_name' => $name, // name
+                            'task_type' => 248280,
+                            'time_expended' => '',
+                            'case' => $ecmrsId, // Linked case
+                            'task_status' => 1906, // Open
+                            '_task' => 'FEMA Number Register', // [ECMRS ID autofill} + Follow Up: Tier
+                            'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+                            'due_time' => $dueTime, // [time of auto task creation]
+                            'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+                            'importance' => 55,
+                            'description' => "Register the disaster survivor with FEMA and enter FEMA Number into the system."
+                          ],
+                        ];
+                        $newTask = $objService->create($data);
+                        $p['sys_data']['taskCreated'][] = $caseTask;
+                  } else {
+                    //print_r('exists in array');
+                  }
+                }
+                elseif ($p['data'][$caseTask] === "FOLLOWUP")
+                {
+                  if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                      //CREATE TASK HERE - FollowUp FEMA
+                      $data = [
+                        'pid' => 246835,
+                        'path' => '/Development/System/Tasks/',
+                        'template_id' => 7,
+                        'type' => 'task',
+                        'isNew' => 'true',
+                        'data' => [
+                            'ecmrs_id' => $ecmrsId, // id
+                            'survivor_name' => $name, // name
+                            'task_type' => 248281,
+                            'time_expended' => '',
+                            'case' => $ecmrsId, // Linked case
+                            'task_status' => 1906, // Open
+                            '_task' => 'FEMA Number Follow Up', // [ECMRS ID autofill} + Follow Up: Tier
+                            'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+                            'due_time' => $dueTime, // [time of auto task creation]
+                            'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+                            'importance' => 55,
+                            'description' => "Follow up with the disaster survivor to determine their FEMA Number and enter FEMA Number into the system."
+                          ],
+                        ];
+                        $newTask = $objService->create($data);
+                        $p['sys_data']['taskCreated'][] = $caseTask;
+                  } else {
+                    //
+                  }
+                }
+                elseif ($p['data'][$caseTask] == 219 || $p['data'][$caseTask] == 231 || $p['data'][$caseTask] == 241 || $p['data'][$caseTask] == 260 || $p['data'][$caseTask] == 3110 || $p['data'][$caseTask] == 3225 || $p['data'][$caseTask] == 248196)
+                {
+                  if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                      //CREATE TASK HERE - Undetermined Fields
+                      $field = $caseTask;
+                      $field = str_replace('_gender', 'Gender', $field);
+                      $field = str_replace('_ethnicity', 'Ethnicity', $field);
+                      $field = str_replace('_race', 'Race', $field);
+                      $field = str_replace('_englishspeaker', 'English Speaker', $field);
+                      $field = str_replace('_primarylanguage', 'Primary Language', $field);
+                      $field = str_replace('_addresstype', 'Address Type', $field);
+                      $field = str_replace('_headofhousehold', 'Head of Household?', $field);
+                      $field = str_replace('_maritalstatus', 'Marital Status', $field);
+
+                      $data = [
+                        'pid' => 246835,
+                        'path' => '/Development/System/Tasks/',
+                        'template_id' => 7,
+                        'type' => 'task',
+                        'isNew' => 'true',
+                        'data' => [
+                            'ecmrs_id' => $ecmrsId, // id
+                            'survivor_name' => $name, // name
+                            'task_type' => 248278,
+                            'time_expended' => '',
+                            'case' => $ecmrsId, // Linked case
+                            'task_status' => 1906, // Open
+                            '_task' => 'Follow Up: ' . $field, // [ECMRS ID autofill} + Follow Up: Tier
+                            'due_date' => $dueDate, // [time of auto task creation + days by Tier]
+                            'due_time' => $dueTime, // [time of auto task creation]
+                            'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
+                            'importance' => 55,
+                            'description' => "Follow up with the disaster survivor to determine the " . $field . " field"
+                          ],
+                        ];
+                        $newTask = $objService->create($data);
+                        $p['sys_data']['taskCreated'][] = $caseTask;
+                  } else {
+                    //
+                  }
+                }
+                else {
+                    // If caseTask is changed, set task_status to closed
+      							foreach ($tasksData['data'] as $tasks) {
+      								if (strpos($tasks['name'], 'FEMA Number Register') !== false ||
+                          strpos($tasks['name'], 'FEMA Number Follow Up') !== false ||
+                          strpos($tasks['name'], 'Follow Up:') !== false ||
+                          strpos($tasks['name'], 'Blank Field:') !== false)
+      								{
+      									$task = $objService->getCachedObject($tasks['id']);
+      									$task->setClosed();
+      									$task->updateCustomData();
+      									$solr = new Client();
+      									$solr->updateTree(['id' => $tasks['id']]);
+      								}
+      							}
+      					}
+             }
+             elseif (empty($p['data'][$caseTask]) && $p['data']['_clientstatus'] == 1578){
+                 if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
+                     //CREATE TASK HERE - Blank Fields
+                     $field = $caseTask;
+                     $field = str_replace('_firstname', 'First Name', $field);
+                     $field = str_replace('_middlename', 'Middle Name', $field);
+                     $field = str_replace('_lastname', 'Last Name', $field);
+                     $field = str_replace('_suffix', 'Suffix', $field);
+                     $field = str_replace('_alias', 'Alias', $field);
+                     $field = str_replace('_clientage', 'Disaster Survivor Age', $field);
+                     $field = str_replace('_fulladdress', 'Address', $field);
+                     $field = str_replace('_addresstwo', 'Apartment/Suite', $field);
+                     $field = str_replace('_numberinhousehold', 'Number of individuals in household', $field);
+                     $field = str_replace('_emailaddress', 'Email Address', $field);
+                     $field = str_replace('_phonenumber', 'Best Phone Number', $field);
+                     $field = str_replace('_otherphonenumber', 'Other Phone Number', $field);
+                     $field = str_replace('_verificationdocumentation', 'Verification Documentation', $field);
+                     $field = str_replace('_at_risk_population', 'Self-Reported Special/At-Risk Populations', $field);
+                     $field = str_replace('identified_unmet_needs', 'Self-Identified Unmet Needs', $field);
+                     $field = str_replace('_fematier', 'FEMA Tier', $field);
+                     $field = str_replace('_femanumberquestion', 'Does disaster survivor have a FEMA registration number?', $field);
+                     $field = str_replace('_femanumber', 'FEMA Registration Number', $field);
+                     $field = str_replace('assigned', 'Assigned IDCM Worker', $field);
+                     $field = str_replace('_location_type', 'Current Facility', $field);
+                     $field = str_replace('_gender', 'Gender', $field);
+                     $field = str_replace('_ethnicity', 'Ethnicity', $field);
+                     $field = str_replace('_race', 'Race', $field);
+                     $field = str_replace('_englishspeaker', 'English Speaker', $field);
+                     $field = str_replace('_primarylanguage', 'Primary Language', $field);
+                     $field = str_replace('_addresstype', 'Address Type', $field);
+                     $field = str_replace('_headofhousehold', 'Head of Household?', $field);
+                     $field = str_replace('_maritalstatus', 'Marital Status', $field);
+
+                     $data = [
+                       'pid' => 246835,
+                       'path' => '/Development/System/Tasks/',
+                       'template_id' => 7,
+                       'type' => 'task',
+                       'isNew' => 'true',
+                       'data' => [
+                           'ecmrs_id' => $ecmrsId,
+                           'survivor_name' => $name,
+                           'task_type' => 248476,
+                           'time_expended' => '',
+                           'case' => $ecmrsId,
+                           'task_status' => 1906,
+                           '_task' => 'Blank Field: ' . $field,
+                           'due_date' => $dueDate,
+                           'due_time' => $dueTime,
+                           'assigned' => $assignee,
+                           'importance' => 55,
+                           'description' => "Follow up with the disaster survivor to determine the " . $field . " field"
+                         ],
+                       ];
+                       $newTask = $objService->create($data);
+                       $p['sys_data']['taskCreated'][] = $caseTask;
+                 } else {
+                   //
+                 }
+             }
+         }
 
         $this->setParamsFromData($p);
 
@@ -414,251 +941,6 @@ class Cases extends CBObject
 		{
 			$sd['has_document_s'] = 'No';
 		}
-
-    // Create Tasks
-    $objService = new Objects();
-
-    $caseTasks = [
-      // undefined
-      '_femanumber',
-      '_gender',
-      '_ethnicity',
-      '_race',
-      '_englishspeaker',
-      '_primarylanguage',
-      '_addresstype',
-      '_headofhousehold',
-      '_maritalstatus',
-      // blanks
-      '_firstname',
-      '_middlename',
-      '_lastname',
-      '_suffix',
-      '_alias',
-      '_clientage',
-      '_fulladdress',
-      '_addresstwo',
-      '_numberinhousehold',
-      '_emailaddress',
-      '_phonenumber',
-      '_otherphonenumber',
-      '_verificationdocumentation',
-      '_at_risk_population',
-      'identified_unmet_needs',
-      '_fematier',
-      '_femanumberquestion',
-      '_femanumber',
-      'assigned',
-      '_location_type'
-    ];
-    $sd['taskCreated'] = [];
-
-    if (isset($d['_lastname']) && isset($d['_firstname'])) {
-      $name = $d['_lastname'] . ', ' . $d['_firstname'];
-    } elseif (isset($d['_lastname']) && !isset($d['_firstname'])) {
-      $name = $d['_lastname'];
-    } elseif (!isset($d['_lastname']) && isset($d['_firstname'])) {
-      $name = $d['_firstname'];
-    } else {
-      $name = '';
-    }
-
-    if (isset($p['id'])) {
-      $ecmrsId = $p['id'];
-    } else {
-      $ecmrsId = '';
-    }
-
-    if (isset($d['_fematier'])) {
-      $tier = $d['_fematier'];
-    } else {
-      $tier = '';
-    }
-
-    if (isset($d['assigned'])) {
-      $assignee = $d['assigned'];
-    } else {
-      $assignee = '';
-    }
-
-    if ($tier != '') {
-      date_default_timezone_set('America/New_York');
-      if ($tier == 1325) { //'Y-m-d H:i:s'
-        $dueDate = Date('Y-m-d H:i:s', strtotime('+21 days')); // Tier 1 +21 Days
-      } elseif ($tier == 1326) {
-        $dueDate = Date('Y-m-d H:i:s', strtotime('+14 days')); // Tier 2 +14 Days
-      } elseif ($tier == 1327) {
-        $dueDate = Date('Y-m-d H:i:s', strtotime('+10 days')); // Tier 3 +10 Days
-      } else {
-        $dueDate = Date('Y-m-d H:i:s', strtotime('+4 days')); // Tier 4 +7 Days
-      }
-      $dueTime = Date('H:i:s', time());
-    } else {
-      $dueDate = '';
-      $dueTime = '';
-    }
-
-    foreach ($caseTasks as $caseTask) {
-        if (!empty($d[$caseTask]))
-        {
-            if ($d[$caseTask] === "REGISTER")
-            {
-              if (!in_array($caseTask, $sd['taskCreated'])){
-                  //CREATE TASK HERE - Register FEMA
-                  $data = [
-                    'pid' => 246835,
-                    'path' => '/Development/System/Tasks/',
-                    'template_id' => 7,
-                    'type' => 'task',
-                    'isNew' => 'true',
-                    'data' => [
-                        'ecmrs_id' => $ecmrsId, // id
-                        'survivor_name' => $name, // name
-                        'task_type' => 248280,
-                        'time_expended' => '',
-                        'case' => $ecmrsId, // Linked case
-                        'task_status' => 1906, // Open
-                        '_task' => 'FEMA Number Register', // [ECMRS ID autofill} + Follow Up: Tier
-                        'due_date' => $dueDate, // [time of auto task creation + days by Tier]
-                        'due_time' => $dueTime, // [time of auto task creation]
-                        'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
-                        'importance' => 55,
-                        'description' => "Register the disaster survivor with FEMA and enter FEMA Number into the system."
-                      ],
-                    ];
-                    $newTask = $objService->create($data);
-                    $sd['taskCreated'][] = $caseTask;
-              }
-            }
-            elseif ($d[$caseTask] === "FOLLOWUP")
-            {
-              if (!in_array($caseTask, $sd['taskCreated'])){
-                  //CREATE TASK HERE - FollowUp FEMA
-                  $data = [
-                    'pid' => 246835,
-                    'path' => '/Development/System/Tasks/',
-                    'template_id' => 7,
-                    'type' => 'task',
-                    'isNew' => 'true',
-                    'data' => [
-                        'ecmrs_id' => $ecmrsId, // id
-                        'survivor_name' => $name, // name
-                        'task_type' => 248281,
-                        'time_expended' => '',
-                        'case' => $ecmrsId, // Linked case
-                        'task_status' => 1906, // Open
-                        '_task' => 'FEMA Number Follow Up', // [ECMRS ID autofill} + Follow Up: Tier
-                        'due_date' => $dueDate, // [time of auto task creation + days by Tier]
-                        'due_time' => $dueTime, // [time of auto task creation]
-                        'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
-                        'importance' => 55,
-                        'description' => "Follow up with the disaster survivor to determine their FEMA Number and enter FEMA Number into the system."
-                      ],
-                    ];
-                    $newTask = $objService->create($data);
-                    $sd['taskCreated'][] = $caseTask;
-              }
-            }
-            elseif ($d[$caseTask] == 219 || $d[$caseTask] == 231 || $d[$caseTask] == 241 || $d[$caseTask] == 260 || $d[$caseTask] == 3110 || $d[$caseTask] == 3225 || $d[$caseTask] == 248196)
-            {
-              if (!in_array($caseTask, $sd['taskCreated'])){
-                  //CREATE TASK HERE - Undetermined Fields
-                  $field = str_replace('_gender', 'Gender', $caseTask);
-                  $field = str_replace('_ethnicity', 'Ethnicity', $caseTask);
-                  $field = str_replace('_race', 'Race', $caseTask);
-                  $field = str_replace('_englishspeaker', 'English Speaker', $caseTask);
-                  $field = str_replace('_primarylanguage', 'Primary Language', $caseTask);
-                  $field = str_replace('_addresstype', 'Address Type', $caseTask);
-                  $field = str_replace('_headofhousehold', 'Head of Household?', $caseTask);
-                  $field = str_replace('_maritalstatus', 'Marital Status', $caseTask);
-
-                  $data = [
-                    'pid' => 246835,
-                    'path' => '/Development/System/Tasks/',
-                    'template_id' => 7,
-                    'type' => 'task',
-                    'isNew' => 'true',
-                    'data' => [
-                        'ecmrs_id' => $ecmrsId, // id
-                        'survivor_name' => $name, // name
-                        'task_type' => 248278,
-                        'time_expended' => '',
-                        'case' => $ecmrsId, // Linked case
-                        'task_status' => 1906, // Open
-                        '_task' => 'Follow Up: ' . $fieldname, // [ECMRS ID autofill} + Follow Up: Tier
-                        'due_date' => $dueDate, // [time of auto task creation + days by Tier]
-                        'due_time' => $dueTime, // [time of auto task creation]
-                        'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
-                        'importance' => 55,
-                        'description' => "Follow up with the disaster survivor to determine the " . $fieldname . " field"
-                      ],
-                    ];
-                    $newTask = $objService->create($data);
-                    $sd['taskCreated'][] = $caseTask;
-              }
-            }
-         }
-         else{
-           if ($d['_clientstatus'] == 1578) { 
-             if (!in_array($caseTask, $sd['taskCreated'])){
-                 //CREATE TASK HERE - Blank Fields
-                 $caseTask = str_replace('_firstname', 'First Name', $caseTask);
-                 $caseTask = str_replace('_middlename', 'Middle Name', $caseTask);
-                 $caseTask = str_replace('_lastname', 'Last Name', $caseTask);
-                 $caseTask = str_replace('_suffix', 'Suffix', $caseTask);
-                 $caseTask = str_replace('_alias', 'Alias', $caseTask);
-                 $caseTask = str_replace('_clientage', 'Disaster Survivor Age', $caseTask);
-                 $caseTask = str_replace('_fulladdress', 'Address', $caseTask);
-                 $caseTask = str_replace('_addresstwo', 'Apartment/Suite', $caseTask);
-                 $caseTask = str_replace('_numberinhousehold', 'Number of individuals in household', $caseTask);
-                 $caseTask = str_replace('_emailaddress', 'Email Address', $caseTask);
-                 $caseTask = str_replace('_phonenumber', 'Best Phone Number', $caseTask);
-                 $caseTask = str_replace('_otherphonenumber', 'Other Phone Number', $caseTask);
-                 $caseTask = str_replace('_verificationdocumentation', 'Verification Documentation', $caseTask);
-                 $caseTask = str_replace('_at_risk_population', 'Self-Reported Special/At-Risk Populations', $caseTask);
-                 $caseTask = str_replace('identified_unmet_needs', 'Self-Identified Unmet Needs', $caseTask);
-                 $caseTask = str_replace('_fematier', 'FEMA Tier', $caseTask);
-                 $caseTask = str_replace('_femanumberquestion', 'Does disaster survivor have a FEMA registration number?', $caseTask);
-                 $caseTask = str_replace('_femanumber', 'FEMA Registration Number', $caseTask);
-                 $caseTask = str_replace('assigned', 'Assigned IDCM Worker', $caseTask);
-                 $caseTask = str_replace('_location_type', 'Current Facility', $caseTask);
-                 $caseTask = str_replace('_gender', 'Gender', $caseTask);
-                 $caseTask = str_replace('_ethnicity', 'Ethnicity', $caseTask);
-                 $caseTask = str_replace('_race', 'Race', $caseTask);
-                 $caseTask = str_replace('_englishspeaker', 'English Speaker', $caseTask);
-                 $caseTask = str_replace('_primarylanguage', 'Primary Language', $caseTask);
-                 $caseTask = str_replace('_addresstype', 'Address Type', $caseTask);
-                 $caseTask = str_replace('_headofhousehold', 'Head of Household?', $caseTask);
-                 $caseTask = str_replace('_maritalstatus', 'Marital Status', $caseTask);
-
-                 $data = [
-                   'pid' => 246835,
-                   'path' => '/Development/System/Tasks/',
-                   'template_id' => 7,
-                   'type' => 'task',
-                   'isNew' => 'true',
-                   'data' => [
-                       'ecmrs_id' => $ecmrsId,
-                       'survivor_name' => $name,
-                       'task_type' => 248476,
-                       'time_expended' => '',
-                       'case' => $ecmrsId,
-                       'task_status' => 1906,
-                       '_task' => 'Blank Field: ' . $caseTask,
-                       'due_date' => $dueDate,
-                       'due_time' => $dueTime,
-                       'assigned' => $assignee,
-                       'importance' => 55,
-                       'description' => "Follow up with the disaster survivor to determine the " . $caseTask . " field"
-                     ],
-                   ];
-                   $newTask = $objService->create($data);
-                   $sd['taskCreated'][] = $caseTask;
-             }
-           }
-         }
-     }
-    // End auto case tasks
 
 		// Select only required properties for result
         $properties = [
