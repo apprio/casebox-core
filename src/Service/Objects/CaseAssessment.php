@@ -23,7 +23,7 @@ class CaseAssessment extends CBObject
 				$this->data = $p;
 
 				//Log FEMA Tier
-				if (isset($p['data']['_notetype'])){ 
+				if (isset($p['data']['_notetype'])){
 					if ($p['data']['_notetype'] == 523)
 					{
 						$caseId = $p['pid'];
@@ -429,11 +429,11 @@ class CaseAssessment extends CBObject
 			//Assessments
 			if (!empty($p['data']['_assessmentdate']))
 			{
-				/*$caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);
+				$caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);
 				if (!in_array($templateId, $caseSd['assessments_completed']))
 				{
 					$caseSd['assessments_completed'][] = $templateId;
-				}*/
+				}
 			}
 			if (!empty($p['data']['_referralneeded'])) { //assessment
 			  /*  $caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);

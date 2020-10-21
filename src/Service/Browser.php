@@ -180,8 +180,8 @@ class Browser
                 case 'pivot':
                 case 'charts':
                 case 'activityStream':
-                    $this->requestParams['sort'][0]['property'] = 'last_action_tdt';    
-                    $this->requestParams['sort'][0]['direction'] = 'desc';                       
+                    $this->requestParams['sort'][0]['property'] = 'last_action_tdt';
+                    $this->requestParams['sort'][0]['direction'] = 'desc';
                 case 'calendar':
                     $this->requestParams['sort'] = null;
             }
@@ -320,9 +320,10 @@ class Browser
                         $rez['DC'][] = $r['DC'];
                     }
 
-                    if (isset($r['view'])) {
+                    /*if (isset($r['view'])) {
+                      //print_r(gettype($r['view']));
                         $rez['view'] = array_merge($rez['view'], $r['view']);
-                    }
+                    }*/
 
                     // if (isset($r['sort'])) {
                     //     $rez['view']['sort'] = $r['sort'];
@@ -632,15 +633,15 @@ class Browser
 				$fieldName=	isset($dc['solr_column_name'])?$dc['solr_column_name']:null;
 				if (!empty($fieldName))
 				{
-					$p['fl'] .= ','.$fieldName;	
+					$p['fl'] .= ','.$fieldName;
 				}
 				else
 				{
-					$p['fl'] .= ','.$dctitle;	
+					$p['fl'] .= ','.$dctitle;
 				}
 			}
-        }	     		
-		
+        }
+
         //increase number of returned items
         if (!isset($p['rows'])) {
             if (!isset($p['limit'])) {
@@ -674,7 +675,7 @@ class Browser
 			$this->setCustomIcons($rez['data']);
 		}
 
-	if (empty($rez['DC'])) 
+	if (empty($rez['DC']))
 		{
 			if (isset($p['DC']))
 			{
@@ -1183,16 +1184,16 @@ class Browser
                 $r['iconCls'] = $recs[$r['id']]['cfg']['iconCls'];
             }
         }
-		
+
 		$recs = DM\Objects::readByIds($ids, true);
-		
+
         foreach ($records as &$r) {
             if (!empty($recs[$r['id']]['data']['iconCls'])) {
                 $r['iconCls'] = $recs[$r['id']]['data']['iconCls'];
             }
         }
-		
-		
+
+
     }
 
     /**
@@ -1209,15 +1210,15 @@ class Browser
         }
 
         $recs = DM\Templates::readByIds($ids, true);
-		
+
         foreach ($records as &$r) {
             if (!empty($recs[$r['id']]['iconCls'])) {
 				$r['name'] = $recs[$r['id']]['title_template'];
                 $r['iconCls'] = $recs[$r['id']]['iconCls'];
             }
         }
-    }	
-	
+    }
+
     /**
      * detect object icon by analizing it's data
      *
@@ -1231,11 +1232,11 @@ class Browser
      */
     public static function getIcon(&$data)
     {
-        
+
 		if (!empty($data['data']) && !empty($data['data']['iconCls'])) {
             return $data['data']['iconCls'];
-        }		
-		
+        }
+
         if (!empty($data['cfg']) && !empty($data['cfg']['iconCls'])) {
             return $data['cfg']['iconCls'];
         }

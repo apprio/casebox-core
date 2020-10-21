@@ -141,8 +141,10 @@ Ext.define('CB.NoteForm', {
                   data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
                   data.data.user_role = {value: 248702};
                 }
-                if (App.loginData.data.user_role.childs.assignedsupervisor) {
-                  data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
+                if (App.loginData.data.user_role) {
+                  if (App.loginData.data.user_role.childs.assignedsupervisor) {
+                    data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
+                  }
                 }
               } else if (App.loginData.groups == '30') {
                 // Supervisor Group, assign IDCM Workers
@@ -166,9 +168,13 @@ Ext.define('CB.NoteForm', {
               data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
               data.data.user_role = {value: 248702};
             }
-            if (App.loginData.data.user_role.childs.assignedsupervisor) {
-              data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
+            if (App.loginData.data.user_role) {
+              if (App.loginData.data.user_role.childs.assignedsupervisor) {
+                data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
+              }
             }
+            this.objectsStore.loadData(data.assocObjects);
+            delete data.assocObjects;
           } else if (App.loginData.groups == '30') {
             // Supervisor Group, assign IDCM Workers
             data.assocObjects = [];
@@ -177,10 +183,9 @@ Ext.define('CB.NoteForm', {
             if (App.loginData.data.user_role) {
               data.data.user_role.childs = {assignedworker: App.loginData.data.user_role.childs.assignedworker};
             }
+            this.objectsStore.loadData(data.assocObjects);
+            delete data.assocObjects;
           }
-
-          this.objectsStore.loadData(data.assocObjects);
-          delete data.assocObjects;
         }
 
         if(Ext.isDefined(data.language_id)) {

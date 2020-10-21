@@ -18,7 +18,11 @@ class FIDAStub extends Base
         $this->fq = [];
 
         // select only case templates
-		    $this->fq[] = 'template_id:246882';
+		    //$this->fq[] = 'template_id:246882';
+        $caseTemplates = DM\Templates::getIdsByType('fidastub');
+        if (!empty($caseTemplates)) {
+            $this->fq[] = 'template_id:('.implode(' OR ', $caseTemplates).')';
+        }
 
     }
 
@@ -138,8 +142,8 @@ class FIDAStub extends Base
         $p = $this->requestParams;
 		$p['fl'] = 'id,firstname_s,lastname_s,clientstatus_i,fidastatus_s,fematier_i,location_i,assignee_i,cid,cdate,task_d_closed,case_status,fematier,name,location_type_s,phonenumber_s,outreachattemptdate_dt,city_s,zipcode_s';
         $p['fq'] = $this->fq;
-        $p['fq'][] = 'task_u_all:'.$userId;
-        $p['fq'][] = 'task_status:(1 OR 2 OR 5)';
+        //$p['fq'][] = 'task_u_all:'.$userId;
+        //$p['fq'][] = 'task_status:(1 OR 2 OR 5)';
 
         if (@$this->requestParams['from'] == 'tree') {
             $s = new \Casebox\CoreBundle\Service\Search();

@@ -341,13 +341,13 @@ Ext.define('CB.object.view.Stub', {
       tbdAssessments.data =tbdAssessmentData;
       tbdAssessments.limit = 100;
       content  = Ext.create('CBObjectPluginContentItems',{params: params})
-      content.createMenu = assessmentMenu;
+      //content.createMenu = assessmentMenu;
       content.updateTitle(L.ClientAssessmentsNeeded);
       content.onLoadData(tbdAssessments);
       c.add(content);
     }
     content  = Ext.create('CBObjectPluginContentItems',{params: params})
-    content.createMenu = assessmentMenu;
+    //content.createMenu = assessmentMenu;
     content.updateTitle(L.ClientAssessmentsCompleted);
     content.onLoadData(assessmentData);
     c.add(content);
