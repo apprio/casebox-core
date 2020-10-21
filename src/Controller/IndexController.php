@@ -622,12 +622,24 @@ class IndexController extends Controller
                                      }
                                 }
                                 if ($templateData['type'] == 'fidastub') {
+                                    if ($templateRequiredFields) {
+                                      $templateRequiredFields = [];
+                                    }
+                                    if ($columnHeader == '_phonenumber') {
+                                      $templateColumn = $template->getField($columnHeader);
+                                      if (isset($templateColumn['cfg']['validationRe'])) {
+                                        unset($templateColumn['cfg']['validationRe']);
+                                      }
+                                    }
                                     if ($line['data']['_femanumber'] == '') {
                                       $line['data']['_femanumberquestion'] = 'FIDA Upload without FEMA Number';
                                       $line['data']['_femanumber'] = 'FIDA NO NUMBER';
                                     }
                                     if ($value == '') {
                                       $value = 'Unknown';
+                                    }
+                                    if ($columnHeader == '_fulladdress') {
+                                      $line['data']['_fulladdress'] = $line['data']['address_s'] . ', ' . $line['data']['city_s'] . ', ' . $line['data']['state_s'] . ' ' . $line['data']['zipcode_s'];
                                     }
                                     if ($line['data']['_femanumber'] == 'FIDA NO NUMBER') {
                                       // FEMA NUMBER not filled
