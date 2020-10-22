@@ -1978,8 +1978,8 @@ class Cases extends CBObject
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('FamilyMembers') .':</td><td width="35%" style="width:15%" class="prop-val">'.$familyMemberInfo.'</td>'.
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('AlternativeAddress') .':</td><td class="prop-val" width="35%">'.$addressInfo.'</td></tr>'.
 
-      '<tr><td class="prop-key" style="width:15%" width="15%">Next of Kin/Emergency Contact:</td><td width="35%" style="width:15%" class="prop-val">'.$emergencyContactInfo.'</td>'.
-      '<td class="prop-key" style="width:15%" width="15%">Checklist:</td><td class="prop-val" width="35%">'.$checklistLine.'</td></tr>'.
+      //'<tr><td class="prop-key" style="width:15%" width="15%">Next of Kin/Emergency Contact:</td><td width="35%" style="width:15%" class="prop-val">'.$emergencyContactInfo.'</td>'.
+      //'<td class="prop-key" style="width:15%" width="15%">Checklist:</td><td class="prop-val" width="35%">'.$checklistLine.'</td></tr>'.
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('SpecialAtRiskPopulation') .':</td><td width="35%" style="width:15%" class="prop-val">'.$atRiskLine.'</td>'.
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('IdentifiedNeeds') .':</td><td class="prop-val" width="35%">'.$identifiedNeedsLine.'</td></tr>'.
             '<tbody></table>';
