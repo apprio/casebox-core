@@ -998,25 +998,6 @@ class Cases extends CBObject
 			}
 		}
 
-    if (!empty($sd['full_address']))
-		{
-			$results = $this->lookup($sd['full_address']);
-			if ($results != null)
-			{
-				$sd['lat_lon'] = $results['latitude'] .','.$results['longitude'];
-				//$sd['full_address'] = $results['street'];//$results['full_address'];
-				$sd['county_s'] = $results['county'];
-				$sd['street_s'] = $results['street_number']. ' ' . $results['street'];
-				$sd['city_s'] = $results['city'];
-				$sd['zipcode_s'] = $results['postal_code'];
-				$sd['state_s'] = $results['state'];
-			}
-      else
-      {
-        print_r('nothing');
-      }
-		}
-
 		if (!empty($sd['full_address']) && empty($sd['lat_lon']))
 		{
 			$results = $this->lookup($sd['full_address']);
