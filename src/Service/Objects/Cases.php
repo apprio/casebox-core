@@ -823,7 +823,7 @@ class Cases extends CBObject
 		return null;
 	   }
 
-	   print_r($response);
+	   //print_r($response);
 	   $geometry = $response['results'][0]['geometry'];
 
 	   $location = array();
