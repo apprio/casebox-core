@@ -3483,7 +3483,7 @@
             </trans-unit>
  	    	<trans-unit id="3230">
                 <source>DisasterDeclaration</source>
-                <target>DR - Disaster Declaration</target>
+                <target>Disaster/Mission</target>
             </trans-unit>
  	    	<trans-unit id="3231">
                 <source>ClientID</source>

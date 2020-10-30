@@ -112,7 +112,7 @@ $femasql = 'select
 			(SELECT count(distinct(IF(template_id=141,id,pid))) FROM
 			tree stree where stree.dstatus = 0 and template_id
             in (527,311,289,607,141,3114,1175,1120,656,
-            651,559,553,533,510,505,489,482,455,440,172,246882,247979)
+            651,559,553,533,510,505,489,482,455,440,172)
 			and IF(template_id=141,id,pid) in (select id from objects
             where substring(data, LOCATE(\'"_location_type":\', data)+18,
 LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
@@ -349,12 +349,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			SUM(IF (sys_data like \'%"fematier":"Tier 2%\' AND DATE(tree.cdate) = \''.$date.'\',1,0) ) fema_tier_2,
 			SUM(IF (sys_data like \'%"fematier":"Tier 3%\' AND DATE(tree.cdate) = \''.$date.'\',1,0) ) fema_tier_3,
 			SUM(IF (sys_data like \'%"fematier":"Tier 4%\' AND DATE(tree.cdate) = \''.$date.'\',1,0) ) fema_tier_4,
-      SUM(IF ((sys_data like \'%"fematier":"Tier 1%\') AND DATE(tree.cdate) = \''.$date.'\' AND sys_data like \'%"case_status":"Closed"%\' ,1,0)  ) closed_fema_tier_1,
-			SUM(IF (sys_data like \'%"fematier":"Tier 2%\' AND DATE(tree.cdate) = \''.$date.'\' AND sys_data like \'%"case_status":"Closed"%\' ,1,0) ) closed_fema_tier_2,
-			SUM(IF (sys_data like \'%"fematier":"Tier 3%\' AND DATE(tree.cdate) = \''.$date.'\' AND sys_data like \'%"case_status":"Closed"%\' ,1,0) ) closed_fema_tier_3,
-			SUM(IF (sys_data like \'%"fematier":"Tier 4%\' AND DATE(tree.cdate) = \''.$date.'\' AND sys_data like \'%"case_status":"Closed"%\' ,1,0) ) closed_fema_tier_4,
-			case_managers_1.total case_manager_total_1,
-      case_managers_2.total case_manager_total_2,
+			case_managers.total case_mamager_total,
 			case_manager_supervisors.total case_manager_supervisor_total,
 			CONCAT(case_manager_supervisors.total,\'/\',case_managers.total) as case_manager_to_supervisor_ratio,
 			CONCAT(case_managers.total,\'/\',SUM(IF (DATE(tree.cdate) = \''.$date.'\',1,0))) as case_manager_to_client_ratio
@@ -363,11 +358,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			(select 141 template_id, count(*) total from users_groups
 			where enabled = 1 and users_groups.id in
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in
-			(select id from users_groups where replace(users_groups.name,\'Workers\',\'Worker\') = \'IDCM Worker - Level I\'))) case_managers_1,
-      (select 141 template_id, count(*) total from users_groups
-			where enabled = 1 and users_groups.id in
-			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in
-			(select id from users_groups where replace(users_groups.name,\'Workers\',\'Worker\') = \'IDCM Worker - Level II\'))) case_managers_2,
+			(select id from users_groups where replace(users_groups.name,\'Workers\',\'Worker\') = \'IDCM Worker\'))) case_managers,
 			(select 141 template_id, count(*) total from users_groups
 			where enabled = 1 and users_groups.id in
 			(select user_id from users_groups_association where DATE(cdate) <= \''.$date.'\' AND group_id in
@@ -381,7 +372,7 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
       tree.id in (SELECT distinct(IF(template_id=141,id,pid)) FROM
 			tree stree where template_id
             in (527,311,289,607,141,3114,1175,1120,656,
-            651,559,553,533,510,505,489,482,455,440,172,246882,247979)
+            651,559,553,533,510,505,489,482,455,440,172)
             	AND DATE(stree.cdate) = \''.$date.'\'
 and IF(template_id=141,id,pid) in (select id from objects
             where substring(data, LOCATE(\'"_location_type":\', data)+18,

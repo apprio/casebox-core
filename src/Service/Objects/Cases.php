@@ -82,24 +82,10 @@ class Cases extends CBObject
       '_headofhousehold',
       '_maritalstatus',
       // blanks
-      '_firstname',
-      '_middlename',
-      '_lastname',
-      '_suffix',
-      '_alias',
       '_clientage',
       '_fulladdress',
-      '_addresstwo',
       '_numberinhousehold',
       '_emailaddress',
-      '_phonenumber',
-      '_otherphonenumber',
-      '_verificationdocumentation',
-      '_at_risk_population',
-      'identified_unmet_needs',
-      '_fematier',
-      '_femanumberquestion',
-      '_femanumber',
       'assigned',
       '_location_type'
     ];
@@ -257,24 +243,10 @@ class Cases extends CBObject
              if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
                  //CREATE TASK HERE - Blank Fields
                  $field = $caseTask;
-                 $field = str_replace('_firstname', 'First Name', $field);
-                 $field = str_replace('_middlename', 'Middle Name', $field);
-                 $field = str_replace('_lastname', 'Last Name', $field);
-                 $field = str_replace('_suffix', 'Suffix', $field);
-                 $field = str_replace('_alias', 'Alias', $field);
                  $field = str_replace('_clientage', 'Disaster Survivor Age', $field);
                  $field = str_replace('_fulladdress', 'Address', $field);
-                 $field = str_replace('_addresstwo', 'Apartment/Suite', $field);
                  $field = str_replace('_numberinhousehold', 'Number of individuals in household', $field);
                  $field = str_replace('_emailaddress', 'Email Address', $field);
-                 $field = str_replace('_phonenumber', 'Best Phone Number', $field);
-                 $field = str_replace('_otherphonenumber', 'Other Phone Number', $field);
-                 $field = str_replace('_verificationdocumentation', 'Verification Documentation', $field);
-                 $field = str_replace('_at_risk_population', 'Self-Reported Special/At-Risk Populations', $field);
-                 $field = str_replace('identified_unmet_needs', 'Self-Identified Unmet Needs', $field);
-                 $field = str_replace('_fematier', 'FEMA Tier', $field);
-                 $field = str_replace('_femanumberquestion', 'Does disaster survivor have a FEMA registration number?', $field);
-                 $field = str_replace('_femanumber', 'FEMA Registration Number', $field);
                  $field = str_replace('assigned', 'Assigned IDCM Worker', $field);
                  $field = str_replace('_location_type', 'Current Facility', $field);
                  $field = str_replace('_gender', 'Gender', $field);
@@ -443,24 +415,10 @@ class Cases extends CBObject
           '_headofhousehold',
           '_maritalstatus',
           // blanks
-          '_firstname',
-          '_middlename',
-          '_lastname',
-          '_suffix',
-          '_alias',
           '_clientage',
           '_fulladdress',
-          '_addresstwo',
           '_numberinhousehold',
           '_emailaddress',
-          '_phonenumber',
-          '_otherphonenumber',
-          '_verificationdocumentation',
-          '_at_risk_population',
-          'identified_unmet_needs',
-          '_fematier',
-          '_femanumberquestion',
-          '_femanumber',
           'assigned',
           '_location_type'
         ];
@@ -633,24 +591,10 @@ class Cases extends CBObject
                  if ( !in_array($caseTask, $p['sys_data']['taskCreated']) ){
                      //CREATE TASK HERE - Blank Fields
                      $field = $caseTask;
-                     $field = str_replace('_firstname', 'First Name', $field);
-                     $field = str_replace('_middlename', 'Middle Name', $field);
-                     $field = str_replace('_lastname', 'Last Name', $field);
-                     $field = str_replace('_suffix', 'Suffix', $field);
-                     $field = str_replace('_alias', 'Alias', $field);
                      $field = str_replace('_clientage', 'Disaster Survivor Age', $field);
                      $field = str_replace('_fulladdress', 'Address', $field);
-                     $field = str_replace('_addresstwo', 'Apartment/Suite', $field);
                      $field = str_replace('_numberinhousehold', 'Number of individuals in household', $field);
                      $field = str_replace('_emailaddress', 'Email Address', $field);
-                     $field = str_replace('_phonenumber', 'Best Phone Number', $field);
-                     $field = str_replace('_otherphonenumber', 'Other Phone Number', $field);
-                     $field = str_replace('_verificationdocumentation', 'Verification Documentation', $field);
-                     $field = str_replace('_at_risk_population', 'Self-Reported Special/At-Risk Populations', $field);
-                     $field = str_replace('identified_unmet_needs', 'Self-Identified Unmet Needs', $field);
-                     $field = str_replace('_fematier', 'FEMA Tier', $field);
-                     $field = str_replace('_femanumberquestion', 'Does disaster survivor have a FEMA registration number?', $field);
-                     $field = str_replace('_femanumber', 'FEMA Registration Number', $field);
                      $field = str_replace('assigned', 'Assigned IDCM Worker', $field);
                      $field = str_replace('_location_type', 'Current Facility', $field);
                      $field = str_replace('_gender', 'Gender', $field);
