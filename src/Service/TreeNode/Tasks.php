@@ -95,7 +95,7 @@ class Tasks extends Base
     }
 
     protected function getRootNodes()
-    { 
+    {
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.User::getId();
@@ -352,14 +352,13 @@ class Tasks extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
+		    $p['fl'] = 'id,due_s,name,cdate,case_status,template_id,clientname_s,cid,assigned_s';
         $parent = $this->lastNode->parent;
 
         if ($parent->id == 2) {
             $p['fq'][] = 'task_u_ongoing:'.$userId;
-        } else {
-            $p['fq'][] = 'cid:'.$userId;
         }
+
         if (!isset($p['sort'])) {
     			$p['sort'][0]['property'] = 'due_s';
     			$p['sort'][0]['direction'] = 'asc';
