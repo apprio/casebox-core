@@ -60,7 +60,7 @@ class Cases extends CBObject
 
     $this->setParamsFromData($p);
 		$createResult = parent::create($p);
-
+/*
     // Create Tasks
     if (isset($createResult)) {
       $ecmrsId = $createResult;
@@ -287,7 +287,7 @@ class Cases extends CBObject
          }
      }
     // End auto case tasks
-
+*/
 		if (!empty($p['data']['_numberinhousehold']))
 		{
 			$householdMembers = $p['data']['_numberinhousehold'];
@@ -391,7 +391,7 @@ class Cases extends CBObject
               ));
           }
         }
-
+/*
         // Create Tasks
         if (isset($p['id'])) {
           $ecmrsId = $p['id'];
@@ -634,7 +634,7 @@ class Cases extends CBObject
                  }
              }
          }
-
+*/
         $this->setParamsFromData($p);
 
         return parent::update($p);
