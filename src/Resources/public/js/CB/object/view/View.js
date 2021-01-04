@@ -329,6 +329,17 @@
 				}
 				tbdAssessments.data =tbdAssessmentData;
 				tbdAssessments.limit = 100;
+				if(!Ext.isEmpty(assessmentData.data)) {
+					for(var i = 0; i < assessmentData.data.length; i++) {
+						hasData = assessmentData.data[i].template_id;
+						for(var t = 0; t < tbdAssessmentData.length; t++) {
+							if(tbdAssessmentData[t].template_id == hasData) {
+								index = tbdAssessmentData.indexOf(tbdAssessmentData[t]);
+							 	tbdAssessmentData.splice(index, 1); // Remove objects that already has data (already under Assessments Completed)
+							}
+						}
+					}
+				}
 				content  = Ext.create('CBObjectPluginContentItems',{params: params})
 				//content.createMenu = assessmentMenu;
 				content.updateTitle(L.ClientAssessmentsNeeded);
