@@ -167,13 +167,13 @@ class CaseAssessment extends CBObject
 			$tpl = $this->getTemplate();
 
 			//Case Notes
-			if (!empty($p['data']['_notetype']['value'])) { //
+			if (!empty($p['data']['_notetype']['value'])) {
 				if ($p['data']['_notetype']['value'] == 526) //close note
 				{
 					$case->markClosed();
 				}
 				if ($p['data']['_notetype']['value'] == 523) //FEMA tier
-				{ //print_r($p);
+				{
 					$femaTier = $p['data']['_notetype']['childs']['_fematier'];
 					$caseData['data']['_fematier'] = $femaTier;
 					$caseSd['fematier_i'] = $femaTier;
@@ -265,7 +265,11 @@ class CaseAssessment extends CBObject
 
 				}
 			}
-
+			if (!empty($p['data']['_notetype'])) {
+				if ($p['data']['_notetype'] == 250357) { //re-open
+					$case->markReopened();
+				}
+			}
 
 			if (isset($p['data']['_city']) || isset($p['data']['_state'])
 					|| isset($p['data']['_zip'])|| isset($p['data']['_addressone']))

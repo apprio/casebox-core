@@ -932,7 +932,8 @@ class Cases extends CBObject
         }
         $arrayproperties = [
             'at_risk_population',
-            'identified_unmet_needs'
+            'identified_unmet_needs',
+            '_referralservice'
         ];
     	foreach ($arrayproperties as $property) {
     		unset($sd[$property.'_ss']);
@@ -1160,11 +1161,11 @@ class Cases extends CBObject
         $sd = &$d['sys_data'];
 
         unset($sd['task_d_closed']);
-		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_ACTIVE, '');
-		$d['data']['_clientstatus'] = 1578;
-		$d['data']['_openstatus'] = 246933;
+    		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_ACTIVE, '');
+    		$d['data']['_clientstatus'] = 1578;
+    		$d['data']['open_status'] = 246933;
         $this->updateCustomData();
-		$this->updateSysData();
+		    $this->updateSysData();
     }
 
     /**
@@ -1197,10 +1198,32 @@ class Cases extends CBObject
 
         $sd['task_status'] = static::$STATUS_CLOSED;
         $sd['task_d_closed'] = date('Y-m-d\TH:i:s\Z');
-		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_CLOSED, '');
-		$d['data']['_openstatus'] = 1579;
-		$this->updateCustomData();
-		$this->updateSysData();
+    		$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_CLOSED, '');
+    		$d['data']['open_status'] = 1579;
+    		$this->updateCustomData();
+    		$this->updateSysData();
+    }
+
+    /**
+     * Mark the task as re-opened
+     * @return void
+     */
+    public function markReopened()
+    {
+        $d = &$this->data;
+        $sd = &$d['sys_data'];
+
+        unset($sd['task_d_closed']);
+        if ($d['data']['_clientstatus'] == 1578) {
+          $sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_ACTIVE, '');
+          $sd['task_status'] = static::$STATUS_ACTIVE;
+        } elseif ($d['data']['_clientstatus'] == 1577) {
+          $sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_INFORMATION, '');
+          $sd['task_status'] = static::$STATUS_INFORMATION;
+        }
+    		$d['data']['open_status'] = 250362;
+    		$this->updateCustomData();
+    		$this->updateSysData();
     }
 
     /**
@@ -1216,7 +1239,7 @@ class Cases extends CBObject
     	$sd['transferred_dt'] = date('Y-m-d\TH:i:s\Z');
     	$sd['case_status'] = $this->trans('caseStatus'.static::$STATUS_TRANSFERRED, '');
     	$d['data']['_clientstatus'] = 604;
-		$d['data']['_openstatus'] = 1579;
+		  $d['data']['open_status'] = 1579;
     	$this->updateCustomData();
     	$this->updateSysData();
     }

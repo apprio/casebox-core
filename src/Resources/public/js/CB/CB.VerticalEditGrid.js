@@ -1002,9 +1002,14 @@ Ext.define('CB.VerticalEditGrid', {
                     for(var j = 0; j < this.store.data.length; j++){
                         var r = this.store.getAt(j);
                         if(curr == r.data.title){
+                          if (r.data.title == 'Best Phone Number'){
                             var n = this.helperTree.getNode(r.get('id'));
                             n.data.templateRecord.get('cfg').required = !infoOnly;
-                            tr.data.cfg.required = !infoOnly;
+                            n.data.templateRecord.get('cfg').validationRe = "";
+                          } else {
+                            var n = this.helperTree.getNode(r.get('id'));
+                            n.data.templateRecord.get('cfg').required = !infoOnly;
+                          }
                         }
                     }
                 }
