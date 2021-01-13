@@ -11,7 +11,7 @@ use Casebox\CoreBundle\Service\User;
 
 class CasesGrouped extends Base
 {
-   
+
     protected function createDefaultFilter()
     {
         $this->fq = [];
@@ -53,7 +53,7 @@ class CasesGrouped extends Base
                     $rez = $this->getDepthChildren2();
                     break;
                 case 2:
-                case 3:                
+                case 3:
                 case 4:
                     $rez = $this->getDepthChildren3();
                     break;
@@ -84,7 +84,7 @@ class CasesGrouped extends Base
             case 6:
                 return $this->trans('Closed');
             case 7:
-                return $this->trans('InformationOnly');		
+                return $this->trans('InformationOnly');
             case 8:
             	return $this->trans('Transitioned');
             case 'assignee':
@@ -104,7 +104,7 @@ class CasesGrouped extends Base
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.User::getId();
         $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
-        $p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+        $p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type,openstatus_i';
 		$p['rows'] = 0;
 
         $s = new Search();
@@ -143,13 +143,13 @@ class CasesGrouped extends Base
     {
         $userId = User::getId();
         $p = $this->requestParams;
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type,openstatus_i';
         $p['fq'] = $this->fq;
         //$p['fq'][] = 'task_u_all:'.$userId;
         $p['fq'][] = 'task_status:(1 OR 2 OR 3 OR 5 OR 6)';
 		if (!isset($p['sort'])) {
-			$p['sort'][0]['property'] = 'id';    
-			$p['sort'][0]['direction'] = 'desc';                       
+			$p['sort'][0]['property'] = 'id';
+			$p['sort'][0]['direction'] = 'desc';
 		}
         if (@$this->requestParams['from'] == 'tree') {
             $s = new \Casebox\CoreBundle\Service\Search();
@@ -173,7 +173,7 @@ class CasesGrouped extends Base
                     'has_childs' => true,
                 ];
             }
-            
+
           if (!empty($sr['facets']->facet_fields->{'1assigned'}->{$userId})) {
                 $rez['data'][] = [
                     'name' => $this->trans('MyClients').$this->renderCount(
@@ -183,7 +183,7 @@ class CasesGrouped extends Base
                     'iconCls' => 'icon-user',
                     'has_childs' => true,
                 ];
-            }    
+            }
             if (!empty($sr['facets']->facet_fields->{'2cid'}->{$userId})) {
                 $rez['data'][] = [
                     'name' => $this->trans('CreatedByMe').$this->renderCount(
@@ -218,7 +218,7 @@ class CasesGrouped extends Base
         } else {
             $p['fq'][] = '-task_u_assignee:[* TO *]';
         }
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type,openstatus_i';
         if (@$this->requestParams['from'] == 'tree') {
             $s = new Search();
 
@@ -259,7 +259,7 @@ class CasesGrouped extends Base
                     'id' => $this->getId(7),
                     'iconCls' => 'icon-information-white',
                 ];
-            }		
+            }
             if (!empty($sr['facets']->facet_fields->{'0task_status'}->{'6'})) {
             	$rez['data'][] = [
             		'name' => $this->trans('Transitioned').$this->renderCount(
@@ -268,7 +268,7 @@ class CasesGrouped extends Base
      				'id' => $this->getId(8),
      				'iconCls' => 'icon-trigger-arrow-right',
             	];
-            }           
+            }
             // Add assignee node if there are any created cases already added to result
             if (($this->lastNode->id == 4) && !empty($rez['data'])) {
                 $rez['data'][] = [
@@ -298,7 +298,7 @@ class CasesGrouped extends Base
         $userId = User::getId();
         $p = $this->requestParams;
         $p['fq'] = $this->fq;
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type,openstatus_i';
 
         $parent = $this->lastNode->parent;
 
@@ -398,7 +398,7 @@ class CasesGrouped extends Base
 
         $user_id = substr($this->lastNode->id, 3);
         $p['fq'][] = 'task_u_ongoing:'.$user_id;
-		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type';
+		$p['fl'] = 'id,fematier,name,cdate,case_status,cid,uid,udate,firstname_s,lastname_s,assignee_s,reviewtype_s,task_d_closed,location_type,openstatus_i';
         $s = new Search();
 
         $sr = $s->query($p);
