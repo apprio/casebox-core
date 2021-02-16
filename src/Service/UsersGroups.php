@@ -252,7 +252,7 @@ class UsersGroups
 
         $p['name'] = strip_tags($p['name']);
         $p['name'] = trim($p['name']);
-        
+
         if ((empty($p['password']) || empty($p['confirm_password'])) && $p['ps'] == 2) {
              return $rez;
         }
@@ -365,9 +365,9 @@ class UsersGroups
         }
 
         Security::calculateUpdatedSecuritySets();
-        
+
         $this->logAction('user_create', array('userId' => $user_id,'userName' => $p['name'], 'text'=>($p['first_name'] . ' ' . $p['last_name'].'\'s account has been created')));
-        
+
         Solr\Client::runBackgroundCron();
 
         return $rez;
@@ -431,13 +431,18 @@ class UsersGroups
      */
     public function getUserData($p)
     {
-        if (!User::isVerified()) {
-            return ['success' => false, 'verify' => true];
+        if (isset($p['assign'])) {
+          if ($p['assign'] != 1) {
+            if (!User::isVerified()) {
+                return ['success' => false, 'verify' => true];
+            }
+
+            if ((User::getId() != $p['data']['id']) && !Security::canManage()) {
+                throw new \Exception($this->trans('Access_denied'));
+            }
+          }
         }
 
-        if ((User::getId() != $p['data']['id']) && !Security::canManage()) {
-            throw new \Exception($this->trans('Access_denied'));
-        }
         $user_id = $p['data']['id'];
         $rez = ['success' => false, 'msg' => $this->trans('Wrong_id')];
 
@@ -537,7 +542,7 @@ class UsersGroups
         $tsv = User::getTSVConfig($user_id);
         $rez['data']['tsv'] = empty($tsv['method']) ? 'none' : $this->trans('TSV_'.$tsv['method']);
 		$rez['data']['tsvdisabled'] = empty($rez['data']['ddate']) ? 'Required': 'Not Required';
-        
+
 		return $rez;
     }
 
@@ -690,7 +695,7 @@ class UsersGroups
                 ];
             }
         }
-	    
+
 		$weakness = $this->passwordStrength($p['password'],$username);
 
         if($weakness) {
@@ -700,7 +705,7 @@ class UsersGroups
                   'message' => 'Password does not meet minimum requirements: ' . $weakness
                 ];
         }
-		
+
         if (!Security::canEditUser($uid) && $verify) {
             throw new \Exception($this->trans('Access_denied'));
         }
@@ -723,7 +728,7 @@ class UsersGroups
         if (!$user instanceof UsersGroupsEntity) {
             return false;
         }
-		
+
 		$weakness = $this->passwordStrength($password,$username);
 
         if($weakness) {
@@ -930,7 +935,7 @@ class UsersGroups
         $container = Cache::get('symfony.container');
         $em = $container->get('doctrine.orm.entity_manager');
         $encoderFactory = $container->get('security.encoder_factory');
-		
+
 		$username = User::getUsername($userId);
 		$fullName = User::getDisplayName($userId);
         $user = $em->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername($username);
@@ -940,7 +945,7 @@ class UsersGroups
         }
 		$user->setLoginSuccessful(0);
 		$user->setEnabled(intval($enabled));
-		
+
 		$this->logAction('status_change', array('userId' => $userId,'userName' => $username, 'status' => intval($enabled), 'text'=>($fullName.'\'s account has been set to '). (($enabled)? 'enabled':'disabled')));
         $em->flush();
 
@@ -1006,7 +1011,7 @@ class UsersGroups
 
         return $id;
     }
-	
+
     function passwordStrength($password, $username = null)
     {
         if (!empty($username))
@@ -1016,31 +1021,31 @@ class UsersGroups
         }
 
         $password_length = strlen($password);
- 
+
         if ($password_length < 8)
         {
             return "too short";
-        } 
- 
+        }
+
         if (!preg_match("#[0-9]+#", $password)) {
             return "does not include at least one number";
         }
 
         if (!preg_match("#[a-z]+#", $password)) {
             return "does not include at least one lowercase letter";
-        }     
- 
+        }
+
         if (!preg_match("#[A-Z]+#", $password)) {
             return "does not include at least one uppercase letter";
-        }     
-        
+        }
+
         if (!preg_match("/[|!@#$%&*\/=?,;.:\-_+~^¨\\\]/", $password)) {
             return "does not include at least one special character";
-        }     
-        
+        }
+
         return;
     }
-    
+
     /**
      * add action to log
      *
@@ -1062,8 +1067,8 @@ class UsersGroups
     				//'data' => Util\jsonEncode(array('ip' => $user->getLoginFromIp(), 'failedlogins' => $user->getLoginSuccessful())),
     				'activity_data_db' => Util\jsonEncode($uid),
     		];
-    
+
     		$p['action_id'] = DM\Log::create($params);
     	}
-    }    
+    }
 }

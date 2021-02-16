@@ -7,7 +7,7 @@ Ext.define('CB.VerticalEditGrid', {
         'CBVerticalEditGrid'
         ,'widget.CBVerticalEditGrid'
     ]
-
+    ,api: 'CB_Objects.getPluginsData'
     ,border: false
     ,root: 'data'
     ,cls: 'spacy-rows edit-grid'
@@ -442,6 +442,7 @@ Ext.define('CB.VerticalEditGrid', {
                 this.data = pw.data[this.root];
             }
         }
+        CB_Objects.getPluginsData({id: pw.data.pid}, this.processLoadPreviewData, this);
         //if not specified template_id directly to grid then try to look in owners data
         this.template_id = Ext.valueFrom(pw.data.template_id, this.template_id);
         if(isNaN(this.template_id)) {
@@ -500,6 +501,17 @@ Ext.define('CB.VerticalEditGrid', {
         this.syncRecordsWithHelper();
 
         this.fireEvent('loaded', this);
+    }
+
+    ,processLoadPreviewData: function(r, e) {
+        if(!r || (r.success !== true)) {
+            return;
+        }
+
+        var objProperties  = Ext.valueFrom(r.data.objectProperties, {}).data;
+
+        this.data = Ext.apply(Ext.valueFrom(this.data, {}), objProperties);
+        this.data.from = 'window';
     }
 
     ,syncRecordsWithHelper: function(){
@@ -663,7 +675,11 @@ Ext.define('CB.VerticalEditGrid', {
             context.objectId = pw.data.id;
             context.objectPid = pw.data.pid;
             context.path = pw.data.path;
-            context.survivorName = pw.data.survivorName;
+            if (!Ext.isEmpty(pw.data.survivorName)) {
+              context.survivorName = pw.data.survivorName;
+            } else {
+              context.survivorName = pw.data.data.name;
+            }
         }
 
         // If survivor's status is Information Only, set required fields to false
@@ -690,7 +706,8 @@ Ext.define('CB.VerticalEditGrid', {
 	            					"Notes", "What was the disaster survivor's primary mode of transportation prior to the disaster?", "Employed?", "Did you lose your job because of the disaster?", "Looking for additional employment/increased hours?",
                         "Prior to the disaster, was the Disaster Survivor's child in a Head Start Program?", "Prior to the disaster, was the Disaster Survivor's child in childcare?", "Are the Disaster Survivor's children currently attending school?", "Has Disaster Survivor applied for Disaster Unemployment Assistance?",
                         "Income Received?", "Income Group", "Earned income (i.e. employment income)", "Unemployment Insurance", "Supplemental Security Income (SSI)", "Social Security Disability Income (SSDI)", "Veterans Disability Payment", "Rent", "Mortgage", "Maintenance", "Car Payment", "Car Insurance", "Gasoline",
-                        "Medical", "Food", "Miscellaneous", "Number of Expenses", "What was the Disaster Survivor's primary mode of transportation prior to the disaster?"];
+                        "Medical", "Food", "Miscellaneous", "Number of Expenses", "What was the Disaster Survivor's primary mode of transportation prior to the disaster?", "Evaluation Date", "Family Size", "Annual Household Income Range", "Pre-Disaster, was Disaster Survivor or any household member receiving any of the following?"
+                        , "Estimated Annual Household Income Range", "Post-Disaster, is Disaster Survivor or any household member receiving any of the following?", "Disaster Unemployment Assistance received?"];
 
 	            for(var i = 0; i < reqEntryTitles.length; i++){
 	                var curr = reqEntryTitles[i];
