@@ -85,11 +85,21 @@ class CaseboxAuth
      * @return bool
      * @throws \Exception
      */
-    public function authenticate($username, $password)
+    public function authenticate($username, $password, $state)
     {
 		$failedMessage = "Invalid Credentials";
 		$disabledMessage = "You have exceeded the amount of login attempts. Please contact the system administrator to have your password reset.";
 		$user = $this->getEm()->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername($username);
+    $oos = 'Your login has been denied. If you believe this is in error, please contact the ECMRS helpdesk.';
+
+    // Outside approved approved state
+    if (!empty($state)) {
+      if ($state != 'Maryland' || $state != 'District of Columbia') {
+        //log user and current location
+        $this->logAction('login_fail', @$user, @$state);
+        return $oos;
+      }
+    }
 
         if (!$user instanceof UsersGroupsEntity) {
             return $failedMessage;
@@ -116,7 +126,7 @@ class CaseboxAuth
 		$user->setLoginFromIp($_SERVER['REMOTE_ADDR']);
         if ($encodedPass !== $user->getPassword()) {
 			//Unsuccessful login here - need to log it
-			$this->logAction('login_fail', @$user);
+			$this->logAction('login_fail', @$user, @$state);
 
 			$user->setLoginSuccessful($user->getLoginSuccessful()-1);
 			if ($user->getLoginSuccessful() < -4)
@@ -201,7 +211,7 @@ class CaseboxAuth
      *
      * @return void
      */
-    protected function logAction($type, $user)
+    protected function logAction($type, $user, $state)
     {
         if (!Cache::get('disable_logs', false)) {
           $params = [
@@ -209,7 +219,7 @@ class CaseboxAuth
             'object_pid' => 10,
             'user_id' => $user->getId(),
             'action_type' => $type,
-            'data' => Util\jsonEncode(array('ip' => $user->getLoginFromIp(), 'failedlogins' => $user->getLoginSuccessful())),
+            'data' => Util\jsonEncode(array('ip' => $user->getLoginFromIp(), 'failedlogins' => $user->getLoginSuccessful(), 'currentLocation' => $state)),
             'activity_data_db' => Util\jsonEncode($user),
         ];
 

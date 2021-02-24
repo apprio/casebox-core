@@ -50,13 +50,14 @@ By using this system, you understand and consent to the following:
     <form method="post" action="/c/{{ coreName }}/login/auth" class="standart_form tal" autocomplete="off">
         <label>
             <input type="text" name="u" id="u" aria-label="Username" placeholder="{{ 'Username'|trans }}">
-			<span class="icon-user" title="Username"></span>			
+			<span class="icon-user" title="Username"></span>
         </label>
         <label>
             <input type="password" name="p" id="p" aria-label="Password" placeholder="{{ 'Password'|trans }}" onkeydown="javascript:editChanged()">
-		    <span class="icon-lock" title="Password"></span>		
+		    <span class="icon-lock" title="Password"></span>
         </label>
         <!-- <a style="margin-top: 30px;" class="pull-right" href="/c/{{ coreName }}/recover/forgot-password">{{ 'ForgotPassword'|trans }}</a> -->
+        <input type="hidden" name="st" id="st">
         <input type="submit" name="s" id="s" value="{{ 'Login'|trans }}" class="btn btn-info" style="margin-top: 26px;">
     </form>
 {% endblock %}

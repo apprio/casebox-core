@@ -44,6 +44,52 @@
     </main>
     </div>
 </div>
+
+<div>
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDASho_AwHZ3wzI1AJ9P049emee6pkkfMg"></script>
+
+<script>
+    	const successCallback = (position) => {
+	      const geocoder = new google.maps.Geocoder();
+        const latlng = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        geocoder.geocode({ location: latlng }, (results, status) => {
+          if (status === "OK") {
+            if (results[0]) {
+              const address = results[0].address_components;
+              for (var i = 0; i < address.length; i++) {
+                const addressType = address[i].types;
+                if (addressType.includes("administrative_area_level_1")) {
+                  const state = address[i].long_name;
+                  document.getElementById("st").value = state;
+                }
+                if ((addressType.includes("country") && address[i].short_name == 'PR') || (addressType.includes("country") && address[i].short_name == 'VI') ||
+                    (addressType.includes("country") && address[i].short_name == 'MP') || (addressType.includes("country") && address[i].short_name == 'GU') ||
+                    (addressType.includes("country") && address[i].short_name == 'AS')) {
+                  const state = address[i].long_name;
+                  document.getElementById("st").value = state;
+                }
+              }
+            }
+          }
+        });
+      };
+
+      const errorCallback = (position) => {
+        const state = 'Denied Location';
+        document.getElementById("st").value = state;
+      };
+
+      navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
+        enableHighAccuracy: true
+      });
+</script>
+</div>
+
+
 <footer>
 <div class="footer" style="right: 0;">
     ECMRS V1.9.2

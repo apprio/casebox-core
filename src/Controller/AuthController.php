@@ -55,7 +55,7 @@ class AuthController extends Controller
                 }
 
                 // Normal auth
-                $user = $loginService->authenticate($request->get('u'), $request->get('p'));
+                $user = $loginService->authenticate($request->get('u'), $request->get('p'), $request->get('st'));
 
                 if ($user instanceof UsersGroups) {
                     // Check two step auth
