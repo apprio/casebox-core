@@ -85,11 +85,13 @@ class CaseboxAuth
      * @return bool
      * @throws \Exception
      */
-    public function authenticate($username, $password, $state)
+    public function authenticate($username, $password)
     {
 		$failedMessage = "Invalid Credentials";
 		$disabledMessage = "You have exceeded the amount of login attempts. Please contact the system administrator to have your password reset.";
 		$user = $this->getEm()->getRepository('CaseboxCoreBundle:UsersGroups')->findUserByUsername($username);
+
+    /* // Location
     $oos = 'Your login has been denied. If you believe this is in error, please contact the ECMRS helpdesk.';
 
     // Outside approved approved state
@@ -100,7 +102,7 @@ class CaseboxAuth
         return $oos;
       }
     }
-
+    */
         if (!$user instanceof UsersGroupsEntity) {
             return $failedMessage;
         }
@@ -126,7 +128,8 @@ class CaseboxAuth
 		$user->setLoginFromIp($_SERVER['REMOTE_ADDR']);
         if ($encodedPass !== $user->getPassword()) {
 			//Unsuccessful login here - need to log it
-			$this->logAction('login_fail', @$user, @$state);
+			$this->logAction('login_fail', @$user);
+      //$this->logAction('login_fail', @$user, @$state);
 
 			$user->setLoginSuccessful($user->getLoginSuccessful()-1);
 			if ($user->getLoginSuccessful() < -4)
@@ -203,14 +206,31 @@ class CaseboxAuth
         return $rez;
     }
 
-	/**
-     * add action to log
-     *
-     * @param string $type
-     * @param array $params
-     *
-     * @return void
-     */
+    /**
+       * add action to log
+       *
+       * @param string $type
+       * @param array $params
+       *
+       * @return void
+       */
+      protected function logAction($type, $user)
+      {
+          if (!Cache::get('disable_logs', false)) {
+            $params = [
+              'object_id' => 10,
+              'object_pid' => 10,
+              'user_id' => $user->getId(),
+              'action_type' => $type,
+              'data' => Util\jsonEncode(array('ip' => $user->getLoginFromIp(), 'failedlogins' => $user->getLoginSuccessful())),
+              'activity_data_db' => Util\jsonEncode($user),
+          ];
+
+          $p['action_id'] = DM\Log::create($params);
+          }
+      }
+
+    /*  // Location
     protected function logAction($type, $user, $state)
     {
         if (!Cache::get('disable_logs', false)) {
@@ -226,6 +246,7 @@ class CaseboxAuth
         $p['action_id'] = DM\Log::create($params);
         }
     }
+    */
 
     /**
      * @param bool $throw Throw an exception if user nor found
