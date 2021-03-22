@@ -442,7 +442,7 @@ Ext.define('CB.VerticalEditGrid', {
                 this.data = pw.data[this.root];
             }
         }
-        CB_Objects.getPluginsData({id: pw.data.pid}, this.processLoadPreviewData, this);
+        //CB_Objects.getPluginsData({id: pw.data.pid}, this.processLoadPreviewData, this);
         //if not specified template_id directly to grid then try to look in owners data
         this.template_id = Ext.valueFrom(pw.data.template_id, this.template_id);
         if(isNaN(this.template_id)) {
@@ -675,6 +675,7 @@ Ext.define('CB.VerticalEditGrid', {
             context.objectId = pw.data.id;
             context.objectPid = pw.data.pid;
             context.path = pw.data.path;
+            context.fematier = pw.data.fematier;
             if (!Ext.isEmpty(pw.data.survivorName)) {
               context.survivorName = pw.data.survivorName;
             } else {
@@ -684,7 +685,7 @@ Ext.define('CB.VerticalEditGrid', {
 
         // If survivor's status is Information Only, set required fields to false
         if (tr.data.name == '_linkedsurvivor' || tr.data.name == '_linkedsurvivorname') {
-        if(pw.data.infoOnly == 1577){
+          if(pw.data.infoOnly == 1577){
         		var infoOnly = true;
 
 	            var reqEntryTitles = ["Assessment Date", "Referral Needed?", "Is disaster survivor or anyone in the household in distress?", "Would disaster survivor or anyone in the household like to speak to someone about coping with disaster-related stress?",
@@ -716,10 +717,21 @@ Ext.define('CB.VerticalEditGrid', {
 	                    if(curr == r.data.title){
 	                        var n = this.helperTree.getNode(r.get('id'));
 	                        n.data.templateRecord.get('cfg').required = !infoOnly;
-	                	}
+	                	  }
 	            	}
         		}
         	}
+          if (context.fematier) {
+            for(var j = 0; j < this.store.data.length; j++){
+                var r = this.store.getAt(j);
+                if(r.data.title === "Optional, Change Disaster Survivor's Current FEMA Tier?"){
+                    var n = this.helperTree.getNode(r.get('id'));
+                    n.data.templateRecord.get('cfg').value = context.fematier;
+                    context.value = context.fematier;
+                    n.data.value.value = context.fematier;
+                }
+            }
+          }
         }
 
         if (tr.data.name == '_linkedsurvivor') {
@@ -931,6 +943,26 @@ Ext.define('CB.VerticalEditGrid', {
         var nodeId = context.record.get('id')
             ,node = this.helperTree.getNode(nodeId)
             ,tr = node.data.templateRecord;
+
+        if (tr.data.title == "Optional, Change Disaster Survivor's Current FEMA Tier?") {
+          if (tr.data.cfg.value != context.value) {
+            for(var j = 0; j < this.store.data.length; j++){
+                var r = this.store.getAt(j);
+                if(r.data.title === "FEMA Tier Change Note"){
+                    var n = this.helperTree.getNode(r.get('id'));
+                    n.data.templateRecord.get('cfg').required = true;
+                }
+            }
+          } else {
+            for(var j = 0; j < this.store.data.length; j++){
+                var r = this.store.getAt(j);
+                if(r.data.title === "FEMA Tier Change Note"){
+                    var n = this.helperTree.getNode(r.get('id'));
+                    n.data.templateRecord.get('cfg').required = false;
+                }
+            }
+          }
+        }
 
         if (tr.data.name == '_phonenumber') {
           tr.data.cfg.validationRe = "^(\\([0-9]{3}\\)\\s*|[0-9]{3}\\-)[0-9]{3}-[0-9]{4}$";

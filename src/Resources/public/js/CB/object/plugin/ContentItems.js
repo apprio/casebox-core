@@ -193,6 +193,7 @@ Ext.define('CB.object.plugin.ContentItems', {
         d.path = this.params.path;
         d.infoOnly = this.params.infoOnly;
         d.survivor = this.params.survivorName;
+        d.fematier = this.params.fematier;
         App.mainViewPort.fireEvent('createobject', d, e);
     }
 });

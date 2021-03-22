@@ -162,9 +162,22 @@ class CaseAssessment extends CBObject
       $case = Objects::getCachedObject($caseId);
 			$caseData = &$case->data;
 			$caseSd = &$caseData['sys_data'];
-
 			/* add some values to the parent */
 			$tpl = $this->getTemplate();
+
+			// Change FEMA Tier from Assessments
+			if ($p['data']['_fematier']['value'] != $caseData['data']['_fematier']) //FEMA tier
+			{
+				$femaTier = $p['data']['_fematier']['value'];
+				$caseData['data']['_fematier'] = $femaTier;
+				$caseSd['fematier_i'] = $femaTier;
+				$obj = Objects::getCachedObject($femaTier);
+				$arr = explode(" -", $obj->getHtmlSafeName(), 2);
+				$first = $arr[0];
+				$caseSd['fematier'] = $first;
+				//$caseSd['fematier'] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+				$case->updateCustomData();
+			}
 
 			//Case Notes
 			if (!empty($p['data']['_notetype']['value'])) {
@@ -188,7 +201,6 @@ class CaseAssessment extends CBObject
 				{
 					$case->markTransitioned();
 				}
-
 				else //Follow Up (246807) note - need to create task
 				{
 					$caseSd['taskCreated'] = [];
