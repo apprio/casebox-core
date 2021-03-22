@@ -1023,8 +1023,13 @@ Ext.define('CB.VerticalEditGrid', {
                     if(curr == r.data.title){
                       if (r.data.title == 'Best Phone Number'){
                         var n = this.helperTree.getNode(r.get('id'));
-                        n.data.templateRecord.get('cfg').required = !infoOnly;
-                        n.data.templateRecord.get('cfg').validationRe = "";
+                        if (infoOnly == true) {
+                          n.data.templateRecord.get('cfg').required = false;
+                          n.data.templateRecord.get('cfg').validationRe = "";
+                        } else {
+                          n.data.templateRecord.get('cfg').required = true;
+                          n.data.templateRecord.get('cfg').validationRe = "^(\\([0-9]{3}\\)\\s*|[0-9]{3}\\-)[0-9]{3}-[0-9]{4}$";
+                        }
                       } else {
                         var n = this.helperTree.getNode(r.get('id'));
                         n.data.templateRecord.get('cfg').required = !infoOnly;
@@ -1053,8 +1058,13 @@ Ext.define('CB.VerticalEditGrid', {
                         if(curr == r.data.title){
                           if (r.data.title == 'Best Phone Number'){
                             var n = this.helperTree.getNode(r.get('id'));
-                            n.data.templateRecord.get('cfg').required = !infoOnly;
-                            n.data.templateRecord.get('cfg').validationRe = "";
+                            if (infoOnly == true) {
+                              n.data.templateRecord.get('cfg').required = false;
+                              n.data.templateRecord.get('cfg').validationRe = "";
+                            } else {
+                              n.data.templateRecord.get('cfg').required = true;
+                              n.data.templateRecord.get('cfg').validationRe = "^(\\([0-9]{3}\\)\\s*|[0-9]{3}\\-)[0-9]{3}-[0-9]{4}$";
+                            }
                           } else {
                             var n = this.helperTree.getNode(r.get('id'));
                             n.data.templateRecord.get('cfg').required = !infoOnly;
