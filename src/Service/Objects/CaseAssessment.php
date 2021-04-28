@@ -162,7 +162,6 @@ class CaseAssessment extends CBObject
       $case = Objects::getCachedObject($caseId);
 			$caseData = &$case->data;
 			$caseSd = &$caseData['sys_data'];
-
 			/* add some values to the parent */
 			$tpl = $this->getTemplate();
 
@@ -188,7 +187,6 @@ class CaseAssessment extends CBObject
 				{
 					$case->markTransitioned();
 				}
-
 				else //Follow Up (246807) note - need to create task
 				{
 					$caseSd['taskCreated'] = [];
@@ -433,6 +431,21 @@ class CaseAssessment extends CBObject
 			//Assessments
 			if (!empty($p['data']['_assessmentdate']))
 			{
+				// Change FEMA Tier from Assessments
+				if ($p['data']['_fematier']) {
+					if ($p['data']['_fematier']['value'] != $caseData['data']['_fematier']) //FEMA tier
+					{
+						$femaTier = $p['data']['_fematier']['value'];
+						$caseData['data']['_fematier'] = $femaTier;
+						$caseSd['fematier_i'] = $femaTier;
+						$obj = Objects::getCachedObject($femaTier);
+						$arr = explode(" -", $obj->getHtmlSafeName(), 2);
+						$first = $arr[0];
+						$caseSd['fematier'] = $first;
+						//$caseSd['fematier'] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+						$case->updateCustomData();
+					}
+				}
 				$caseSd['assessments_needed'] = array_diff($caseSd['assessments_needed'], [$templateId]);
 				if (!in_array($templateId, $caseSd['assessments_completed']))
 				{
