@@ -55,7 +55,7 @@ class Cases extends CBObject
         if ($p === false) {
             $p = $this->data;
         }
-		$p['pid']=150;
+		    $p['pid']=150;
         $this->data = $p;
 
     $this->setParamsFromData($p);
@@ -1727,6 +1727,8 @@ class Cases extends CBObject
       $emergencyContactInfo = '';
       $checklistLine = '';
 			$contentRow = '';
+      $secondaryIntake = '';
+      $secondaryIntakeCount = 0;
 			$familyMemberCount = 0;
 			$emergencyContactCount = 0;
 			$addressCount = 0;
@@ -1739,6 +1741,11 @@ class Cases extends CBObject
 				{
 					 $familyMemberInfo = $familyMemberInfo.'<tr><td class="obj" width="5%"><img alt="icon" class="i16u icon-assessment-familymember icon-padding" src="/css/i/s.gif"></td><td width="90%"><a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="289" myId="'.$item['id'].'">'.$item['name'].'</a></td><td width="5%" class="elips"> <a class="bt item-action click" myName="Family Member" action="removeContent" myPid="'.$data['id'].'" templateId="311" myId="'.$item['id'].'"><span title="Remove Address" class="click icon-cross" myName="Famly Member" action="removeContent" myPid="'.$data['id'].'" templateId="289" myId="'.$item['id'].'"></span></a></td></tr>';
 					 $familyMemberCount++;
+				}
+        if ($item['template_id'] == 250897)
+				{
+					 $secondaryIntake = $secondaryIntake.'<a class="bt item-action click" myPid="'.$data['id'].'" action="editContent" templateId="250897" myId="'.$item['id'].'">'.$data['name'] . " - Secondary Intake".'</a>';
+					 $secondaryIntakeCount++;
 				}
 				if ($item['template_id'] == 311)
 				{
@@ -1793,6 +1800,16 @@ class Cases extends CBObject
 			{
 				$familyMemberInfo = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px;width:100% "><tr><td width="95%"><table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$familyMemberInfo. '</table></td><td width="5%" class="obj" style="vertical-align:top;"><a class="bt item-action click" title="Add Family Member" action="addContent" templateId="289" myPid="'.$data['id'].'">   <img alt="Add Family Member" title="Add Family Member" class="i16u icon-plus"  action="addContent" templateId="289" myPid="'.$data['id'].'" src="/css/i/s.gif"> </a></td></tr>';
 			}
+
+      if ($secondaryIntakeCount ==0)
+			{
+				$secondaryIntake = $secondaryIntake.'<a class="bt item-action click" action="addContent" templateId="250897" myPid="'.$data['id'].'">'. $data['name']." - Secondary Intake"  .'</a>';
+			}
+			else
+			{
+				$secondaryIntake = '<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " class="test" width="100%">'.$secondaryIntake. '</table>';
+			}
+
 			if ($addressCount ==0)
 			{
 				$addressInfo = $addressInfo.'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; "><tr><td></td> <td width="100%"><a class="bt item-action click" action="addContent" templateId="311" myPid="'.$data['id'].'">'.$this->trans('AddAddress').'</a></td></tr>';
@@ -1996,8 +2013,14 @@ class Cases extends CBObject
             $ownerRow.'</tbody></table></td>'.
             $assigneeRow. '</tbody></table>'.
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('ClientIntake') .':</td><td width="35%" style="width:15%" class="prop-val">'.
-			'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%"><tr>    <td class="obj" width="5%">        <img alt="icon" class="i16u icon-assessment-client icon-padding" src="/css/i/s.gif">    </td>    <td width="95%"><a class="bt item-action click" action="edit">'.$data['name'].'</a></td></tr></table></td>'.
-			//'<ul class="clean"><li class="icon-padding icon-assessment-client" style="background-repeat:no-repeat !important"><a class="bt item-action click" action="edit" uid="'.User::getId().'">'.$data['name'].'</a></li></ul>
+			'<table style="border: 0px; border-collapse: collapse; margin: 0px; padding: 0px; " width="100%">
+      <tr>
+        <td class="obj" width="5%">        <img alt="icon" class="i16u icon-assessment-client icon-padding" src="/css/i/s.gif">    </td>
+        <td width="95%"><a class="bt item-action click" action="edit">'.$data['name'].'</a> </br>'.
+        $secondaryIntake.'
+        </td>
+      </tr></table></td>'.
+      //'<ul class="clean"><li class="icon-padding icon-assessment-client" style="background-repeat:no-repeat !important"><a class="bt item-action click" action="edit" uid="'.User::getId().'">'.$data['name'].'</a></li></ul>
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('ConsentForm') .':</td><td class="prop-val" width="35%">'.$fileInfo.'</td></tr>'.
 			'<tr><td class="prop-key" style="width:15%" width="15%">' . $this->trans('FamilyMembers') .':</td><td width="35%" style="width:15%" class="prop-val">'.$familyMemberInfo.'</td>'.
 			'<td class="prop-key" style="width:15%" width="15%">' . $this->trans('AlternativeAddress') .':</td><td class="prop-val" width="35%">'.$addressInfo.'</td></tr>'.

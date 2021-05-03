@@ -442,7 +442,9 @@ Ext.define('CB.VerticalEditGrid', {
                 this.data = pw.data[this.root];
             }
         }
-        //CB_Objects.getPluginsData({id: pw.data.pid}, this.processLoadPreviewData, this);
+        if (pw.data.type !== 'task' && pw.data.type !== 'case' && pw.data.type !== 'object') {
+          CB_Objects.getPluginsData({id: pw.data.pid}, this.processLoadPreviewData, this);
+        }
         //if not specified template_id directly to grid then try to look in owners data
         this.template_id = Ext.valueFrom(pw.data.template_id, this.template_id);
         if(isNaN(this.template_id)) {
