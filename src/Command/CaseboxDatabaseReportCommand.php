@@ -121,6 +121,8 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			SUM(IF (DATE(tree.cdate) = \''.$date.'\' and sys_data not like \'%"case_status":"Information Only"%\',1,0)) new_open_cases,
 			SUM(IF (DATE(tree.cdate) = \''.$date.'\',1,0)) client_intake,
 			SUM(IF (DATE(tree.cdate) = \''.$date.'\' and sys_data like \'%"case_status":"Information Only"%\',1,0)) information_only,
+      SUM(IF (DATE(tree.cdate) = \''.$date.'\' and sys_data like \'%"case_status":"Active"%\' and sys_data like \'%"closurereason_s"%\',1,0)) reopen_information_only,
+      SUM(IF (DATE(tree.cdate) = \''.$date.'\' and sys_data like \'%"case_status":"Information Only"%\' and sys_data like \'%"closurereason_s"%\',1,0)) reopen_active,
 			(select count(*) from tree where tree.name like \'%Assessment\'
 			AND tree.pid in (select id from objects
             where substring(data, LOCATE(\'"_location_type":\', data)+18,
@@ -201,6 +203,15 @@ LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
 			(LOCATE(\'"_location_type":\', data)+18)) in(LOCATION_STUFF) AND
 			DATE(SUBSTRING(sys_data,LOCATE(\'"task_d_closed":"\', sys_data)+17,10)) <= DATE(\''.$date.'\'))
       		 total_closed_cases,
+           (SELECT COUNT(*) FROM objects, tree where
+           tree.id = objects.id and
+           dstatus = 0 and
+        data like \'%"open_status":"250362"%\'
+  	  			and substring(data, LOCATE(\'"_location_type":\', data)+18,
+  			LOCATE(\'"\',data,LOCATE(\'"_location_type":\', data)+18)-
+  			(LOCATE(\'"_location_type":\', data)+18)) in(LOCATION_STUFF) AND
+  			DATE(SUBSTRING(sys_data,LOCATE(\'"task_d_closed":"\', sys_data)+17,10)) <= DATE(\''.$date.'\'))
+        		 total_reopen_cases,
          (SELECT COUNT(*) FROM objects, tree where tree.id = objects.id
          and dstatus = 0
 	  			and substring(data, LOCATE(\'"_location_type":\', data)+18,
