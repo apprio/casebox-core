@@ -442,8 +442,8 @@ Ext.define('CB.VerticalEditGrid', {
                 this.data = pw.data[this.root];
             }
         }
-        if (pw.data.type !== 'task' && pw.data.type !== 'case' && pw.data.type !== 'object') {
-          CB_Objects.getPluginsData({id: pw.data.pid}, this.processLoadPreviewData, this);
+        if (this.parentWindow.data.type !== 'task' && this.parentWindow.data.type !== 'case' && this.parentWindow.data.type !== 'object' && this.parentWindow.data.type !== 'menu') {
+          CB_Objects.getPluginsData({id: this.parentWindow.data.pid}, this.processLoadPreviewData, this);
         }
         //if not specified template_id directly to grid then try to look in owners data
         this.template_id = Ext.valueFrom(pw.data.template_id, this.template_id);
@@ -514,7 +514,7 @@ Ext.define('CB.VerticalEditGrid', {
 
         this.data = Ext.apply(Ext.valueFrom(this.data, {}), objProperties);
         this.data.from = 'window';
-    }
+      }
 
     ,syncRecordsWithHelper: function(){
         if(!this.store) {
