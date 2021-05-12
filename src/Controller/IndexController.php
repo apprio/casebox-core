@@ -903,7 +903,7 @@ class IndexController extends Controller
             }
         }
         $cmd = $cmd . ' --env='.$coreName;
-
+        //$cmd = 'echo $PATH';
         if (!empty($request->get('detach'))) {
             $cmd = $cmd . ' > /dev/null & echo $!';
         }

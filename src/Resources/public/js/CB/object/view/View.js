@@ -477,7 +477,67 @@
 			c.add(content);
 			items.push(c);
 
+			// Recovery Notes
+			c= Ext.create('Ext.panel.Panel', {
+				title: 'Recovery Notes',
+				layout: {
+					align: 'stretch',
+					type: 'vbox'
+				},
+			});
 
+				 this.notestore = new Ext.data.DirectStore({
+						 autoLoad: true
+						 ,autoDestroy: true
+						 ,remoteSort: false
+						 ,sortOnLoad: true
+						 ,extraParams: {}
+						 ,pageSize: 100
+						 ,model: 'Items'
+						 //,remoteFilter: true
+						 ,proxy: new  Ext.data.DirectProxy({
+								paramsAsHash: true
+								,directFn: CB_BrowserView.getChildren
+								,extraParams: {
+									facets:'general'
+									,pid:params.id
+									,path:params.id
+									,from:'activityStream'
+									,userViewChange:true
+									,query:null
+									,page:1
+									,start:0
+									,limit:25
+									,template_id: 527
+									//,sort:[{property:'last_action_tdt',direction:'ASC'}]
+								}
+						,reader: {
+							type: 'json'
+							,successProperty: 'success'
+							,idProperty: 'nid'
+							,rootProperty: 'data'
+							,messageProperty: 'msg'
+					 }
+					})
+					,filters: [function(item) {
+						if (item.data.name == "General Note " || item.data.name == "Initial Note " || item.data.name.includes("FEMA Tier Change ") ||
+								item.data.name == "Follow Up " || item.data.name.includes("Close Record ") || item.data.name == "Re-Opened ") {
+							return true;
+						}
+						else {
+							return false;
+							}
+					}]
+					,sortRoot: 'last_action_tdt'
+					,sorters: [{
+						property: 'last_action_tdt',
+						direction: 'DESC'
+					}]
+				 });
+
+			content = Ext.create('CBBrowserViewActivityStream',{store: this.notestore});
+			c.add(content);
+			items.push(c);
 
             if(!Ext.isEmpty(items)) {
                 tabPanel.add(items);
