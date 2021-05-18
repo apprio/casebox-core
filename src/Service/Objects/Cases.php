@@ -789,45 +789,47 @@ class Cases extends CBObject
 
 		// Select only required properties for result
         $properties = [
-            'race',
-            'gender',
-            'maritalstatus',
-            'ethnicity',
-            'language',
-            'headofhousehold',
-            'fematier',
-			'full_address',
-			'task_d_closed',
+          'race',
+          'gender',
+          'maritalstatus',
+          'ethnicity',
+          'language',
+          'headofhousehold',
+          'fematier',
+			    'full_address',
+			    'task_d_closed',
         	'transferred_dt',
-			'assessments_reported',
-			'assessments_needed',
-			'assessments_completed',
-			'assessments_started',
-			'referrals_needed',
-			'referrals_completed',
-			'referrals_started',
-			'task_u_done',
-			'task_u_ongoing',
-			'lat_lon',
-			'addresstypeprimary_s',
-			'county',
-			'county_s',
-			'street_s',
-			'city_s',
-			'zipcode_s',
-			'state_s',
-			'location_type',
-			'location_type_s',
-            'at_risk_population_ss',
-            'identified_unmet_needs_ss'
+    			'assessments_reported',
+    			'assessments_needed',
+    			'assessments_completed',
+    			'assessments_started',
+    			'referrals_needed',
+    			'referrals_completed',
+    			'referrals_started',
+    			'task_u_done',
+    			'task_u_ongoing',
+    			'lat_lon',
+    			'addresstypeprimary_s',
+    			'county',
+    			'county_s',
+    			'street_s',
+    			'city_s',
+    			'zipcode_s',
+    			'state_s',
+    			'location_type',
+    			'location_type_s',
+          'at_risk_population_ss',
+          'identified_unmet_needs_ss',
+          'open_status',
+          'clientstatus'
         ];
-        foreach ($properties as $property) {
+    foreach ($properties as $property) {
 			unset($solrData[$property]);
 			if (!empty($sd[$property]))
 			{
 				$solrData[$property] = $sd[$property];
 			}
-        }
+    }
 		foreach ($sd as $key => $value)
 		{
 			if ((substr($key, -2,1) === '_') || (substr($key, -3,1) === '_'))
@@ -954,10 +956,18 @@ class Cases extends CBObject
 			'fematier',
             'headofhousehold',
 			'addresstype',
-			'location_type'
+			'location_type',
+      'open_status',
+      'clientstatus'
         ];
         foreach ($properties as $property) {
 			unset($sd[$property]);
+      if ($property == 'open_status') {
+        if ($this->getFieldValue($property, 0)['value'] != null) {
+          $obj = Objects::getCachedObject($this->getFieldValue($property, 0)['value']);
+          $sd[$property] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+        }
+      }
 			if ($this->getFieldValue('_' . $property, 0)['value'] != null) {
 				$obj = Objects::getCachedObject($this->getFieldValue('_' . $property, 0)['value']);
 				if ($property == 'fematier')

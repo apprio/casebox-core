@@ -301,6 +301,45 @@ class CaseAssessment extends CBObject
 				}
 			}
 
+			//Secondary Intake
+			if ($templateId = 250897) {
+				foreach ($p['data'] as $key => $value)
+				{
+					$caseData['data'][$key] = $value;
+				}
+				$properties = [
+        	'race',
+          'gender',
+          'maritalstatus',
+          'ethnicity',
+          'language',
+					'clientage',
+          'headofhousehold',
+					'addresstype',
+					'fulladdress',
+					'parish'
+        ];
+        foreach ($properties as $property) {
+					unset($caseSd[$property]);
+					if ($this->getFieldValue('_' . $property, 0)['value'] != null) {
+						$obj = Objects::getCachedObject($this->getFieldValue('_' . $property, 0)['value']);
+						if ($property == 'addresstype')
+						{
+							$caseSd[$property.'primary_s'] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+						}
+						elseif ($property == 'fulladdress')
+						{
+							$caseSd[$property.'_s'] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+						}
+						else
+						{
+							$caseSd[$property] = empty($obj) ? '' : str_replace('Yes - ','',$obj->getHtmlSafeName());
+						}
+        	}
+				}
+				$case->updateCustomData();
+				$case->updateSysData();
+			}
 
 			//Referrals
 			if (!empty($p['data']['_referraltype'])) { //
