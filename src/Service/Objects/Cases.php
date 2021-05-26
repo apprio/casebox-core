@@ -72,28 +72,6 @@ class Cases extends CBObject
 
     $caseTasks = [
       '_femanumber',
-      // undetermined
-      '_gender',
-      '_maritalstatus',
-      '_ethnicity',
-      '_hispanicorigin',
-      '_race',
-      '_englishspeaker',
-      '_primarylanguage',
-      '_addresstype',
-      '_headofhousehold',
-      // blanks
-      '_middlename',
-      '_suffix',
-      '_alias',
-      '_clientage',
-      '_fulladdress',
-      '_manualaddressentry',
-      '_parish',
-      '_numberinhousehold',
-      '_emailaddress',
-      '_otherphonenumber',
-      '_verificationdocumentation',
       'assigned',
       '_location_type'
     ];
@@ -206,81 +184,13 @@ class Cases extends CBObject
                 //
               }
             }
-            elseif ($p['data'][$caseTask] == 219 || $p['data'][$caseTask] == 231 || $p['data'][$caseTask] == 241 || $p['data'][$caseTask] == 260 ||
-                    $p['data'][$caseTask] == 3110 || $p['data'][$caseTask] == 3225 || $p['data'][$caseTask] == 248196 || $p['data'][$caseTask] == 3105)
-            {
-              $field = $caseTask;
-              $field = str_replace('_gender', 'Gender', $field);
-              $field = str_replace('_ethnicity', 'Ethnicity', $field);
-              $field = str_replace('_race', 'Race', $field);
-              $field = str_replace('_englishspeaker', 'English Speaker', $field);
-              $field = str_replace('_primarylanguage', 'Primary Language', $field);
-              $field = str_replace('_addresstype', 'Address Type', $field);
-              $field = str_replace('_headofhousehold', 'Head of Household?', $field);
-              $field = str_replace('_maritalstatus', 'Marital Status', $field);
-              $field = str_replace('_hispanicorigin', 'Hispanic Origin', $field);
-              array_push($undeterminedfields, $field);
-            }
          }
          elseif (empty($p['data'][$caseTask]) && $p['data']['_clientstatus'] == 1578){
              $field = $caseTask;
-             $field = str_replace('_middlename', 'Middle Name', $field);
-             $field = str_replace('_alias', 'Alias', $field);
-             $field = str_replace('_suffix', 'Suffix', $field);
-             $field = str_replace('_gender', 'Gender', $field);
-             $field = str_replace('_ethnicity', 'Ethnicity', $field);
-             $field = str_replace('_race', 'Race', $field);
-             $field = str_replace('_englishspeaker', 'English Speaker', $field);
-             $field = str_replace('_primarylanguage', 'Primary Language', $field);
-             $field = str_replace('_addresstype', 'Address Type', $field);
-             $field = str_replace('_headofhousehold', 'Head of Household?', $field);
-             $field = str_replace('_maritalstatus', 'Marital Status', $field);
-             $field = str_replace('_clientage', 'Disaster Survivor Age', $field);
-             $field = str_replace('_fulladdress', 'Address', $field);
-             $field = str_replace('_parish', 'Parish', $field);
-             $field = str_replace('_manualaddressentry', 'Manual Address', $field);
-             $field = str_replace('_numberinhousehold', 'Number of individuals in household', $field);
-             $field = str_replace('_emailaddress', 'Email Address', $field);
-             $field = str_replace('_otherphonenumber', 'Other Phone Number', $field);
-             $field = str_replace('_verificationdocumentation', 'Verification Documentation', $field);
              $field = str_replace('assigned', 'Assigned IDCM Worker', $field);
              $field = str_replace('_location_type', 'Current Facility', $field);
-             $field = str_replace('_hispanicorigin', 'Hispanic Origin', $field);
              array_push($blankfields, $field);
          }
-     }
-
-     if (!empty($undeterminedfields)) {
-       if ( !in_array($undeterminedfields, $p['sys_data']['taskCreated']) ){
-         //CREATE TASK HERE - Undetermined Fields
-         $fields = implode(", ",$undeterminedfields);
-          $data = [
-            'pid' => 246835,
-            'path' => '/Development/System/Tasks/',
-            'template_id' => 7,
-            'type' => 'task',
-            'isNew' => 'true',
-            'data' => [
-              'ecmrs_id' => $ecmrsId, // id
-              'survivor_name' => $name, // name
-              'task_type' => 248278,
-              //'undetermined_fields' => intval("250720,250721"),
-              'time_expended' => '',
-              'case' => $ecmrsId, // Linked case
-              'task_status' => 1906, // Open
-              '_task' => 'Undetermined Fields', // [ECMRS ID autofill} + Follow Up: Tier
-              'due_date' => $dueDate, // [time of auto task creation + days by Tier]
-              'due_time' => $dueTime, // [time of auto task creation]
-              'assigned' => $assignee, // [Whoever is assigned to the case at the time of auto creation]
-              'importance' => 55,
-              'description' => "Follow up with the disaster survivor to determine the " . $fields . " fields."
-            ],
-          ];
-          $newTask = $objService->create($data);
-          $p['sys_data']['taskCreated'][] = $fields;
-        } else {
-                //
-        }
      }
 
      if (!empty($blankfields)) {
@@ -305,7 +215,7 @@ class Cases extends CBObject
              'due_time' => $dueTime,
              'assigned' => $assignee,
              'importance' => 55,
-             'description' => "Follow up with the disaster survivor to determine the " . $fields . " fields."
+             'description' => "Follow up with the disaster survivor to determine the " . $fields . " field(s)."
             ],
          ];
          $newTask = $objService->create($data);
