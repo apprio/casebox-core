@@ -723,14 +723,29 @@ Ext.define('CB.VerticalEditGrid', {
 	            	}
         		}
         	}
+        }
+
+        if (tr.data.name == '_fematier') {
           if (context.fematier) {
             for(var j = 0; j < this.store.data.length; j++){
                 var r = this.store.getAt(j);
                 if(r.data.title === "Optional, Change Disaster Survivor's Current FEMA Tier?"){
-                    var n = this.helperTree.getNode(r.get('id'));
-                    n.data.templateRecord.get('cfg').value = context.fematier;
-                    context.value = context.fematier;
-                    n.data.value.value = context.fematier;
+                    var fematier;
+                    switch (context.fematier) {
+                      case 1325:
+                        fematier = 'Tier 1 - Immediate Needs Met';
+                        break;
+                      case 1326:
+                        fematier = 'Tier 2 - Some Remaining Unmet Needs or in Current Rebuild/Repair Status';
+                        break;
+                      case 1327:
+                        fematier = 'Tier 3 - Significant Unmet Needs';
+                        break;
+                      case 1328:
+                        fematier = 'Tier 4 - Immediate and Long-Term Unmet Needs';
+                        break;
+                    }
+                    Ext.Msg.alert('The current FEMA Tier of this survivor is: ', fematier);
                 }
             }
           }
