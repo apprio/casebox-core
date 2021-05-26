@@ -141,10 +141,8 @@ Ext.define('CB.NoteForm', {
                   data.assocObjects.push({id: 248702, name: 'IDCM Worker - Level II'});
                   data.data.user_role = {value: 248702};
                 }
-                if (App.loginData.data.user_role) {
-                  if (App.loginData.data.user_role.childs.assignedsupervisor) {
-                    data.data.user_role.childs = {assignedsupervisor: App.loginData.data.user_role.childs.assignedsupervisor};
-                  }
+                if (App.loginData.data.assignedsupervisor) {
+                    data.data.user_role.childs = {assignedsupervisor: App.loginData.data.assignedsupervisor};
                 }
               } else if (App.loginData.groups == '30') {
                 // Supervisor Group, assign IDCM Workers
@@ -205,19 +203,22 @@ Ext.define('CB.NoteForm', {
         this.grid.readValues();
 
         if (Ext.isDefined(this.data.data.user_role.childs)) {
-          if (this.data.data.user_role.childs.assignedworker.indexOf(',') != -1) {
-             var workers = this.data.data.user_role.childs.assignedworker.split(',');
-             for (var i=0; i < workers.length; i++) {
-               var workerId = {id: workers[i]};
-               CB_UsersGroups.getUserData({data: workerId, assign: true}, this.onGetData, this);
-             }
-         }
-          else {
-            var workerId = {id: this.data.data.user_role.childs.assignedworker};
-            CB_UsersGroups.getUserData({data: workerId, assign: true}, this.onGetData, this);
+          if (Ext.isDefined(this.data.data.user_role.childs.assignedworker)) {
+            if (this.data.data.user_role.childs.assignedworker.indexOf(',') != -1) {
+               var workers = this.data.data.user_role.childs.assignedworker.split(',');
+               for (var i=0; i < workers.length; i++) {
+                 var workerId = {id: workers[i]};
+                 CB_UsersGroups.getUserData({data: workerId, assign: true}, this.onGetData, this);
+               }
+           }
+            else {
+              var workerId = {id: this.data.data.user_role.childs.assignedworker};
+              CB_UsersGroups.getUserData({data: workerId, assign: true}, this.onGetData, this);
+            }
           }
         }
 
+        CB_User.saveProfileData(this.data, this.onSaveProcess, this);
     }
 
     ,onGetData: function(r, e){
