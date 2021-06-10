@@ -956,7 +956,7 @@ class Instance
 			}
 
 			$vars = [
-				'client_name' => empty($obj['data']['data']['_firstname'])?'No First Name':$obj['data']['data']['_firstname'] . ' ' . empty($obj['data']['data']['_lastname'])?'No Last Name':$obj['data']['data']['_lastname'],
+				'client_name' => empty($obj['data']['data']['_firstname'])?'No First Name':$obj['data']['data']['_firstname'] . ' ' . !empty($obj['data']['data']['_lastname'])?$obj['data']['data']['_lastname']:'No Last Name',
 				'client_address' => (!empty($obj['data']['data']['_fulladdress'])?str_replace(", United States","",$obj['data']['data']['_fulladdress']):''). ' ' . $zipcode, //will replace with real zipcode after refactor
 				'client_email' =>!empty($obj['data']['data']['_emailaddress'])?$obj['data']['data']['_emailaddress']:'',
 				'client_phonenumber' =>!empty($obj['data']['data']['_phonenumber'])?$obj['data']['data']['_phonenumber']:'',
