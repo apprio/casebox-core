@@ -415,6 +415,11 @@
 		 	content.onLoadData(recoveryCompletedData);
 		 	c.add(content);
 
+			recoveryData.data.sort(function compare(a, b) {
+			  var dateA = new Date(a.cdate);
+			  var dateB = new Date(b.cdate);
+			  return dateA - dateB;
+			});
 			content  = Ext.create('CBObjectPluginContentItems',{params: params})
 			content.createMenu = recoveryMenu;
 			content.updateTitle(L.RecoveryNotes);
@@ -522,7 +527,14 @@
 					,filters: [function(item) {
 						if (item.data.name == "General Note " || item.data.name == "Initial Note " || item.data.name.includes("FEMA Tier Change ") ||
 								item.data.name == "Follow Up " || item.data.name.includes("Close Record ") || item.data.name == "Re-Opened ") {
-							return true;
+							if (item.data.lastAction) {
+								if (item.data.lastAction.type == 'updated') {
+									return false;
+								}
+								else {
+									return true;
+								}
+							}
 						}
 						else {
 							return false;
