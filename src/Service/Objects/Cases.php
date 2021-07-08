@@ -1524,8 +1524,13 @@ class Cases extends CBObject
 			$actionsLine = count($sd['solr']['assessments_needed']) . " Assessments Needed - ";
 		}*/
 		$demographicsLine = '#'.$data['id']. " - ";
-		if (!empty($sd['solr']['gender'])) {
-			$demographicsLine = $demographicsLine . $sd['solr']['gender'] . " - ";
+		if (!empty($data['data']['_gender'])) {
+      $gender = $data['data']['_gender'];
+      $gender = str_replace('214', 'Male', $gender);
+      $gender = str_replace('215', 'Female', $gender);
+      $gender = str_replace('219', 'Undetermined', $gender);
+      $gender = str_replace('220', 'Declined', $gender);
+			$demographicsLine = $demographicsLine . $gender . " - ";
 		}
 		else
 		{
@@ -1584,8 +1589,8 @@ class Cases extends CBObject
 			$demographicsLine = $demographicsLine . $sd['solr']['language'] . " - ";
 		}
 
-		if (!empty($sd['solr']['emailaddress_s'])) {
-			$emailLine = $sd['solr']['emailaddress_s'] . " - ";
+		if (!empty($data['data']['_emailaddress'])) {
+			$emailLine = $data['data']['_emailaddress'] . " - ";
 		}
 		else
 		{
@@ -1600,8 +1605,8 @@ class Cases extends CBObject
 			$emailLine =  $emailLine .$sd['solr']['maritalstatus'] . " - ";
 		}
 
-		if (!empty($sd['solr']['full_address'])) {
-			$addressLine = $addressLine . str_replace(", United States","",$sd['solr']['full_address']) . (!empty($sd['solr']['zipcode_s'])?' '. $sd['solr']['zipcode_s']:''). " - ";
+		if (!empty($data['data']['_fulladdress'])) {
+			$addressLine = $addressLine . $data['data']['_fulladdress'] .  " - ";
 		}
 		else
 		{
